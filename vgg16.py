@@ -1,41 +1,3 @@
-'''This script goes along the blog post
-"Building powerful image classification models using very little data"
-from blog.keras.io.
-It uses data that can be downloaded at:
-https://www.kaggle.com/c/dogs-vs-cats/data
-In our setup, we:
-- created a data/ folder
-- created train/ and validation/ subfolders inside data/
-- created cats/ and dogs/ subfolders inside train/ and validation/
-- put the cat pictures index 0-999 in data/train/cats
-- put the cat pictures index 1000-1400 in data/validation/cats
-- put the dogs pictures index 12500-13499 in data/train/dogs
-- put the dog pictures index 13500-13900 in data/validation/dogs
-So that we have 1000 training examples for each class, and 400 validation examples for each class.
-In summary, this is our directory structure:
-```
-data/
-    train/
-        dogs/
-            dog001.jpg
-            dog002.jpg
-            ...
-        cats/
-            cat001.jpg
-            cat002.jpg
-            ...
-    validation/
-        dogs/
-            dog001.jpg
-            dog002.jpg
-            ...
-        cats/
-            cat001.jpg
-            cat002.jpg
-            ...
-```
-'''
-
 import os
 import h5py
 import cv2
@@ -46,10 +8,11 @@ from keras.models import Sequential
 from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.optimizers import SGD
+from os.path import join, getsize
 
 
 # path to the model weights files.
-weights_path = 'vgg16_weights.h5'
+weights_path = '../vgg16_weights.h5'
 
 # dimensions of our images.
 img_width, img_height = 224, 224
@@ -60,8 +23,16 @@ img_width, img_height = 224, 224
 #nb_validation_samples = 800
 #nb_epoch = 50
 
+l_images = []
+for root, dirs, files in os.walk("/home/a-marcolini/Downloads/BerryPhotos"):
+    for name in files:
+        l_images.append(os.path.join(root, name))
+
 #path to the images of rasperries directory
 image_path = '/home/a-marcolini/Downloads/BerryImageNet'
+
+classes_path = 'classes_final.csv'
+
 
 # build the VGG16 network
 model = Sequential()
@@ -140,11 +111,27 @@ sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
 #              metrics=['accuracy'])
 model.compile(optimizer=sgd, loss='categorical_crossentropy')
 
-filenames = os.listdir(path=image_path)
+#filenames = os.listdir(path=image_path)
+
+f = open(classes_path, "r")
+fout = open("out.txt", "w")
+classes = f.readlines()
+index_classes = {}
+for i in range(1,len(classes)):
+    l = classes[i].split(";")
+    index = l[0]
+    clas = l[1]
+    clas = clas[:-1]
+    index_classes[index] = clas
+#   print(index_classes)
+
+sout=""
+
 j=0
-for name in filenames:
+for i,name in enumerate(l_images):
+    sout += str(i+1) + ") name = " + name + "\n"
     j+=1
-    im = cv2.resize(cv2.imread(image_path + "/" + name), (224, 224)).astype(np.float32)
+    im = cv2.resize(cv2.imread(name), (224, 224)).astype(np.float32)
     im[:,:,0] -= 103.939
     im[:,:,1] -= 116.779
     im[:,:,2] -= 123.68
@@ -156,20 +143,29 @@ for name in filenames:
     out = model.predict(im)
     best5 = np.argsort(out[0])[::-1][:5] #to extract the top5 class indexes
     best5_prob = []
-    for i in best5:
-        best5_prob.append(out[0][i])
+    for k in best5:
+        best5_prob.append(out[0][k])
     best5_prob = np.array(best5_prob)
 
-    print(best5)
-    print(best5_prob)
-    print("\n")
+    for t,num in enumerate(best5):
+        classification = index_classes[str(num)]
+        if classification == "strawberry":
+            classification = "____STRAWBERRY!!____"
+        probability = best5_prob[t]
+        probability = round(probability, 5)
+        sout+="\t" + str(t+1) + ". class = " + classification
+        sout+= "\n\t   probability = " + str(probability*100) + "%\n"
+
+    #print(best5)
+    #print(best5_prob)
+    #print("\n")
     if j==5:
         break
 
 
 
 
-
+fout.write(sout)
 
 
 
