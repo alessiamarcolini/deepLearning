@@ -12,7 +12,7 @@ from os.path import join, getsize
 
 
 # path to the model weights files.
-weights_path = '../vgg16_weights.h5'
+weights_path = 'vgg16_weights.h5'
 
 # dimensions of our images.
 img_width, img_height = 224, 224
@@ -24,12 +24,12 @@ img_width, img_height = 224, 224
 #nb_epoch = 50
 
 l_images = []
-for root, dirs, files in os.walk("/home/a-marcolini/Downloads/BerryPhotos"):
+for root, dirs, files in os.walk("/home/a-marcolini/deepLearning/BerryPhotos/V/Good/Individual/Cropped"):
     for name in files:
         l_images.append(os.path.join(root, name))
 
 #path to the images of rasperries directory
-image_path = '/home/a-marcolini/Downloads/BerryImageNet'
+#image_path = '/home/a-marcolini/Downloads/BerryImageNet'
 
 classes_path = 'classes_final.csv'
 
@@ -128,6 +128,7 @@ for i in range(1,len(classes)):
 sout=""
 
 j=0
+n_str = 0
 for i,name in enumerate(l_images):
     sout += str(i+1) + ") name = " + name + "\n"
     j+=1
@@ -151,6 +152,8 @@ for i,name in enumerate(l_images):
         classification = index_classes[str(num)]
         if classification == "strawberry":
             classification = "____STRAWBERRY!!____"
+            if t==0:
+                n_str += 1
         probability = best5_prob[t]
         probability = round(probability, 5)
         sout+="\t" + str(t+1) + ". class = " + classification
@@ -159,10 +162,11 @@ for i,name in enumerate(l_images):
     #print(best5)
     #print(best5_prob)
     #print("\n")
-    if j==5:
-        break
+    #if j==8:
+    #    break
+    print (j)
 
-
+sout += "Detection percentage: " + str((n_str/len(l_images))*100) + "%"
 
 
 fout.write(sout)
