@@ -10,6 +10,7 @@ from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.optimizers import SGD
 from os.path import join, getsize
 import sys
+from mcc_multiclass import multimcc
 
 
 def load_im2(paths):
@@ -230,3 +231,10 @@ for lbl in validation_labels:
         validation_labels_linear.append(1)
     if lbl[2] == 1:
         validation_labels_linear.append(2)
+
+validation_labels_linear = np.array(validation_labels_linear)
+predicted_labels_linear = np.array(predicted_labels_linear)
+
+MCC = multimcc(validation_labels_linear, predicted_labels_linear)
+
+print( MCC)
