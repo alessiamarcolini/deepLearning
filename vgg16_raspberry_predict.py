@@ -32,7 +32,7 @@ weights_path = 'vgg16_first_training_raspberry_weights.h5'
 
 # dimensions of our images.
 img_width, img_height = 224, 224
-nb_epochs = int(sys.argv[1])
+#nb_epochs = int(sys.argv[1])
 
 validation_data_dir = 'BerrySamples'
 '''
