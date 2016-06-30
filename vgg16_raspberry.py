@@ -25,14 +25,14 @@ def load_im2(paths):
 
 
 # path to the model weights files.
-weights_path = '../vgg16_weights.h5'
+weights_path = 'vgg16_weights.h5'
 
 # dimensions of our images.
 img_width, img_height = 224, 224
 
 
-train_data_dir = '/BerryPhotos/L/train'
-validation_data_dir = '/BerryPhotos/L/validation'
+train_data_dir = 'BerryPhotos/L/train'
+validation_data_dir = 'BerryPhotos/L/validation'
 '''
 nb_train_samples = 466
 nb_train_early = nb_train_late = 112
@@ -200,7 +200,15 @@ prediction_summary.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS'
 
 for i in range(len(predicted_labels)):
     cls_prob = predicted_labels[i]
-    line = [validation_images[i], validation_labels[i], "Early:"+str(cls_prob[0])+";Good:"+str(cls_prob[1])+";Late:"+str(cls_prob[2])]
+    for j in range(len(validation_labels[i])):
+        cl = validation_labels[i][j]
+        if cl == 1 and j == 0:
+            real_label = "Early"
+        elif  cl == 1 and j == 1:
+            real_label = "Good"
+        elif  cl == 1 and j == 2:
+            real_label = "Late"
+    line = [validation_images[i], real_label, "Early:"+str(cls_prob[0])+";Good:"+str(cls_prob[1])+";Late:"+str(cls_prob[2])]
     prediction_summary.write("\t".join(line)+"\n")
     prediction_summary.flush()
 
