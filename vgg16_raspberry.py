@@ -9,6 +9,7 @@ from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.optimizers import SGD
 from os.path import join, getsize
+import sys
 
 
 def load_im2(paths):
@@ -30,7 +31,7 @@ weights_path = 'vgg16_weights.h5'
 
 # dimensions of our images.
 img_width, img_height = 224, 224
-
+nb_epochs = int(sys.argv[1])
 
 train_data_dir = 'BerryPhotos/L/train'
 validation_data_dir = 'BerryPhotos/L/validation'
@@ -192,7 +193,7 @@ train = np.array(load_im2(train_images))
 validation = np.array(load_im2(validation_images))
 
 # fit the model
-model.fit(train, train_labels, nb_epoch=100, batch_size=16)
+model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=16)
 model.save_weights("vgg16_first_training_raspberry_weights.h5", overwrite=True)
 predicted_labels = model.predict(validation)
 
