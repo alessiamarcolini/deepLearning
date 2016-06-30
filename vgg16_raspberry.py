@@ -17,12 +17,17 @@ weights_path = 'vgg16_weights.h5'
 # dimensions of our images.
 img_width, img_height = 224, 224
 
-#train_data_dir = 'data/train'
-#validation_data_dir = 'data/validation'
-#nb_train_samples = 2000
-#nb_validation_samples = 800
-#nb_epoch = 50
+train_data_dir = '/home/a-marcolini/Downloads/BerryPhotos/L/train'
+validation_data_dir = '/home/a-marcolini/Downloads/BerryPhotos/L/validation'
+nb_train_samples = 466
+nb_train_early = nb_train_late = 112
+nb_train_good = 242
 
+nb_validation_samples = 198
+nb_validation_early = nb_validation_late = 48
+nb_validation_good = 102
+nb_epoch = 50
+'''
 l_images = []
 for root, dirs, files in os.walk("/home/a-marcolini/deepLearning/BerryPhotos/V/Good/Individual/Cropped"):
     for name in files:
@@ -32,7 +37,7 @@ for root, dirs, files in os.walk("/home/a-marcolini/deepLearning/BerryPhotos/V/G
 #image_path = '/home/a-marcolini/Downloads/BerryImageNet'
 
 classes_path = 'classes_final.csv'
-
+'''
 
 # build the VGG16 network
 model = Sequential()
@@ -72,13 +77,15 @@ model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_2'))
 model.add(ZeroPadding2D((1, 1)))
 model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
 model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-model.add(Flatten())
-model.add(Dense(4096, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(4096, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(1000, activation='softmax'))
 
+top_model = Sequential()
+top_model.add(Flatten(input_shape=model.output_shape[1:]))
+top_model.add(Dense(256, activation='relu'))
+top_model.add(Dropout(0.5))
+top_model.add(Dense(3, activation='sigmoid'))
+
+print(model.layers)
+model.add(top_model)
 
 # load the weights of the VGG16 networks
 # (trained on ImageNet, won the ILSVRC competition in 2014)
@@ -102,17 +109,20 @@ print('Model loaded.')
 # add the model on top of the convolutional base
 sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
 
-
+# set the first 25 layers (up to the last conv block)
+# to non-trainable (weights will not be updated)
+for layer in model.layers[:25]:
+    layer.trainable = False
 
 # compile the model with a SGD/momentum optimizer
 # and a very slow learning rate.
-#model.compile(loss='binary_crossentropy',
-#              optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
-#              metrics=['accuracy'])
-model.compile(optimizer=sgd, loss='categorical_crossentropy')
+model.compile(loss='binary_crossentropy',
+              optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
+              metrics=['accuracy'])
+#model.compile(optimizer=sgd, loss='categorical_crossentropy')
 
 #filenames = os.listdir(path=image_path)
-
+'''
 f = open(classes_path, "r")
 fout = open("out.txt", "w")
 classes = f.readlines()
@@ -171,7 +181,7 @@ sout += "Detection percentage: " + str((n_str*1.0/len(l_images))*100) + "%"
 
 fout.write(sout)
 
-
+'''
 
 
 '''
@@ -195,10 +205,60 @@ validation_generator = test_datagen.flow_from_directory(
         target_size=(img_height, img_width),
         batch_size=32,
         class_mode='binary')
-
 '''
 
-'''
+train_images = []
+train_labels = []
+train_path_e = validation_data_dir + "/early/"
+train_path_g = validation_data_dir + "/good/"
+train_path_l = validation_data_dir + "/late/"
+train_paths = [train_path_e, train_path_g, train_path_l]
+
+train_filenames_e = os.listdir(train_path_e)
+train_filenames_g = os.listdir(train_path_g)
+train_filenames_l = os.listdir(train_path_l)
+
+for path in train_paths:
+    if path == train_path_e:
+        for name in train_filenames_e:
+            train_images.append(path + name)
+            train_labels.append([1,0,0])
+    elif path == train_path_g:
+        for name in train_filenames_e:
+            train_images.append(path + name)
+            train_labels.append([0,1,0])
+    elif path == train_path_l:
+        for name in train_filenames_e:
+            train_images.append(path + name)
+            train_labels.append([0,0,1])
+
+validation_images = []
+validation_labels = []
+val_path_e = validation_data_dir + "/early/"
+val_path_g = validation_data_dir + "/good/"
+val_path_l = validation_data_dir + "/late/"
+val_paths = [val_path_e, val_path_g, val_path_l]
+
+val_filenames_e = os.listdir(val_path_e)
+val_filenames_g = os.listdir(val_path_g)
+val_filenames_l = os.listdir(val_path_l)
+
+for path in val_paths:
+    if path == val_path_e:
+        for name in val_filenames_e:
+            validation_images.append(path + name)
+            validation_labels.append([1,0,0])
+    elif path == val_path_g:
+        for name in val_filenames_e:
+            validation_images.append(path + name)
+            validation_labels.append([0,1,0])
+    elif path == val_path_l:
+        for name in val_filenames_e:
+            validation_images.append(path + name)
+            validation_labels.append([0,0,1])
+
+
+
 # fine-tune the model
 model.fit_generator(
         train_generator,
@@ -206,4 +266,3 @@ model.fit_generator(
         nb_epoch=nb_epoch,
         validation_data=validation_generator,
         nb_val_samples=nb_validation_samples)
-'''
