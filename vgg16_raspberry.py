@@ -236,5 +236,4 @@ validation_labels_linear = np.array(validation_labels_linear)
 predicted_labels_linear = np.array(predicted_labels_linear)
 
 MCC = multimcc(validation_labels_linear, predicted_labels_linear)
-
-print( MCC)
+print(MCC)
