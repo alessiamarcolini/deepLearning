@@ -31,8 +31,8 @@ weights_path = '../vgg16_weights.h5'
 img_width, img_height = 224, 224
 
 
-train_data_dir = '/home/a-marcolini/Downloads/BerryPhotos/L/train'
-validation_data_dir = '/home/a-marcolini/Downloads/BerryPhotos/L/validation'
+train_data_dir = '/BerryPhotos/L/train'
+validation_data_dir = '/BerryPhotos/L/validation'
 '''
 nb_train_samples = 466
 nb_train_early = nb_train_late = 112
@@ -137,9 +137,9 @@ model.compile(loss='binary_crossentropy',
 
 train_images = []
 train_labels = []
-train_path_e = validation_data_dir + "/early/"
-train_path_g = validation_data_dir + "/good/"
-train_path_l = validation_data_dir + "/late/"
+train_path_e = train_data_dir + "/early/"
+train_path_g = train_data_dir + "/good/"
+train_path_l = train_data_dir + "/late/"
 train_paths = [train_path_e, train_path_g, train_path_l]
 
 train_filenames_e = os.listdir(train_path_e)
