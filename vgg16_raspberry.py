@@ -34,8 +34,8 @@ weights_path = 'vgg16_weights.h5'
 img_width, img_height = 224, 224
 nb_epochs = int(sys.argv[1])
 
-train_data_dir = 'BerryPhotos/L/train'
-validation_data_dir = 'BerryPhotos/L/validation'
+train_data_dir = 'BerryPhotos/train'
+validation_data_dir = 'BerryPhotos/validation'
 '''
 nb_train_samples = 466
 nb_train_early = nb_train_late = 112
