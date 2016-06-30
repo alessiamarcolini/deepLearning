@@ -2,6 +2,7 @@ import os
 import h5py
 import cv2
 import numpy as np
+import math
 from keras.preprocessing.image import ImageDataGenerator
 from keras import optimizers
 from keras.models import Sequential
@@ -9,6 +10,7 @@ from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.optimizers import SGD
 from os.path import join, getsize
+
 
 def load_im2(paths):
     l = []
@@ -208,7 +210,7 @@ for i in range(len(predicted_labels)):
             real_label = "Good"
         elif  cl == 1 and j == 2:
             real_label = "Late"
-    line = [validation_images[i], real_label, "Early:"+str(Math.round(cls_prob[0],3))+";Good:"+str(Math.round(cls_prob[1],3))+";Late:"+str(Math.round(cls_prob[2],3))]
+    line = [validation_images[i], real_label, "Early:"+str(math.round(cls_prob[0],3))+";Good:"+str(math.round(cls_prob[1],3))+";Late:"+str(math.round(cls_prob[2],3))]
     prediction_summary.write("\t".join(line)+"\n")
     prediction_summary.flush()
 
