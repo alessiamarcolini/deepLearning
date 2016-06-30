@@ -194,3 +194,4 @@ validation = np.array(load_im2(validation_images))
 
 # fit the model
 model.fit(train, train_labels, nb_epoch=500, batch_size=16)
+model.save_weights("vgg16_first_training_raspberry_weights.h5")
