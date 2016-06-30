@@ -190,8 +190,18 @@ train = np.array(load_im2(train_images))
 #print(train)
 validation = np.array(load_im2(validation_images))
 
-
-
 # fit the model
-model.fit(train, train_labels, nb_epoch=500, batch_size=16)
+model.fit(train, train_labels, nb_epoch=1, batch_size=16)
 model.save_weights("vgg16_first_training_raspberry_weights.h5")
+predicted_labels = model.predict(validation)
+
+prediction_summary = open("vgg16_first_train_raspberry_prediction_summary.txt", "w")
+prediction_summary.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS'])+'\n')
+
+for i in range(len(predicted_labels)):
+    cls_prob = predicted_labels[i]
+    line = [validation_images[i], validation_labels[i], "Early:"+str(cls_prob[0])+";Good:"+str(cls_prob[1])+";Late:"+str(cls_prob[2])]
+    prediction_summary.write("\t".join(line)+"\n")
+    prediction_summary.flush()
+
+prediction_summary.close()
