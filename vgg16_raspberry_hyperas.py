@@ -164,8 +164,11 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
         model.add(Dense(dense_size, activation=activation_function))
         model.add(Dropout(dropout_rate))
         if {{choice(['one', 'two'])}} == 'two':
+            print ("#Chosen FC Size: Double")
             model.add(Dense(dense_size, activation=activation_function))
             model.add(Dropout(dropout_rate))
+        else:
+            print ("#Chosen FC Size: Single")
         model.add(Dense(3, activation={{choice(['softmax', 'sigmoid'])}}))
 
         # note that it is necessary to start with a fully-trained
