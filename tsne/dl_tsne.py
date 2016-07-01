@@ -18,7 +18,7 @@ WEIGHTS_PATH = 'vgg16_weights.h5'
 #general path
 IMAGE_PATH = '/data/webvalley/fruit_images/'
 #fruits paths
-RASPBERRY = 'BerryImageNet'
+RASPBERRY = 'raspberry'
 STRAWBERRY = 'strawberry'
 BLACKBERRY = 'blackberry'
 RED_CURRANT = 'redcurrant'
