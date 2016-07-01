@@ -34,7 +34,7 @@ weights_path = 'vgg16_first_training_raspberry_weights.h5'
 img_width, img_height = 224, 224
 
 
-validation_data_dir = 'BerrySamples'
+validation_data_dir = 'Grid'
 
 
 # build the VGG16 network
@@ -141,9 +141,10 @@ validation = np.array(load_im2(validation_images))
 
 
 
+
 predicted_labels = model.predict(validation)
 
-prediction_summary = open("vgg16_first_train_raspberry_prediction_summary.txt", "w")
+prediction_summary = open("vgg16_first_train_raspberry_prediction_summary.csv", "w")
 prediction_summary.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS'])+'\n')
 
 predicted_labels_linear = []
@@ -161,9 +162,9 @@ for i in range(len(predicted_labels)):
         elif  cl == 1 and j == 2:
             real_label = "Late"
 
-    line = [validation_images[i], real_label, "Early:"+str(round(cls_prob[0],3))+";Good:"+str(round(cls_prob[1],3))+";Late:"+str(round(cls_prob[2],3))]
+    line = [validation_images[i], real_label, str(round(cls_prob[0],3)), str(round(cls_prob[1],3)), str(round(cls_prob[2],3))]
     predicted_labels_linear.append(np.argmax(cls_prob))
-    prediction_summary.write("\t".join(line)+"\n")
+    prediction_summary.write(";".join(line)+"\n")
     prediction_summary.flush()
 
 prediction_summary.close()
