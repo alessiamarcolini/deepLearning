@@ -344,7 +344,7 @@ validation_labels_linear = np.array(validation_labels_linear)
 predicted_labels_linear = np.array(predicted_labels_linear)
 
 MCC = multimcc(validation_labels_linear, predicted_labels_linear)
-
+print ("MCC of the best model:",MCC)
 prediction_summary.write("\n\nMCC:" + str(MCC))
 prediction_summary.close()
 
@@ -390,4 +390,4 @@ random_train_labels_linear = np.copy(train_labels_linear)
 np.random.shuffle(random_train_labels_linear)
 random_train_labels = np_utils.to_categorical(random_train_labels_linear, max(random_train_labels_linear) + 1)
 
-random_model = model_from_config(best_model)
+random_model = model_from_config(best_model.get_config())
