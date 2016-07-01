@@ -140,6 +140,7 @@ for path in val_paths:
 validation = np.array(load_im2(validation_images))
 
 
+  
 
 predicted_labels = model.predict(validation)
 
