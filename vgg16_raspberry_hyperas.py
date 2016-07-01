@@ -176,14 +176,41 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
         for layer in model.layers[:25]:
             layer.trainable = False
 
+
+        trial_model_optimizer_list = {{choice(['rmsprop', 'adam', 'sgd'])}}
+        print "#Chosen Optimizer: ", trial_model_optimizer_list
+        if trial_model_optimizer_list == 'adam':
+            epsilon={{choice([0,1e-04, 1e-05,1e-06,1e-07,1e-08, 1e-09, 1e-10])}}
+            lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
+            # beta_1 = {{uniform(0.5, 1)}}
+            # beta_2 = {{uniform(0.6, 1)}}
+            #trial_model_optimizer = Adam(lr=lr, beta_1=beta_1, beta_2=beta_2,epsilon=epsilon )
+            trial_model_optimizer = Adam(lr=lr,epsilon=epsilon )
+
+        elif trial_model_optimizer_list == 'rmsprop':
+            epsilon={{choice([0,1e-04, 1e-05,1e-06,1e-07,1e-08, 1e-09, 1e-10])}}
+            lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
+            # rho = {{uniform(0.5, 1)}}
+            #trial_model_optimizer = RMSprop(lr=lr, rho=rho, epsilon=epsilon)
+            trial_model_optimizer = RMSprop(lr=lr, epsilon=epsilon)
+
+        elif trial_model_optimizer_list == 'sgd':
+            nesterov = {{choice([True,False])}}
+            lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
+            momentum={{choice([0.1,0.5,0.7,0.8,0.9])}}
+            # decay={{uniform(0, 0.5)}}
+            #trial_model_optimizer = SGD(lr=lr, momentum=momentum, decay=decay, nesterov=nesterov)
+            trial_model_optimizer = SGD(lr=lr, momentum=momentum, nesterov=nesterov)
+
+
         # compile the model with a SGD/momentum optimizer
         # and a very slow learning rate.
         model.compile(loss='categorical_crossentropy',
-                      optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
+                      optimizer=trial_model_optimizer,
                       metrics=['accuracy'])
 
         # fit the model
-        model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=16)
+        model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size={{choice([1, 2, 4, 8, 16, 32, 64, 128])}})
         predicted_labels = model.predict(validation)
         predicted_labels_linear = []
         for i in range(len(predicted_labels)):
@@ -390,4 +417,4 @@ random_train_labels_linear = np.copy(train_labels_linear)
 np.random.shuffle(random_train_labels_linear)
 random_train_labels = np_utils.to_categorical(random_train_labels_linear, max(random_train_labels_linear) + 1)
 
-random_model = model_from_config(best_model.get_config())
+#random_model = model_from_config(best_model.get_config())

@@ -186,6 +186,6 @@ MCC = multimcc(validation_labels_linear, predicted_labels_linear)
 prediction_summary.write("MCC=" + str(MCC) + "\n")
 prediction_summary.flush()
 
-prediction_summary.write(confusion_matrix(validation_labels_linear, predicted_labels_linear))
+prediction_summary.write(str(confusion_matrix(validation_labels_linear, predicted_labels_linear)))
 prediction_summary.flush()
 prediction_summary.close()
