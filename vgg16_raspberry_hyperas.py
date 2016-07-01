@@ -222,6 +222,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
                                               'momentum': momentum,
                                               'nesterov': nesterov}
 
+        saved_clean_model = model.to_json()
 
         # compile the model with a SGD/momentum optimizer
         # and a very slow learning rate.
@@ -255,7 +256,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
         MCC = multimcc(validation_labels_linear, predicted_labels_linear)
         print(MCC)
         output_model = {
-            'model': model.get_config(),
+            'model': saved_clean_model,
             'optimizer': trial_model_optimizer_dict,
             'batch_size': batch_size
         }
@@ -272,7 +273,7 @@ from images_utils import load_im2
 from keras.utils import np_utils
 from keras.optimizers import SGD, RMSprop, Adam
 from mcc_multiclass import multimcc
-from keras.models import Sequential
+from keras.models import model_from_json
 
 
 class myArgumentParser(argparse.ArgumentParser):
@@ -394,7 +395,7 @@ elif OPTIMIZER_dict.keys()[0] == 'sgd':
     OPTIMIZER = SGD(lr=OPTIMIZER_dict['sgd']['lr'], momentum=OPTIMIZER_dict['sgd']['momentum'],
                     nesterov=OPTIMIZER_dict['sgd']['nesterov'])
 
-best_model = Sequential.from_config(best_model_dict['model'])
+best_model = model_from_json(best_model_dict['model'])
 best_model.compile(loss='categorical_crossentropy', optimizer=OPTIMIZER, metrics=['accuracy'])
 print("\n\n#########EXECUTING RETRAIN OF THE BEST MODEL TO SAVE WEIGHTS")
 best_model.fit(train, train_labels,
@@ -459,7 +460,7 @@ random_train_labels_linear = np.copy(train_labels_linear)
 np.random.shuffle(random_train_labels_linear)
 random_train_labels = np_utils.to_categorical(random_train_labels_linear, max(random_train_labels_linear) + 1)
 
-random_model = Sequential.from_config(best_model_dict['model'])
+random_model = model_from_json(best_model_dict['model'])
 random_model.compile(loss='categorical_crossentropy', optimizer=OPTIMIZER, metrics=['accuracy'])
 print("\n\n#########EXECUTING RANDOM LABEL OF THE BEST MODEL")
 random_model.fit(train, random_train_labels,
