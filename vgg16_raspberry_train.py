@@ -12,6 +12,34 @@ from os.path import join, getsize
 import sys
 from mcc_multiclass import multimcc
 import keras.backend.tensorflow_backend as K
+import argparse
+import random
+
+
+
+class myArgumentParser(argparse.ArgumentParser):
+    def __init__(self, *args, **kwargs):
+        super(myArgumentParser, self).__init__(*args, **kwargs)
+
+    def convert_arg_line_to_args(self, line):
+        for arg in line.split():
+            if not arg.strip():
+                continue
+            if arg[0] == '#':
+                break
+            yield arg
+
+parser = myArgumentParser(description='Run a training experiment using pretrained VGG16, specified on the Raspberry DataSet.',
+        fromfile_prefix_chars='@')
+parser.add_argument('--gpu', type=int, default=0, help='GPU Device (default: %(default)s)')
+parser.add_argument('--nb_epochs', type=int, default=10, help='Number of Epochs during training (default: %(default)s)')
+parser.add_argument('--random', action='store_true', help='Run with random sample labels')
+
+args = parser.parse_args()
+GPU = args.gpu
+RANDOM_LABELS = args.random
+NB_EPOCHS = args.nb_epochs
+
 
 
 
@@ -34,14 +62,15 @@ weights_path = 'vgg16_weights.h5'
 
 # dimensions of our images.
 img_width, img_height = 224, 224
-nb_epochs = int(sys.argv[1])
+nb_epochs = NB_EPOCHS
 
 train_data_dir = 'BerryPhotos/train'
 validation_data_dir = 'BerryPhotos/validation'
 
+random.seed(0)
 
-with K.tf.device('/gpu:1'):
-    K.set_session(K.tf.Session(config=K.tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)))
+with K.tf.device('/gpu:'+str(GPU)):
+    K.set_session(K.tf.Session(config=K.tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)))
     # build the VGG16 network
     model = Sequential()
     model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
@@ -135,17 +164,32 @@ with K.tf.device('/gpu:1'):
 
     for path in train_paths:
         if path == train_path_e:
+            labels_array = [1,0,0]
             for name in train_filenames_e:
                 train_images.append(path + name)
-                train_labels.append([1,0,0])
+                if RANDOM_LABELS:
+                    labels_array = [0,0,0]
+                    rnd_cls = random.randint(0,2)
+                    labels_array[rnd_cls]= 1
+                train_labels.append(labels_array)
         elif path == train_path_g:
+            labels_array = [0,1,0]
             for name in train_filenames_g:
                 train_images.append(path + name)
-                train_labels.append([0,1,0])
+                if RANDOM_LABELS:
+                    labels_array = [0,0,0]
+                    rnd_cls = random.randint(0,2)
+                    labels_array[rnd_cls]= 1
+                train_labels.append(labels_array)
         elif path == train_path_l:
+            labels_array = [0,0,1]
             for name in train_filenames_l:
                 train_images.append(path + name)
-                train_labels.append([0,0,1])
+                if RANDOM_LABELS:
+                    labels_array = [0,0,0]
+                    rnd_cls = random.randint(0,2)
+                    labels_array[rnd_cls]= 1
+                train_labels.append(labels_array)
 
     validation_images = []
     validation_labels = []
