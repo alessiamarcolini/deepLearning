@@ -187,7 +187,9 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
         print "#Chosen Optimizer: ", trial_model_optimizer_list
         if trial_model_optimizer_list == 'adam':
             epsilon={{choice([0,1e-04, 1e-05,1e-06,1e-07,1e-08, 1e-09, 1e-10])}}
+            print "\t#Chosen Epsilon:", epsilon
             lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
+            print "\t#Chosen Learning Rate:", lr
             # beta_1 = {{uniform(0.5, 1)}}
             # beta_2 = {{uniform(0.6, 1)}}
             #trial_model_optimizer = Adam(lr=lr, beta_1=beta_1, beta_2=beta_2,epsilon=epsilon )
@@ -197,7 +199,9 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
 
         elif trial_model_optimizer_list == 'rmsprop':
             epsilon={{choice([0,1e-04, 1e-05,1e-06,1e-07,1e-08, 1e-09, 1e-10])}}
+            print "\t#Chosen Epsilon:", epsilon
             lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
+            print "\t#Chosen Learning Rate:", lr
             # rho = {{uniform(0.5, 1)}}
             #trial_model_optimizer = RMSprop(lr=lr, rho=rho, epsilon=epsilon)
             trial_model_optimizer = RMSprop(lr=lr, epsilon=epsilon)
@@ -206,8 +210,11 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
 
         elif trial_model_optimizer_list == 'sgd':
             nesterov = {{choice([True,False])}}
+            print "\t#Chosen Nesterov:", nesterov
             lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
+            print "\t#Chosen Learning Rate:", lr
             momentum={{choice([0.1,0.5,0.7,0.8,0.9])}}
+            print "\t#Chosen Momentum:", momentum
             # decay={{uniform(0, 0.5)}}
             #trial_model_optimizer = SGD(lr=lr, momentum=momentum, decay=decay, nesterov=nesterov)
             trial_model_optimizer = SGD(lr=lr, momentum=momentum, nesterov=nesterov)
