@@ -12,7 +12,42 @@ from os.path import join, getsize
 import sys
 from mcc_multiclass import multimcc
 import keras.backend.tensorflow_backend as K
+import argparse
+import random
 
+
+
+class myArgumentParser(argparse.ArgumentParser):
+    def __init__(self, *args, **kwargs):
+        super(myArgumentParser, self).__init__(*args, **kwargs)
+
+    def convert_arg_line_to_args(self, line):
+        for arg in line.split():
+            if not arg.strip():
+                continue
+            if arg[0] == '#':
+                break
+            yield arg
+
+parser = myArgumentParser(description='Run a training experiment using pretrained VGG16, specified on the Raspberry DataSet.',
+        fromfile_prefix_chars='@')
+parser.add_argument('--gpu', type=int, default=0, help='GPU Device (default: %(default)s)')
+parser.add_argument('--nb_epochs', type=int, default=10, help='Number of Epochs during training (default: %(default)s)')
+parser.add_argument('--random', action='store_true', help='Run with random sample labels')
+parser.add_argument('--vgg16_weights', type=str, default='vgg16_weights.h5',help='VGG16 PreTrained weights')
+parser.add_argument('--output_dir', type=str, default="./experiment_output/",help='Output directory')
+parser.add_argument('--input_dir', type=str, default="./",help='Input directory')
+
+args = parser.parse_args()
+GPU = args.gpu
+RANDOM_LABELS = args.random
+NB_EPOCHS = args.nb_epochs
+OUTDIR = args.output_dir+"/"
+INDIR = args.input_dir+"/"
+VGG_WEIGHTS = args.vgg16_weights
+
+if not os.path.exists(OUTDIR):
+    os.makedirs(OUTDIR)
 
 
 def load_im2(paths):
@@ -30,18 +65,19 @@ def load_im2(paths):
 
 
 # path to the model weights files.
-weights_path = 'vgg16_weights.h5'
+weights_path = VGG_WEIGHTS
 
 # dimensions of our images.
 img_width, img_height = 224, 224
-nb_epochs = int(sys.argv[1])
+nb_epochs = NB_EPOCHS
 
-train_data_dir = 'BerryPhotos/train'
-validation_data_dir = 'BerryPhotos/validation'
+train_data_dir = INDIR+'BerryPhotos/train'
+validation_data_dir = INDIR+'BerryPhotos/validation'
 
+random.seed(0)
 
-with K.tf.device('/gpu:1'):
-    K.set_session(K.tf.Session(config=K.tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)))
+with K.tf.device('/gpu:'+str(GPU)):
+    K.set_session(K.tf.Session(config=K.tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)))
     # build the VGG16 network
     model = Sequential()
     model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
@@ -135,17 +171,32 @@ with K.tf.device('/gpu:1'):
 
     for path in train_paths:
         if path == train_path_e:
+            labels_array = [1,0,0]
             for name in train_filenames_e:
                 train_images.append(path + name)
-                train_labels.append([1,0,0])
+                if RANDOM_LABELS:
+                    labels_array = [0,0,0]
+                    rnd_cls = random.randint(0,2)
+                    labels_array[rnd_cls]= 1
+                train_labels.append(labels_array)
         elif path == train_path_g:
+            labels_array = [0,1,0]
             for name in train_filenames_g:
                 train_images.append(path + name)
-                train_labels.append([0,1,0])
+                if RANDOM_LABELS:
+                    labels_array = [0,0,0]
+                    rnd_cls = random.randint(0,2)
+                    labels_array[rnd_cls]= 1
+                train_labels.append(labels_array)
         elif path == train_path_l:
+            labels_array = [0,0,1]
             for name in train_filenames_l:
                 train_images.append(path + name)
-                train_labels.append([0,0,1])
+                if RANDOM_LABELS:
+                    labels_array = [0,0,0]
+                    rnd_cls = random.randint(0,2)
+                    labels_array[rnd_cls]= 1
+                train_labels.append(labels_array)
 
     validation_images = []
     validation_labels = []
@@ -179,10 +230,10 @@ with K.tf.device('/gpu:1'):
 
     # fit the model
     model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=16)
-    model.save_weights("vgg16_first_training_raspberry_weights.h5", overwrite=True)
+    model.save_weights(OUTDIR+"vgg16_first_training_raspberry_weights.h5", overwrite=True)
     predicted_labels = model.predict(validation)
 
-    prediction_summary = open("vgg16_first_train_raspberry_prediction_summary.txt", "w")
+    prediction_summary = open(OUTDIR+"vgg16_first_train_raspberry_prediction_summary.txt", "w")
     prediction_summary.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS'])+'\n')
 
     predicted_labels_linear = []
@@ -193,14 +244,15 @@ with K.tf.device('/gpu:1'):
             cl = validation_labels[i][j]
             if cl == 1 and j == 0:
                 real_label = "Early"
-                predicted_labels_linear.append(0)
+
             elif  cl == 1 and j == 1:
                 real_label = "Good"
-                predicted_labels_linear.append(1)
+
             elif  cl == 1 and j == 2:
                 real_label = "Late"
-                predicted_labels_linear.append(2)
+
         line = [validation_images[i], real_label, "Early:"+str(round(cls_prob[0],3))+";Good:"+str(round(cls_prob[1],3))+";Late:"+str(round(cls_prob[2],3))]
+        predicted_labels_linear.append(np.argmax(cls_prob))
         prediction_summary.write("\t".join(line)+"\n")
         prediction_summary.flush()
 
