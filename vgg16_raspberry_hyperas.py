@@ -154,9 +154,21 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
         print('Model loaded.')
 
         # build a classifier model to put on top of the convolutional model
+        activation_function = {{choice(['relu', 'sigmoid', 'tanh', 'linear'])}}
+        print ("#Chosen Activation:", activation_function)
+        dense_size = {{choice([50, 100, 256, 512, 1024])}}
+        print ("#Chosen Dense Size:", dense_size)
+        dropout_rate = {{choice([0.0, 0.1, 0.2, 0.3,0.4,0.5,0.6])}}
+        print ("#Chosen Dropout Rate:", dropout_rate)
         model.add(Flatten())
-        model.add(Dense({{choice([50, 100, 256, 512, 1024])}}, activation={{choice(['relu', 'sigmoid', 'tanh', 'linear'])}}))
-        model.add(Dropout({{choice([0.0, 0.1, 0.2, 0.3,0.4,0.5,0.6])}}))
+        model.add(Dense(dense_size, activation=activation_function))
+        model.add(Dropout(dropout_rate))
+        if {{choice(['one', 'two'])}} == 'two':
+            print ("#Chosen FC Size: Double")
+            model.add(Dense(dense_size, activation=activation_function))
+            model.add(Dropout(dropout_rate))
+        else:
+            print ("#Chosen FC Size: Single")
         model.add(Dense(3, activation={{choice(['softmax', 'sigmoid'])}}))
 
         # note that it is necessary to start with a fully-trained
@@ -175,7 +187,9 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
         print "#Chosen Optimizer: ", trial_model_optimizer_list
         if trial_model_optimizer_list == 'adam':
             epsilon={{choice([0,1e-04, 1e-05,1e-06,1e-07,1e-08, 1e-09, 1e-10])}}
+            print "\t#Chosen Epsilon:", epsilon
             lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
+            print "\t#Chosen Learning Rate:", lr
             # beta_1 = {{uniform(0.5, 1)}}
             # beta_2 = {{uniform(0.6, 1)}}
             #trial_model_optimizer = Adam(lr=lr, beta_1=beta_1, beta_2=beta_2,epsilon=epsilon )
@@ -185,7 +199,9 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
 
         elif trial_model_optimizer_list == 'rmsprop':
             epsilon={{choice([0,1e-04, 1e-05,1e-06,1e-07,1e-08, 1e-09, 1e-10])}}
+            print "\t#Chosen Epsilon:", epsilon
             lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
+            print "\t#Chosen Learning Rate:", lr
             # rho = {{uniform(0.5, 1)}}
             #trial_model_optimizer = RMSprop(lr=lr, rho=rho, epsilon=epsilon)
             trial_model_optimizer = RMSprop(lr=lr, epsilon=epsilon)
@@ -194,8 +210,11 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
 
         elif trial_model_optimizer_list == 'sgd':
             nesterov = {{choice([True,False])}}
+            print "\t#Chosen Nesterov:", nesterov
             lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
+            print "\t#Chosen Learning Rate:", lr
             momentum={{choice([0.1,0.5,0.7,0.8,0.9])}}
+            print "\t#Chosen Momentum:", momentum
             # decay={{uniform(0, 0.5)}}
             #trial_model_optimizer = SGD(lr=lr, momentum=momentum, decay=decay, nesterov=nesterov)
             trial_model_optimizer = SGD(lr=lr, momentum=momentum, nesterov=nesterov)
@@ -212,6 +231,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
 
         # fit the model
         batch_size = {{choice([1, 2, 4, 8, 16, 32, 64, 128])}}
+        print "#Chosen batch size:", batch_size
         model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
         predicted_labels = model.predict(validation)
         predicted_labels_linear = []
@@ -426,33 +446,6 @@ best_model.save_weights(OUTDIR + "vgg16_first_training_raspberry_weights.h5", ov
 
 
 ##RANDOM LABEL
-train_data_dir = INDIR + 'BerryPhotos/train'
-train_images = []
-train_labels = []
-train_path_e = train_data_dir + "/early/"
-train_path_g = train_data_dir + "/good/"
-train_path_l = train_data_dir + "/late/"
-train_paths = [train_path_e, train_path_g, train_path_l]
-
-train_filenames_e = os.listdir(train_path_e)
-train_filenames_g = os.listdir(train_path_g)
-train_filenames_l = os.listdir(train_path_l)
-
-for path in train_paths:
-    if path == train_path_e:
-        for name in train_filenames_e:
-            train_images.append(path + name)
-            train_labels.append([1, 0, 0])
-    elif path == train_path_g:
-        for name in train_filenames_g:
-            train_images.append(path + name)
-            train_labels.append([0, 1, 0])
-    elif path == train_path_l:
-        for name in train_filenames_l:
-            train_images.append(path + name)
-            train_labels.append([0, 0, 1])
-train = np.array(load_im2(train_images))
-
 train_labels_linear = []
 
 for lbl in train_labels:
@@ -468,9 +461,6 @@ random_train_labels = np_utils.to_categorical(random_train_labels_linear, max(ra
 
 random_model = Sequential.from_config(best_model_dict['model'])
 random_model.compile(loss='categorical_crossentropy', optimizer=OPTIMIZER)
-random_model.fit(train, validation,
-                    batch_size=best_model_dict['batch_size'],
-                    nb_epoch=NB_EPOCHS)
 print("\n\n#########EXECUTING RANDOM LABEL OF THE BEST MODEL")
 random_model.fit(train, random_train_labels,
                     batch_size=best_model_dict['batch_size'],

@@ -1,0 +1,31 @@
+FILENAME	REAL_LABEL	PREDICTED_LABELS
+Grid/early/a5.jpg;Early;0.143;0.977;0.001
+Grid/early/a1.jpg;Early;0.0;0.968;0.176
+Grid/early/a8.jpg;Early;0.006;0.999;0.0
+Grid/early/a2.jpg;Early;0.0;1.0;0.0
+Grid/early/a6.jpg;Early;0.002;0.996;0.0
+Grid/early/a7.jpg;Early;0.111;0.938;0.0
+Grid/early/a4.jpg;Early;0.001;0.985;0.0
+Grid/early/a3.jpg;Early;0.0;1.0;0.0
+Grid/good/b7.jpg;Good;0.007;0.887;0.0
+Grid/good/b10.jpg;Good;0.021;0.964;0.002
+Grid/good/b9.jpg;Good;0.0;1.0;0.0
+Grid/good/b5.jpg;Good;0.002;1.0;0.0
+Grid/good/b8.jpg;Good;0.0;0.994;0.0
+Grid/good/b6.jpg;Good;0.016;0.934;0.0
+Grid/good/b4.jpg;Good;0.0;1.0;0.006
+Grid/good/b2.jpg;Good;0.0;1.0;0.0
+Grid/good/b3.jpg;Good;0.0;0.991;0.0
+Grid/good/b1.jpg;Good;0.0;0.983;0.002
+Grid/late/c8.jpg;Late;0.406;0.805;0.0
+Grid/late/c3.jpg;Late;0.0;0.921;0.007
+Grid/late/c6.jpg;Late;0.008;0.979;0.001
+Grid/late/c1.jpg;Late;0.0;0.298;0.993
+Grid/late/c5.jpg;Late;0.036;0.962;0.0
+Grid/late/c7.jpg;Late;0.222;0.741;0.0
+Grid/late/c2.jpg;Late;0.0;0.993;0.481
+Grid/late/c4.jpg;Late;0.0;0.968;0.0
+MCC=0.187082869339
+(array([[  0.,   8.,   0.],
+       [  0.,  10.,   0.],
+       [  0.,   7.,   1.]]), array([0, 1, 2]))
