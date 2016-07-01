@@ -34,13 +34,18 @@ parser = myArgumentParser(description='Run a training experiment using pretraine
 parser.add_argument('--gpu', type=int, default=0, help='GPU Device (default: %(default)s)')
 parser.add_argument('--nb_epochs', type=int, default=10, help='Number of Epochs during training (default: %(default)s)')
 parser.add_argument('--random', action='store_true', help='Run with random sample labels')
+parser.add_argument('--output_dir', type=str, default="./experiment_output/",help='Output directory')
+parser.add_argument('--input_dir', type=str, default="./",help='Input directory')
 
 args = parser.parse_args()
 GPU = args.gpu
 RANDOM_LABELS = args.random
 NB_EPOCHS = args.nb_epochs
+OUTDIR = args.output_dir+"/"
+INDIR = args.input_dir+"/"
 
-
+if not os.path.exists(OUTDIR):
+    os.makedirs(OUTDIR)
 
 
 def load_im2(paths):
@@ -58,14 +63,14 @@ def load_im2(paths):
 
 
 # path to the model weights files.
-weights_path = 'vgg16_weights.h5'
+weights_path = INDIR+'vgg16_weights.h5'
 
 # dimensions of our images.
 img_width, img_height = 224, 224
 nb_epochs = NB_EPOCHS
 
-train_data_dir = 'BerryPhotos/train'
-validation_data_dir = 'BerryPhotos/validation'
+train_data_dir = INDIR+'BerryPhotos/train'
+validation_data_dir = INDIR+'BerryPhotos/validation'
 
 random.seed(0)
 
@@ -223,10 +228,10 @@ with K.tf.device('/gpu:'+str(GPU)):
 
     # fit the model
     model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=16)
-    model.save_weights("vgg16_first_training_raspberry_weights.h5", overwrite=True)
+    model.save_weights(OUTDIR+"vgg16_first_training_raspberry_weights.h5", overwrite=True)
     predicted_labels = model.predict(validation)
 
-    prediction_summary = open("vgg16_first_train_raspberry_prediction_summary.txt", "w")
+    prediction_summary = open(OUTDIR+"vgg16_first_train_raspberry_prediction_summary.txt", "w")
     prediction_summary.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS'])+'\n')
 
     predicted_labels_linear = []
