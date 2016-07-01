@@ -160,10 +160,10 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
         print('Model loaded.')
 
         # build a classifier model to put on top of the convolutional model
-        model.add(Flatten(input_shape=model.output_shape[1:]))
-        model.add(Dense(256, activation='relu'))
-        model.add(Dropout(0.5))
-        model.add(Dense(3, activation='sigmoid'))
+        model.add(Flatten())
+        model.add(Dense({{choice([50, 100, 256, 512, 1024])}}, activation={{choice(['relu', 'sigmoid', 'tanh', 'linear'])}}))
+        model.add(Dropout({{choice([0.0, 0.1, 0.2, 0.3,0.4,0.5,0.6])}}))
+        model.add(Dense(3, activation={{choice(['softmax', 'sigmoid'])}}))
 
         # note that it is necessary to start with a fully-trained
         # classifier, including the top classifier,
