@@ -10,7 +10,7 @@ from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.optimizers import SGD
 from os.path import join, getsize
 import sys
-from mcc_multiclass import multimcc
+from mcc_multiclass import multimcc, confusion_matrix
 
 
 def load_im2(paths):
