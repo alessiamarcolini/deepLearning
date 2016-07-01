@@ -1,5 +1,6 @@
 __author__ = 'zarbo'
 import cv2
+import numpy as np
 def load_im2(paths):
     l = []
     for name in paths:
