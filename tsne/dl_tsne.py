@@ -220,6 +220,8 @@ if __name__ == '__main__':
     if not len(input_images):
         exit()
 
+
+
     # build the VGG16 network
     print('building VGG_16 network')
     model = VGG_16(weights_path=WEIGHTS_PATH, add_fully_connected=False)
