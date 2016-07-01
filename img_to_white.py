@@ -12,7 +12,7 @@ paths.sort()
 for numb, name in enumerate(paths):
 
 
-  img = Image.open("god.jpg")
+  img = Image.open(path + name)
   arr = np.array(img)
   size=arr.shape
 
