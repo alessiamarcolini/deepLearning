@@ -73,9 +73,9 @@ def data():
 
     validation = np.array(load_im2(validation_images))
 
-    return train, train_labels, validation, validation_labels, validation_images, GPU, NB_EPOCHS, VGG_WEIGHTS
+    return train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VGG_WEIGHTS
 
-def model(train, train_labels, validation, validation_labels, validation_images, GPU, NB_EPOCHS, VGG_WEIGHTS):
+def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VGG_WEIGHTS):
     import os
     import h5py
     from hyperas.distributions import choice, uniform, conditional
@@ -100,7 +100,7 @@ def model(train, train_labels, validation, validation_labels, validation_images,
 
     img_width, img_height = 224, 224
     nb_epochs = NB_EPOCHS
-
+    print ("Entering GPU Model")
     with K.tf.device('/gpu:'+str(GPU)):
         K.set_session(K.tf.Session(config=K.tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)))
         # build the VGG16 network
