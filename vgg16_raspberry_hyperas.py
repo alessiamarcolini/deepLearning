@@ -212,6 +212,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
 
         # fit the model
         batch_size = {{choice([1, 2, 4, 8, 16, 32, 64, 128])}}
+        print "#Chosen batch size:", batch_size
         model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
         predicted_labels = model.predict(validation)
         predicted_labels_linear = []
@@ -468,9 +469,6 @@ random_train_labels = np_utils.to_categorical(random_train_labels_linear, max(ra
 
 random_model = Sequential.from_config(best_model_dict['model'])
 random_model.compile(loss='categorical_crossentropy', optimizer=OPTIMIZER)
-random_model.fit(train, validation,
-                    batch_size=best_model_dict['batch_size'],
-                    nb_epoch=NB_EPOCHS)
 print("\n\n#########EXECUTING RANDOM LABEL OF THE BEST MODEL")
 random_model.fit(train, random_train_labels,
                     batch_size=best_model_dict['batch_size'],
