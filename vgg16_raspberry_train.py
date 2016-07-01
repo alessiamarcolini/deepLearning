@@ -237,14 +237,15 @@ with K.tf.device('/gpu:'+str(GPU)):
             cl = validation_labels[i][j]
             if cl == 1 and j == 0:
                 real_label = "Early"
-                predicted_labels_linear.append(0)
+
             elif  cl == 1 and j == 1:
                 real_label = "Good"
-                predicted_labels_linear.append(1)
+
             elif  cl == 1 and j == 2:
                 real_label = "Late"
-                predicted_labels_linear.append(2)
+
         line = [validation_images[i], real_label, "Early:"+str(round(cls_prob[0],3))+";Good:"+str(round(cls_prob[1],3))+";Late:"+str(round(cls_prob[2],3))]
+        predicted_labels_linear.append(np.argmax(cls_prob))
         prediction_summary.write("\t".join(line)+"\n")
         prediction_summary.flush()
 
