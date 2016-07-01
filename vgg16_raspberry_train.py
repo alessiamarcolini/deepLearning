@@ -34,6 +34,7 @@ parser = myArgumentParser(description='Run a training experiment using pretraine
 parser.add_argument('--gpu', type=int, default=0, help='GPU Device (default: %(default)s)')
 parser.add_argument('--nb_epochs', type=int, default=10, help='Number of Epochs during training (default: %(default)s)')
 parser.add_argument('--random', action='store_true', help='Run with random sample labels')
+parser.add_argument('--vgg_weights', type=str, default='vgg16_weights.h5',help='VGG16 PreTrained weights')
 parser.add_argument('--output_dir', type=str, default="./experiment_output/",help='Output directory')
 parser.add_argument('--input_dir', type=str, default="./",help='Input directory')
 
@@ -43,6 +44,7 @@ RANDOM_LABELS = args.random
 NB_EPOCHS = args.nb_epochs
 OUTDIR = args.output_dir+"/"
 INDIR = args.input_dir+"/"
+VGG_WEIGHTS = args.vgg_weights
 
 if not os.path.exists(OUTDIR):
     os.makedirs(OUTDIR)
@@ -63,7 +65,7 @@ def load_im2(paths):
 
 
 # path to the model weights files.
-weights_path = INDIR+'vgg16_weights.h5'
+weights_path = VGG_WEIGHTS
 
 # dimensions of our images.
 img_width, img_height = 224, 224
