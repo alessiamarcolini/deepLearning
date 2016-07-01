@@ -17,7 +17,6 @@ def data():
     VGG_WEIGHTS = inputs['VGG_WEIGHTS']
 
     train_data_dir = INDIR + 'BerryPhotos/train'
-    validation_data_dir = INDIR + 'BerryPhotos/validation'
     train_images = []
     train_labels = []
     train_path_e = train_data_dir + "/early/"
@@ -42,7 +41,9 @@ def data():
             for name in train_filenames_l:
                 train_images.append(path + name)
                 train_labels.append([0, 0, 1])
+    train = np.array(load_im2(train_images))
 
+    validation_data_dir = INDIR + 'BerryPhotos/validation'
     validation_images = []
     validation_labels = []
     val_path_e = validation_data_dir + "/early/"
@@ -68,8 +69,6 @@ def data():
                 validation_images.append(path + name)
                 validation_labels.append([0, 0, 1])
 
-    train = np.array(load_im2(train_images))
-
     validation = np.array(load_im2(validation_images))
 
     return train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VGG_WEIGHTS
@@ -78,18 +77,13 @@ def data():
 def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VGG_WEIGHTS):
     import os
     import h5py
-    from hyperas.distributions import choice, uniform, conditional
+    from hyperas.distributions import choice
     from mcc_multiclass import multimcc
     import keras.backend.tensorflow_backend as K
     import numpy as np
-    from keras.preprocessing.image import ImageDataGenerator
-    from keras import optimizers
     from keras.models import Sequential
     from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
-    from keras.layers import Activation, Dropout, Flatten, Dense
-    from keras.optimizers import SGD
-    from os.path import join, getsize
-    import sys
+    from keras.layers import Dropout, Flatten, Dense
     from mcc_multiclass import multimcc
     from hyperopt import STATUS_OK
     from keras.optimizers import SGD, RMSprop, Adam
@@ -176,7 +170,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
         for layer in model.layers[:25]:
             layer.trainable = False
 
-
+        trial_model_optimizer_dict = {}
         trial_model_optimizer_list = {{choice(['rmsprop', 'adam', 'sgd'])}}
         print "#Chosen Optimizer: ", trial_model_optimizer_list
         if trial_model_optimizer_list == 'adam':
@@ -186,6 +180,8 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
             # beta_2 = {{uniform(0.6, 1)}}
             #trial_model_optimizer = Adam(lr=lr, beta_1=beta_1, beta_2=beta_2,epsilon=epsilon )
             trial_model_optimizer = Adam(lr=lr,epsilon=epsilon )
+            trial_model_optimizer_dict['adam'] = {'lr': lr,
+                                              'epsilon': epsilon}
 
         elif trial_model_optimizer_list == 'rmsprop':
             epsilon={{choice([0,1e-04, 1e-05,1e-06,1e-07,1e-08, 1e-09, 1e-10])}}
@@ -193,6 +189,8 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
             # rho = {{uniform(0.5, 1)}}
             #trial_model_optimizer = RMSprop(lr=lr, rho=rho, epsilon=epsilon)
             trial_model_optimizer = RMSprop(lr=lr, epsilon=epsilon)
+            trial_model_optimizer_dict['rmsprop'] = {'lr': lr,
+                                              'epsilon': epsilon}
 
         elif trial_model_optimizer_list == 'sgd':
             nesterov = {{choice([True,False])}}
@@ -201,6 +199,9 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
             # decay={{uniform(0, 0.5)}}
             #trial_model_optimizer = SGD(lr=lr, momentum=momentum, decay=decay, nesterov=nesterov)
             trial_model_optimizer = SGD(lr=lr, momentum=momentum, nesterov=nesterov)
+            trial_model_optimizer_dict['sgd'] = {'lr': lr,
+                                              'momentum': momentum,
+                                              'nesterov': nesterov}
 
 
         # compile the model with a SGD/momentum optimizer
@@ -210,7 +211,8 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
                       metrics=['accuracy'])
 
         # fit the model
-        model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size={{choice([1, 2, 4, 8, 16, 32, 64, 128])}})
+        batch_size = {{choice([1, 2, 4, 8, 16, 32, 64, 128])}}
+        model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
         predicted_labels = model.predict(validation)
         predicted_labels_linear = []
         for i in range(len(predicted_labels)):
@@ -232,7 +234,12 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
 
         MCC = multimcc(validation_labels_linear, predicted_labels_linear)
         print(MCC)
-    return {'loss': -MCC, 'status': STATUS_OK, 'model': model}
+        output_model = {
+            'model': model.get_config(),
+            'optimizer': trial_model_optimizer_dict,
+            'batch_size': batch_size
+        }
+    return {'loss': -MCC, 'status': STATUS_OK, 'model': output_model}
 
 
 from hyperas import optim
@@ -243,8 +250,9 @@ import numpy as np
 import os
 from images_utils import load_im2
 from keras.utils import np_utils
-from keras.models import model_from_config
+from keras.optimizers import SGD, RMSprop, Adam
 from mcc_multiclass import multimcc
+from keras.models import Sequential
 
 
 class myArgumentParser(argparse.ArgumentParser):
@@ -295,11 +303,38 @@ inputs = {
 with open('inputs.pickle', 'wb') as handle:
     pickle.dump(inputs, handle)
 
-best_run, best_model = optim.minimize(model=model,
+best_run, best_model_dict = optim.minimize(model=model,
                                       data=data,
                                       algo=tpe.suggest,
                                       max_evals=N_TRIALS,
                                       trials=Trials())
+
+train_data_dir = INDIR + 'BerryPhotos/train'
+train_images = []
+train_labels = []
+train_path_e = train_data_dir + "/early/"
+train_path_g = train_data_dir + "/good/"
+train_path_l = train_data_dir + "/late/"
+train_paths = [train_path_e, train_path_g, train_path_l]
+
+train_filenames_e = os.listdir(train_path_e)
+train_filenames_g = os.listdir(train_path_g)
+train_filenames_l = os.listdir(train_path_l)
+
+for path in train_paths:
+    if path == train_path_e:
+        for name in train_filenames_e:
+            train_images.append(path + name)
+            train_labels.append([1, 0, 0])
+    elif path == train_path_g:
+        for name in train_filenames_g:
+            train_images.append(path + name)
+            train_labels.append([0, 1, 0])
+    elif path == train_path_l:
+        for name in train_filenames_l:
+            train_images.append(path + name)
+            train_labels.append([0, 0, 1])
+train = np.array(load_im2(train_images))
 
 validation_data_dir = INDIR + 'BerryPhotos/validation'
 validation_images = []
@@ -329,7 +364,23 @@ for path in val_paths:
 
 validation = np.array(load_im2(validation_images))
 
-best_model.save_weights(OUTDIR + "vgg16_first_training_raspberry_weights.h5", overwrite=True)
+OPTIMIZER_dict = best_model_dict['optimizer']
+
+if OPTIMIZER_dict.keys()[0] == 'adam':
+    OPTIMIZER = Adam(lr=OPTIMIZER_dict['adam']['lr'], epsilon=OPTIMIZER_dict['adam']['epsilon'])
+elif OPTIMIZER_dict.keys()[0] == 'rmsprop':
+    OPTIMIZER = RMSprop(lr=OPTIMIZER_dict['rmsprop']['lr'], epsilon=OPTIMIZER_dict['rmsprop']['epsilon'])
+elif OPTIMIZER_dict.keys()[0] == 'sgd':
+    OPTIMIZER = SGD(lr=OPTIMIZER_dict['sgd']['lr'], momentum=OPTIMIZER_dict['sgd']['momentum'],
+                    nesterov=OPTIMIZER_dict['sgd']['nesterov'])
+
+best_model = Sequential.from_config(best_model_dict['model'])
+best_model.compile(loss='categorical_crossentropy', optimizer=OPTIMIZER)
+print("\n\n#########EXECUTING RETRAIN OF THE BEST MODEL TO SAVE WEIGHTS")
+best_model.fit(train, train_labels,
+                    batch_size=best_model_dict['batch_size'],
+                    nb_epoch=NB_EPOCHS)
+
 predicted_labels = best_model.predict(validation)
 
 prediction_summary = open(OUTDIR + "vgg16_first_train_raspberry_prediction_summary.txt", "w")
@@ -344,13 +395,10 @@ for i in range(len(predicted_labels)):
         cl = validation_labels[i][j]
         if cl == 1 and j == 0:
             real_label = "Early"
-
         elif cl == 1 and j == 1:
             real_label = "Good"
-
         elif cl == 1 and j == 2:
             real_label = "Late"
-
     line = [validation_images[i], real_label,
             "Early:" + str(round(cls_prob[0], 3)) + ";Good:" + str(round(cls_prob[1], 3)) + ";Late:" + str(
                 round(cls_prob[2], 3))]
@@ -374,6 +422,7 @@ MCC = multimcc(validation_labels_linear, predicted_labels_linear)
 print ("MCC of the best model:",MCC)
 prediction_summary.write("\n\nMCC:" + str(MCC))
 prediction_summary.close()
+best_model.save_weights(OUTDIR + "vgg16_first_training_raspberry_weights.h5", overwrite=True)
 
 
 ##RANDOM LABEL
@@ -417,4 +466,44 @@ random_train_labels_linear = np.copy(train_labels_linear)
 np.random.shuffle(random_train_labels_linear)
 random_train_labels = np_utils.to_categorical(random_train_labels_linear, max(random_train_labels_linear) + 1)
 
-#random_model = model_from_config(best_model.get_config())
+random_model = Sequential.from_config(best_model_dict['model'])
+random_model.compile(loss='categorical_crossentropy', optimizer=OPTIMIZER)
+random_model.fit(train, validation,
+                    batch_size=best_model_dict['batch_size'],
+                    nb_epoch=NB_EPOCHS)
+print("\n\n#########EXECUTING RANDOM LABEL OF THE BEST MODEL")
+random_model.fit(train, random_train_labels,
+                    batch_size=best_model_dict['batch_size'],
+                    nb_epoch=NB_EPOCHS)
+
+predicted_labels = random_model.predict(validation)
+prediction_summary = open(OUTDIR + "vgg16_first_train_raspberry_prediction_summary_RANDOM_LABELS.txt", "w")
+prediction_summary.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS']) + '\n')
+
+predicted_labels_linear = []
+
+for i in range(len(predicted_labels)):
+    cls_prob = predicted_labels[i]
+    real_label = "NotFound"
+    for j in range(len(validation_labels[i])):
+        cl = validation_labels[i][j]
+        if cl == 1 and j == 0:
+            real_label = "Early"
+        elif cl == 1 and j == 1:
+            real_label = "Good"
+        elif cl == 1 and j == 2:
+            real_label = "Late"
+    line = [validation_images[i], real_label,
+            "Early:" + str(round(cls_prob[0], 3)) + ";Good:" + str(round(cls_prob[1], 3)) + ";Late:" + str(
+                round(cls_prob[2], 3))]
+    predicted_labels_linear.append(np.argmax(cls_prob))
+    prediction_summary.write("\t".join(line) + "\n")
+    prediction_summary.flush()
+
+predicted_labels_linear = np.array(predicted_labels_linear)
+
+MCC = multimcc(validation_labels_linear, predicted_labels_linear)
+print ("MCC of the best model in RANDOM LABELS:",MCC)
+prediction_summary.write("\n\nRandom Labels MCC:" + str(MCC))
+prediction_summary.close()
+
