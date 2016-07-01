@@ -25,7 +25,7 @@ RED_CURRANT = 'redcurrant'
 WHITE_CURRANT ='whitecurrant'
 BLUEBERRY = 'blueberry'
 CHERRY = 'cherry'
-PLUM = 'susine'
+PLUM = 'plum'
 APRICOT = 'apricot'
 GOOSEBERRY = 'Gooseberry'
 
