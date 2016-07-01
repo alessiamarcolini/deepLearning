@@ -108,6 +108,7 @@ def make_plot(X, Y, colours, classes, sample_names,
         if annotate:
             for j, txt in enumerate(nc):
                 pyplot.annotate(txt, (xc[j], yc[j]))
+                
     pyplot.legend(loc=4)
     pyplot.savefig(fig)
     pyplot.show()
@@ -201,12 +202,33 @@ def VGG_16(weights_path=None, add_fully_connected=False):
     return model
 
 
-def collect_images(path):
+def collect_images(path=IMAGE_PATH):
     """
+    Collect the images contained in a given path. 
+    The input path must correspond to the main folder containing all images
+    organized into multiple folders, one per each class.
 
+    Each subfolder will be matched against the list of accepted classes.
 
     Returns
     -------
+    input_images : list
+        A list containing all the different input images gathered from folders
+    
+    sample_names : list
+        A list containing names of each image.
+
+    classes : list
+        The list of all the classes associated to corresponding images
+
+
+    markers : list
+        The list of markers for each image, depending on the corresponding class
+        (used in plots)
+
+
+    colors : list
+        The list of colors of each image (used in plots)
 
     """
     input_images = []
@@ -273,6 +295,7 @@ def predict_images(input_images, save_txt=True, file_name=DEFAULT_IMAGES_FILEMAN
     """
     output_images = []
     for image_file_path in input_images:
+        print('Processing Image: ', image_file_path)
         im = cv2.resize(cv2.imread(image_file_path), (224, 224)).astype(np.float32)
         im[:, :, 0] -= 103.939
         im[:, :, 1] -= 116.779
@@ -283,7 +306,7 @@ def predict_images(input_images, save_txt=True, file_name=DEFAULT_IMAGES_FILEMAN
         output_images.append(list(output[0]))
     print('loading and predicting completed')
     output_images = np.array(output_images)
-    output_images = output_images.astype(np.float64)
+    output_images = output_images.astype(np.float32)
 
     if save_txt:
         np.savetxt(file_name, output_images)
@@ -292,55 +315,62 @@ def predict_images(input_images, save_txt=True, file_name=DEFAULT_IMAGES_FILEMAN
 
 
 if __name__ == '__main__':
-    #collect raspberries images
-
-
-    # collect grapes images
-    print('collecting images:')
-    input_images, sample_names, classes, markers, colours = collect_images(IMAGE_PATH)
+    
+    # Preamble
+    print('\n')
+    print('='*80)
+    
+    # Step 1: Collect Fruit Images
+    print('Step 1: Collecting images:')
+    input_images, sample_names, classes, markers, colours = collect_images()
     print('Collected %d images' % len(input_images))
     if not len(input_images):
         print('no image')
         exit()
+    print('Step 1: Done!', end='\n\n')
 
-
+    # Step 2: Load Image Matrices from File OR Generate Image Matrices
+    print('Step 2: Generate Image Matrices')
     images_fruit_filename = compose_matrix_filename(classes)
     if os.path.exists(images_fruit_filename):
-        print("image file exists, loading from file")
+        print("\t Image file exists, loading from file")
         output_images_fruits = np.loadtxt(images_fruit_filename)
-        print("load completed")
-        print("output images matrix shape: ", output_images_fruits.shape)
+        print("\t Load completed")
+        print("\t Output images matrix shape: ", output_images_fruits.shape)
     else:
-        print("image file not exists, predicting")
+        print("\t Image file not exists, predicting")
 
         # build the VGG16 network
-        print('building VGG_16 network')
+        print('\t Building VGG_16 network')
         model = VGG_16(weights_path=WEIGHTS_PATH, add_fully_connected=False)
 
         sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
-        print('sgd done')
+        print('\t Stochastic Gradient Descent Done')
         model.compile(optimizer=sgd, loss='categorical_crossentropy')
 
         # predicting images
-        print('prediction')
+        print('\t Starting Prediction!')
         output_images_fruits = predict_images(input_images, file_name=images_fruit_filename)
 
-        print("prediction completed")
-        print("output images matrix shape: ", output_images_fruits.shape)
+        print("\t Prediction Completed for all %d Fruit Images" % (len(input_images)))
+        print("\t Output Images Matrix Shape: ", output_images_fruits.shape)
+    
+    print('Step 2: Done!', end='\n\n')
 
-
-    print('Doing tsne model')
+    # Step 3: t-SNE
+    print('Step 3: t-SNE')
     Y_tsne_model = TSNE(n_components=2, random_state=0)
 
-    print('apply tsne model to output_image of the fruits')
+    print('\t t-SNE model to output images')
     Y_tsne_fruits = Y_tsne_model.fit_transform(output_images_fruits)
-    print('tsne completed')
+    print('Step 3: Done!', end='\n\n')
 
 
-    #plottiamo roba
-    plot_name= "tsne_comp%d_perplexity%d.pdf" % (Y_tsne_model.n_components, Y_tsne_model.perplexity)
-    make_plot(X=Y_tsne_fruits[:, 0], Y=Y_tsne_fruits[:, 1], s=10, marker=markers,
-              colours=colours,
-              classes=classes, sample_names=sample_names, fig=plot_name,
-              title="Tsne of different fruits")
+    # Step 4: Plotting
+    plot_filename = "tsne_comp%d_perplexity%d.pdf" % (Y_tsne_model.n_components,
+                                                      Y_tsne_model.perplexity)
+    make_plot(X=Y_tsne_fruits[:, 0], Y=Y_tsne_fruits[:, 1], s=10, 
+              marker=markers, colours=colours, classes=classes, 
+              sample_names=[i for i, _ in enumerate(input_images)], 
+              fig=plot_filename, title="t-SNE on Fruit Images")
 
