@@ -34,7 +34,7 @@ weights_path = 'vgg16_first_training_raspberry_weights.h5'
 img_width, img_height = 224, 224
 
 
-validation_data_dir = 'BerrySamples'
+validation_data_dir = 'BerrySamples_BK'
 
 
 # build the VGG16 network
@@ -140,7 +140,7 @@ for path in val_paths:
 validation = np.array(load_im2(validation_images))
 
 
-  
+
 
 predicted_labels = model.predict(validation)
 
