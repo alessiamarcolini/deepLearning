@@ -1,6 +1,6 @@
 from __future__ import division
-__author__ = 'zarbo'
 
+__author__ = 'zarbo'
 
 
 def data():
@@ -8,7 +8,6 @@ def data():
     import os
     from images_utils import load_im2
     import pickle
-
 
     inputs = pickle.load(open('inputs.pickle', 'rb'))
 
@@ -75,6 +74,7 @@ def data():
 
     return train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VGG_WEIGHTS
 
+
 def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VGG_WEIGHTS):
     import os
     import h5py
@@ -101,7 +101,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
     img_width, img_height = 224, 224
     nb_epochs = NB_EPOCHS
     print ("Entering GPU Model")
-    with K.tf.device('/gpu:'+str(GPU)):
+    with K.tf.device('/gpu:' + str(GPU)):
         K.set_session(K.tf.Session(config=K.tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)))
         # build the VGG16 network
         model = Sequential()
@@ -168,7 +168,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
         # note that it is necessary to start with a fully-trained
         # classifier, including the top classifier,
         # in order to successfully do fine-tuning
-        #top_model.load_weights(top_model_weights_path)
+        # top_model.load_weights(top_model_weights_path)
 
 
         # set the first 25 layers (up to the last conv block)
@@ -207,6 +207,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
         print(MCC)
     return {'loss': -MCC, 'status': STATUS_OK, 'model': model}
 
+
 from hyperas import optim
 from hyperopt import Trials, tpe
 import argparse
@@ -217,6 +218,7 @@ from images_utils import load_im2
 from keras.utils import np_utils
 from keras.models import model_from_config
 from mcc_multiclass import multimcc
+
 
 class myArgumentParser(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
@@ -230,23 +232,25 @@ class myArgumentParser(argparse.ArgumentParser):
                 break
             yield arg
 
-parser = myArgumentParser(description='Run a training experiment using pretrained VGG16, specified on the Raspberry DataSet.',
-        fromfile_prefix_chars='@')
+
+parser = myArgumentParser(
+    description='Run a training experiment using pretrained VGG16, specified on the Raspberry DataSet.',
+    fromfile_prefix_chars='@')
 parser.add_argument('--gpu', type=int, default=0, help='GPU Device (default: %(default)s)')
 parser.add_argument('--nb_epochs', type=int, default=10, help='Number of Epochs during training (default: %(default)s)')
-parser.add_argument('--trials', type=int, default=10, help='Number of Trials during the HyperParameter Space Search (default: %(default)s)')
-parser.add_argument('--vgg16_weights', type=str, default='vgg16_weights.h5',help='VGG16 PreTrained weights')
-parser.add_argument('--output_dir', type=str, default="./experiment_output/",help='Output directory')
-parser.add_argument('--input_dir', type=str, default="./",help='Input directory')
+parser.add_argument('--trials', type=int, default=10,
+                    help='Number of Trials during the HyperParameter Space Search (default: %(default)s)')
+parser.add_argument('--vgg16_weights', type=str, default='vgg16_weights.h5', help='VGG16 PreTrained weights')
+parser.add_argument('--output_dir', type=str, default="./experiment_output/", help='Output directory')
+parser.add_argument('--input_dir', type=str, default="./", help='Input directory')
 args = parser.parse_args()
 
 GPU = args.gpu
 NB_EPOCHS = args.nb_epochs
-OUTDIR = args.output_dir+"/"
-INDIR = args.input_dir+"/"
+OUTDIR = args.output_dir + "/"
+INDIR = args.input_dir + "/"
 VGG_WEIGHTS = args.vgg16_weights
 TRIALS = args.trials
-
 
 try:
     os.makedirs(OUTDIR)
@@ -254,12 +258,10 @@ except OSError:
     if not os.path.isdir(OUTDIR):
         raise
 
-
-
 inputs = {
-    'GPU' : GPU,
-    'NB_EPOCHS':NB_EPOCHS,
-    'VGG_WEIGHTS' : VGG_WEIGHTS,
+    'GPU': GPU,
+    'NB_EPOCHS': NB_EPOCHS,
+    'VGG_WEIGHTS': VGG_WEIGHTS,
     'INDIR': INDIR
 }
 
@@ -267,13 +269,10 @@ with open('inputs.pickle', 'wb') as handle:
     pickle.dump(inputs, handle)
 
 best_run, best_model = optim.minimize(model=model,
-                                              data=data,
-                                              algo=tpe.suggest,
-                                              max_evals=TRIALS,
-                                              trials=Trials())
-
-
-
+                                      data=data,
+                                      algo=tpe.suggest,
+                                      max_evals=TRIALS,
+                                      trials=Trials())
 
 validation_data_dir = INDIR + 'BerryPhotos/validation'
 validation_images = []
@@ -300,7 +299,6 @@ for path in val_paths:
         for name in val_filenames_l:
             validation_images.append(path + name)
             validation_labels.append([0, 0, 1])
-
 
 validation = np.array(load_im2(validation_images))
 
@@ -347,7 +345,7 @@ predicted_labels_linear = np.array(predicted_labels_linear)
 
 MCC = multimcc(validation_labels_linear, predicted_labels_linear)
 
-prediction_summary.write("\n\nMCC:"+str(MCC))
+prediction_summary.write("\n\nMCC:" + str(MCC))
 prediction_summary.close()
 
 
@@ -379,7 +377,6 @@ for path in train_paths:
             train_labels.append([0, 0, 1])
 train = np.array(load_im2(train_images))
 
-
 train_labels_linear = []
 
 for lbl in train_labels:
@@ -391,6 +388,6 @@ for lbl in train_labels:
         train_labels_linear.append(2)
 random_train_labels_linear = np.copy(train_labels_linear)
 np.random.shuffle(random_train_labels_linear)
-random_train_labels = np_utils.to_categorical(random_train_labels_linear, max(random_train_labels_linear)+1)
+random_train_labels = np_utils.to_categorical(random_train_labels_linear, max(random_train_labels_linear) + 1)
 
 random_model = model_from_config(best_model)
