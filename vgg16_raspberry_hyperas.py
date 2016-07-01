@@ -154,9 +154,18 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
         print('Model loaded.')
 
         # build a classifier model to put on top of the convolutional model
+        activation_function = {{choice(['relu', 'sigmoid', 'tanh', 'linear'])}}
+        print ("#Chosen Activation:", activation_function)
+        dense_size = {{choice([50, 100, 256, 512, 1024])}}
+        print ("#Chosen Dense Size:", dense_size)
+        dropout_rate = {{choice([0.0, 0.1, 0.2, 0.3,0.4,0.5,0.6])}}
+        print ("#Chosen Dropout Rate:", dropout_rate)
         model.add(Flatten())
-        model.add(Dense({{choice([50, 100, 256, 512, 1024])}}, activation={{choice(['relu', 'sigmoid', 'tanh', 'linear'])}}))
-        model.add(Dropout({{choice([0.0, 0.1, 0.2, 0.3,0.4,0.5,0.6])}}))
+        model.add(Dense(dense_size, activation=activation_function))
+        model.add(Dropout(dropout_rate))
+        if {{choice(['one', 'two'])}} == 'two':
+            model.add(Dense(dense_size, activation=activation_function))
+            model.add(Dropout(dropout_rate))
         model.add(Dense(3, activation={{choice(['softmax', 'sigmoid'])}}))
 
         # note that it is necessary to start with a fully-trained
