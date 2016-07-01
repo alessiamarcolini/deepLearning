@@ -395,7 +395,7 @@ elif OPTIMIZER_dict.keys()[0] == 'sgd':
                     nesterov=OPTIMIZER_dict['sgd']['nesterov'])
 
 best_model = Sequential.from_config(best_model_dict['model'])
-best_model.compile(loss='categorical_crossentropy', optimizer=OPTIMIZER)
+best_model.compile(loss='categorical_crossentropy', optimizer=OPTIMIZER, metrics=['accuracy'])
 print("\n\n#########EXECUTING RETRAIN OF THE BEST MODEL TO SAVE WEIGHTS")
 best_model.fit(train, train_labels,
                     batch_size=best_model_dict['batch_size'],
@@ -460,7 +460,7 @@ np.random.shuffle(random_train_labels_linear)
 random_train_labels = np_utils.to_categorical(random_train_labels_linear, max(random_train_labels_linear) + 1)
 
 random_model = Sequential.from_config(best_model_dict['model'])
-random_model.compile(loss='categorical_crossentropy', optimizer=OPTIMIZER)
+random_model.compile(loss='categorical_crossentropy', optimizer=OPTIMIZER, metrics=['accuracy'])
 print("\n\n#########EXECUTING RANDOM LABEL OF THE BEST MODEL")
 random_model.fit(train, random_train_labels,
                     batch_size=best_model_dict['batch_size'],
