@@ -25,3 +25,7 @@ Grid/late/c5.jpg;Late;0.036;0.962;0.0
 Grid/late/c7.jpg;Late;0.222;0.741;0.0
 Grid/late/c2.jpg;Late;0.0;0.993;0.481
 Grid/late/c4.jpg;Late;0.0;0.968;0.0
+MCC=0.187082869339
+(array([[  0.,   8.,   0.],
+       [  0.,  10.,   0.],
+       [  0.,   7.,   1.]]), array([0, 1, 2]))
