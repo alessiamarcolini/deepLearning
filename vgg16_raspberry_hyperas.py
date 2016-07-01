@@ -238,7 +238,7 @@ parser = myArgumentParser(
     fromfile_prefix_chars='@')
 parser.add_argument('--gpu', type=int, default=0, help='GPU Device (default: %(default)s)')
 parser.add_argument('--nb_epochs', type=int, default=10, help='Number of Epochs during training (default: %(default)s)')
-parser.add_argument('--trials', type=int, default=10,
+parser.add_argument('--n_trials', type=int, default=10,
                     help='Number of Trials during the HyperParameter Space Search (default: %(default)s)')
 parser.add_argument('--vgg16_weights', type=str, default='vgg16_weights.h5', help='VGG16 PreTrained weights')
 parser.add_argument('--output_dir', type=str, default="./experiment_output/", help='Output directory')
@@ -250,7 +250,7 @@ NB_EPOCHS = args.nb_epochs
 OUTDIR = args.output_dir + "/"
 INDIR = args.input_dir + "/"
 VGG_WEIGHTS = args.vgg16_weights
-TRIALS = args.trials
+N_TRIALS = args.n_trials
 
 try:
     os.makedirs(OUTDIR)
@@ -271,7 +271,7 @@ with open('inputs.pickle', 'wb') as handle:
 best_run, best_model = optim.minimize(model=model,
                                       data=data,
                                       algo=tpe.suggest,
-                                      max_evals=TRIALS,
+                                      max_evals=N_TRIALS,
                                       trials=Trials())
 
 validation_data_dir = INDIR + 'BerryPhotos/validation'
