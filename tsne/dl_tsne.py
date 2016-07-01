@@ -3,7 +3,6 @@ import os
 import cv2
 import h5py
 import numpy as np
-import numpy as Math
 from keras.preprocessing.image import ImageDataGenerator
 from keras import optimizers
 from keras.models import Sequential
@@ -16,15 +15,48 @@ from sklearn.manifold import TSNE
 # path to the model weights files.
 WEIGHTS_PATH = 'vgg16_weights.h5'
 
-IMAGE_PATH = '/home/c-masci/Documents/lamponiamoplottiamo/BerryImageNet'
+#general path
+IMAGE_PATH = '/data/webvalley/fruit_images/'
+#fruits paths
+RASPBERRY = 'raspberry'
+STRAWBERRY = 'strawberry'
+BLACKBERRY = 'blackberry'
+RED_CURRANT = 'redcurrant'
+WHITE_CURRANT ='whitecurrant'
+BLUEBERRY = 'blueberry'
+CHERRY = 'cherry'
+PLUM = 'susine'
+APRICOT = 'apricot'
+GOOSEBERRY = 'Gooseberry'
+
+MARKERS = {RASPBERRY: 'o',
+           STRAWBERRY: '+',
+           BLACKBERRY: '*',
+           RED_CURRANT: 'D',
+           WHITE_CURRANT: 'h',
+           BLUEBERRY: 's',
+           CHERRY: 'b',
+           PLUM: '8',
+           APRICOT: 'p',
+           GOOSEBERRY: '<'}
+
+COLOURS = {RASPBERRY: '#ff6666',
+           STRAWBERRY: '#794044',
+           BLACKBERRY: '#000',
+           RED_CURRANT: '#f03939',
+           WHITE_CURRANT: '#f0f688',
+           BLUEBERRY: '#3a539b',
+           CHERRY: '#f688b4',
+           PLUM: '#9615f0',
+           APRICOT: '#f0b015',
+           GOOSEBERRY: '#15f024'}
 
 # dimensions of our images.
 IMG_WIDTH, IMG_HEIGHT = 224, 224
 
-#impostazioni plot
-MARKER_TR = "o"
-COLOURS_TR = ['r', 'b']
-
+#output array file
+OUTPUT_IMAGES_FILE_PREFIX = "images_matrix"
+DEFAULT_IMAGES_FILEMANE = OUTPUT_IMAGES_FILE_PREFIX + ".txt"
 
 def make_plot(X, Y, colours, classes, sample_names,
               fig, title, s=10, marker='o', annotate=False):
@@ -169,27 +201,70 @@ def VGG_16(weights_path=None, add_fully_connected=False):
     return model
 
 
-def collect_images():
+def collect_images(path):
     """
+
 
     Returns
     -------
 
     """
     input_images = []
+    classes = []
+    markers = []
+    colors = []
     sample_names = []
-    for root, dirs, files in os.walk(IMAGE_PATH):
+    for root, dirs, files in os.walk(path):
+        _, class_name = os.path.split(root)
         for file in files:
             name, ext = os.path.splitext(file)
             if ext.lower() in ['.jpg', '.png', '.gif', '.jpeg']:
                 input_images.append(os.path.join(root, file))
+                classes.append(class_name)
+                markers.append(MARKERS[class_name])
+                colors.append(COLOURS[class_name])
                 sample_names.append(name)
 
-    return input_images, sample_names
+    return input_images, sample_names, classes, markers, colors
 
-
-def predict_images(input_images):
+def compose_matrix_filename(classes):
     """
+    compose the name of file name with the classes
+
+    Parameters
+    ----------
+    classes: list
+        the list of the classes for all the collected images
+
+    Returns
+    -------
+    matrix_filename: str
+        the name of the output matrix file
+
+    """
+    classes_set = set(classes)
+    matrix_filename = OUTPUT_IMAGES_FILE_PREFIX
+    for class_name in classes_set:
+        matrix_filename += class_name[:5]+"_"
+    matrix_filename += ".txt"
+    return matrix_filename
+
+
+def predict_images(input_images, save_txt=True, file_name=DEFAULT_IMAGES_FILEMANE):
+    """
+    Takes the images from directory and predicts them.
+    It saves the output if save_txt=True
+
+    Parameters
+    ----------
+    input_images : str
+        directory of the images
+
+    save_txt : bool (default=True)
+        if True saves the prediction into a .txt file
+
+    file_name : str
+        the name of the output file
 
     Returns
     -------
@@ -207,47 +282,65 @@ def predict_images(input_images):
         output = model.predict(im)
         output_images.append(list(output[0]))
     print('loading and predicting completed')
-    output_images = Math.array(output_images)
-    output_images = output_images.astype(float)
+    output_images = np.array(output_images)
+    output_images = output_images.astype(np.float64)
+
+    if save_txt:
+        np.savetxt(file_name, output_images)
 
     return output_images
 
 
 if __name__ == '__main__':
+    #collect raspberries images
 
-    input_images, sample_names = collect_images()
-    print('Collected %d images' % len(input_images) )
+
+    # collect grapes images
+    print('collecting images:')
+    input_images, sample_names, classes, markers, colours = collect_images(IMAGE_PATH)
+    print('Collected %d images' % len(input_images))
     if not len(input_images):
+        print('no image')
         exit()
 
-    # build the VGG16 network
-    print('building VGG_16 network')
-    model = VGG_16(weights_path=WEIGHTS_PATH, add_fully_connected=False)
 
-    sgd = SGD(lr = 0.1, decay = 1e-6, momentum = 0.9, nesterov = True)
-    print('sgd done')
-    model.compile(optimizer=sgd, loss='categorical_crossentropy')
+    images_fruit_filename = compose_matrix_filename(classes)
+    if os.path.exists(images_fruit_filename):
+        print("image file exists, loading from file")
+        output_images_fruits = np.loadtxt(images_fruit_filename)
+        print("load completed")
+        print("output images matrix shape: ", output_images_fruits.shape)
+    else:
+        print("image file not exists, predicting")
 
-    print('starting loading and predicting images')
-    output_images = predict_images(input_images)
+        # build the VGG16 network
+        print('building VGG_16 network')
+        model = VGG_16(weights_path=WEIGHTS_PATH, add_fully_connected=False)
 
-    print('Doing tsne')
+        sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
+        print('sgd done')
+        model.compile(optimizer=sgd, loss='categorical_crossentropy')
+
+        # predicting images
+        print('prediction')
+        output_images_fruits = predict_images(input_images, file_name=images_fruit_filename)
+
+        print("prediction completed")
+        print("output images matrix shape: ", output_images_fruits.shape)
+
+
+    print('Doing tsne model')
     Y_tsne_model = TSNE(n_components=2, random_state=0)
-    Y_tsne = Y_tsne_model.fit_transform(output_images)
+
+    print('apply tsne model to output_image of the fruits')
+    Y_tsne_fruits = Y_tsne_model.fit_transform(output_images_fruits)
     print('tsne completed')
 
+
     #plottiamo roba
-    colours = ['r' for a in range(len(Y_tsne[:,0]))]
-    classes = ['raspberry' for a in range(len(Y_tsne[:,0]))]
-
-    make_plot(X=Y_tsne[:, 0], Y=Y_tsne[:, 1], s=10, marker=MARKER_TR,
+    plot_name= "tsne_comp%d_perplexity%d.pdf" % (Y_tsne_model.n_components, Y_tsne_model.perplexity)
+    make_plot(X=Y_tsne_fruits[:, 0], Y=Y_tsne_fruits[:, 1], s=10, marker=markers,
               colours=colours,
-              classes=classes, sample_names=sample_names, fig="nome.png",
-              title="MLP layer t-SNE MultiDimensional Scaling")
+              classes=classes, sample_names=sample_names, fig=plot_name,
+              title="Tsne of different fruits")
 
-
-    #make_plot(Y_tsne[:, 0], Y_tsne[:, 1], 50, marker_tr, colours_tr, classes_tr, sample_names, "nome.png", "MLP layer t-SNE MultiDimensional Scaling")
-
-
-    #convertire in float
-    #indicizzare outputallall
