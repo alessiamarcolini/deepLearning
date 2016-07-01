@@ -436,33 +436,6 @@ best_model.save_weights(OUTDIR + "vgg16_first_training_raspberry_weights.h5", ov
 
 
 ##RANDOM LABEL
-train_data_dir = INDIR + 'BerryPhotos/train'
-train_images = []
-train_labels = []
-train_path_e = train_data_dir + "/early/"
-train_path_g = train_data_dir + "/good/"
-train_path_l = train_data_dir + "/late/"
-train_paths = [train_path_e, train_path_g, train_path_l]
-
-train_filenames_e = os.listdir(train_path_e)
-train_filenames_g = os.listdir(train_path_g)
-train_filenames_l = os.listdir(train_path_l)
-
-for path in train_paths:
-    if path == train_path_e:
-        for name in train_filenames_e:
-            train_images.append(path + name)
-            train_labels.append([1, 0, 0])
-    elif path == train_path_g:
-        for name in train_filenames_g:
-            train_images.append(path + name)
-            train_labels.append([0, 1, 0])
-    elif path == train_path_l:
-        for name in train_filenames_l:
-            train_images.append(path + name)
-            train_labels.append([0, 0, 1])
-train = np.array(load_im2(train_images))
-
 train_labels_linear = []
 
 for lbl in train_labels:
