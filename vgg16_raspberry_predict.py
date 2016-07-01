@@ -34,7 +34,7 @@ weights_path = 'vgg16_first_training_raspberry_weights.h5'
 img_width, img_height = 224, 224
 
 
-validation_data_dir = 'Grid'
+validation_data_dir = 'BerrySamples_Original'
 
 
 # build the VGG16 network
@@ -167,7 +167,7 @@ for i in range(len(predicted_labels)):
     prediction_summary.write(";".join(line)+"\n")
     prediction_summary.flush()
 
-prediction_summary.close()
+
 
 validation_labels_linear = []
 
@@ -183,4 +183,9 @@ validation_labels_linear = np.array(validation_labels_linear)
 predicted_labels_linear = np.array(predicted_labels_linear)
 
 MCC = multimcc(validation_labels_linear, predicted_labels_linear)
-print(MCC)
+prediction_summary.write("MCC=" + str(MCC) + "\n")
+prediction_summary.flush()
+
+prediction_summary.write(confusion_matrix(validation_labels_linear, predicted_labels_linear))
+prediction_summary.flush()
+prediction_summary.close()
