@@ -3,17 +3,18 @@ import numpy as np
 import os
 
 white=[255,255,255]
-n=2048  #le righe bianche che aggiunge (2 sopra, 2 sotto, 2 sx, 2 dx)
+n=90  #le righe bianche che aggiunge (2 sopra, 2 sotto, 2 sx, 2 dx)
+directory = "early"
 
-path = 'BerrySamples_Original/early'
-paths = os.listdir(path)
+path = 'BerrySamples_Original/'
+paths = os.listdir(path + "/" + directory)
 paths.sort()
 
 for numb, name in enumerate(paths):
 
 
 
-  img = Image.open(path + name)
+  img = Image.open(path + directory + "/" + name )
   arr = np.array(img)
   size=arr.shape
 
@@ -33,4 +34,4 @@ for numb, name in enumerate(paths):
   newarr=np.array(matrix, dtype=np.uint8)
 
   image = Image.fromarray(newarr,'RGB')
-  image.save("early_W_" + str(numb+1) + ".jpg" )
+  image.save("BerrySamples_White/" + directory + "/" + directory + "_W_" + str(n) + "_"+ str(numb+1) + ".jpg" )
