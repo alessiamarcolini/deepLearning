@@ -143,7 +143,7 @@ for p in perc:
     validation_images = []
     validation_labels = []
 
-
+    p = "_" + p
     for path in val_paths:
         if path == val_path_e:
             for name in val_filenames_e:
@@ -170,7 +170,7 @@ for p in perc:
 
     predicted_labels = model.predict(validation)
 
-    prediction_summary = open("EXP/vgg16_first_train_raspberry_prediction_summary_white_" + p + ".csv", "w")
+    prediction_summary = open("EXP/vgg16_first_train_raspberry_prediction_summary_white" + p + ".csv", "w")
     prediction_summary.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS'])+'\n')
 
     predicted_labels_linear = []
