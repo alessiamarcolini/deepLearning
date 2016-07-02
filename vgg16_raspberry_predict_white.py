@@ -229,7 +229,7 @@ plt.plot(perc_white, mcc_list, "-", color="red")
 plt.plot(perc_white, mcc_list, "o", color="blue")
 plt.ylabel("MCC")
 plt.xlabel("White")
-fig = pyplot.figure()
+fig = plt.figure()
 ax = fig.add_subplot(111)
 for i,j in zip(perc_white,mcc_list):
     ax.annotate(str(j),xy=(i,j+0.5))
