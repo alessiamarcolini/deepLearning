@@ -143,21 +143,24 @@ for p in perc:
     validation_images = []
     validation_labels = []
 
-    p = "_" + p
+
     for path in val_paths:
         if path == val_path_e:
             for name in val_filenames_e:
-                if p in name:
+                ls = name.split["_"]
+                if p == ls[2]:
                     validation_images.append(path + name)
                     validation_labels.append([1,0,0])
         elif path == val_path_g:
             for name in val_filenames_g:
-                if p in name:
+                ls = name.split["_"]
+                if p == ls[2]:
                     validation_images.append(path + name)
                     validation_labels.append([0,1,0])
         elif path == val_path_l:
             for name in val_filenames_l:
-                if p in name:
+                ls = name.split["_"]
+                if p == ls[2]:
                     validation_images.append(path + name)
                     validation_labels.append([0,0,1])
 
