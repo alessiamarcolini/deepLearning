@@ -3,13 +3,13 @@ import numpy as np
 import os
 
 white=[255,255,255]
-n=90  #le righe bianche che aggiunge (2 sopra, 2 sotto, 2 sx, 2 dx)
+#n=90  #le righe bianche che aggiunge (2 sopra, 2 sotto, 2 sx, 2 dx)
 
 numbers = range(1,16)
 directories = ["early", "good", "late"]
 
 
-for num in numbers:
+for n in numbers:
     for directory in directories:
         path = 'BerrySamples_Original/'
         paths = os.listdir(path + "/" + directory)
