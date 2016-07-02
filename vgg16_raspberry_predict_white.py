@@ -11,7 +11,7 @@ from keras.optimizers import SGD
 from os.path import join, getsize
 import sys
 from mcc_multiclass import multimcc, confusion_matrix
-import matplotlib.pyplot as plt
+import matplotlib as plt
 
 # Force matplotlib to not use any Xwindows backend.
 plt.use('Agg')
@@ -214,11 +214,11 @@ for p in perc:
 mcc_list = np.array(mcc_list)
 perc_white = np.array(perc_white)
 
-plt.bar(mcc_list, perc_white)
+plt.pyplot.bar(mcc_list, perc_white)
 
 
 for x,y in zip(perc_white, mcc_list):
-    plt.text(x+0.4, y+0.05, '%.4f' % y, ha='center', va= 'bottom')
+    plt.pyplot.text(x+0.4, y+0.05, '%.4f' % y, ha='center', va= 'bottom')
 
-plt.savefig("plot.png")
+plt.pyplot.savefig("plot.png")
 #plt.show()
