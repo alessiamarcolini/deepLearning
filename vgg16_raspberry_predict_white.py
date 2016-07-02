@@ -216,7 +216,7 @@ for p in perc:
 mcc_list = np.array(mcc_list)
 perc_white = np.array(perc_white)
 
-plt.plot(mcc_list, perc_white, "-", color="blue")
+plt.plot(perc_white, mcc_list, "br", color="blue")
 
 
 plt.savefig("plot.png")
