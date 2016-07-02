@@ -13,6 +13,8 @@ import sys
 from mcc_multiclass import multimcc, confusion_matrix
 import matplotlib.pyplot as plt
 
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
 
 def load_im2(paths):
     l = []
