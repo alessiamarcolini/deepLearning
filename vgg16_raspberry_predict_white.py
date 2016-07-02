@@ -203,7 +203,7 @@ for p in perc:
     mcc_list.append(MCC)
     perc_white.append(p)
     prediction_summary.write("MCC=" + str(MCC) + "\n")
-    prediction_summary.flush()+
+    prediction_summary.flush()
 
     prediction_summary.write(str(confusion_matrix(validation_labels_linear, predicted_labels_linear)))
     prediction_summary.flush()
