@@ -130,7 +130,7 @@ val_filenames_g = os.listdir(val_path_g)
 val_filenames_l = os.listdir(val_path_l)
 
 perc = range(1,16)
-for i in range(perc):
+for i in range(len(perc)):
     perc[i] = str(perc[i])
 
 
