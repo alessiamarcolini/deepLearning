@@ -212,7 +212,7 @@ for p in perc:
 mcc_list = np.array(mcc_list)
 perc_white = np.array(perc_white)
 
-plt.bar(mcc_list, perc_white, facecolor='#9999ff', edgecolor='white')
+plt.bar(mcc_list, perc_white)
 
 
 for x,y in zip(perc_white, mcc_list):
