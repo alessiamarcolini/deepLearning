@@ -173,7 +173,7 @@ for p in perc:
 
     predicted_labels = model.predict(validation)
 
-    prediction_summary = open("EXP/vgg16_first_train_raspberry_prediction_summary_white" + p + ".csv", "w")
+    prediction_summary = open("EXP/vgg16_first_train_raspberry_prediction_summary_white_" + p + ".csv", "w")
     prediction_summary.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS'])+'\n')
 
     predicted_labels_linear = []
