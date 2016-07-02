@@ -130,6 +130,10 @@ val_filenames_g = os.listdir(val_path_g)
 val_filenames_l = os.listdir(val_path_l)
 
 perc = range(1,16)
+for i in range(perc):
+    perc[i] = str(perc[i])
+
+
 p2 = ["16", "32", "64", "90", "128", "256", "512", "1024", "2048"]
 perc.extend(p2)
 
