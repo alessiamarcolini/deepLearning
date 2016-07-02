@@ -11,7 +11,7 @@ from keras.optimizers import SGD
 from os.path import join, getsize
 import sys
 from mcc_multiclass import multimcc, confusion_matrix
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 
 def load_im2(paths):
