@@ -216,7 +216,7 @@ mcc_list = np.array(mcc_list)
 perc_white = np.array(perc_white)
 
 
-plt.plot(perc_white, mcc_list, "-" color="red")
+plt.plot(perc_white, mcc_list, "-", color="red")
 plt.plot(perc_white, mcc_list, "o", color="blue")
 
 plt.xscale("log")
