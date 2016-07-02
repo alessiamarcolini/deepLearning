@@ -136,6 +136,7 @@ for i in range(perc):
 
 p2 = ["16", "32", "64", "90", "128", "256", "512", "1024", "2048"]
 perc.extend(p2)
+print(perc)
 
 for p in perc:
 
