@@ -214,11 +214,8 @@ for p in perc:
 mcc_list = np.array(mcc_list)
 perc_white = np.array(perc_white)
 
-plt.bar(mcc_list, perc_white)
+plt.plot(mcc_list, perc_white, color="0000FF")
 
-
-for x,y in zip(perc_white, mcc_list):
-    plt.text(x+0.4, y+0.05, '%.4f' % y, ha='center', va= 'bottom')
 
 plt.savefig("plot.png")
 #plt.show()
