@@ -11,6 +11,7 @@ from keras.optimizers import SGD
 from os.path import join, getsize
 import sys
 from mcc_multiclass import multimcc, confusion_matrix
+import maplotlib.pyplot as plt
 
 
 def load_im2(paths):
@@ -34,7 +35,7 @@ weights_path = 'vgg16_first_training_raspberry_weights.h5'
 img_width, img_height = 224, 224
 
 
-validation_data_dir = 'BerrySamples_Original'
+validation_data_dir = 'BerrySamples_White'
 
 
 # build the VGG16 network
@@ -112,8 +113,9 @@ model.compile(loss='binary_crossentropy',
 #make arrays for MCC plotting
 ######################
 
-validation_images = []
-validation_labels = []
+mcc_list = []
+perc_white = []
+
 val_path_e = validation_data_dir + "/early/"
 val_path_g = validation_data_dir + "/good/"
 val_path_l = validation_data_dir + "/late/"
@@ -123,71 +125,98 @@ val_filenames_e = os.listdir(val_path_e)
 val_filenames_g = os.listdir(val_path_g)
 val_filenames_l = os.listdir(val_path_l)
 
-for path in val_paths:
-    if path == val_path_e:
-        for name in val_filenames_e:
-            validation_images.append(path + name)
-            validation_labels.append([1,0,0])
-    elif path == val_path_g:
-        for name in val_filenames_g:
-            validation_images.append(path + name)
-            validation_labels.append([0,1,0])
-    elif path == val_path_l:
-        for name in val_filenames_l:
-            validation_images.append(path + name)
-            validation_labels.append([0,0,1])
+
+#perc = [64, 128, 256, 512, 1024, 2048]
+
+perc = [64 ]
+for p in perc:
+
+    validation_images = []
+    validation_labels = []
+
+
+    for path in val_paths:
+        if path == val_path_e:
+            for name in val_filenames_e:
+                if p in name:
+                    validation_images.append(path + name)
+                    validation_labels.append([1,0,0])
+        elif path == val_path_g:
+            for name in val_filenames_g:
+                if p in name:
+                    validation_images.append(path + name)
+                    validation_labels.append([0,1,0])
+        elif path == val_path_l:
+            for name in val_filenames_l:
+                if p in name:
+                    validation_images.append(path + name)
+                    validation_labels.append([0,0,1])
 
 
 
-validation = np.array(load_im2(validation_images))
+    validation = np.array(load_im2(validation_images))
 
 
 
 
-predicted_labels = model.predict(validation)
+    predicted_labels = model.predict(validation)
 
-prediction_summary = open("vgg16_first_train_raspberry_prediction_summary.csv", "w")
-prediction_summary.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS'])+'\n')
+    prediction_summary = open("EXP/vgg16_first_train_raspberry_prediction_summary_white_" + p + ".csv", "w")
+    prediction_summary.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS'])+'\n')
 
-predicted_labels_linear = []
+    predicted_labels_linear = []
 
-for i in range(len(predicted_labels)):
-    cls_prob = predicted_labels[i]
-    for j in range(len(validation_labels[i])):
-        cl = validation_labels[i][j]
-        if cl == 1 and j == 0:
-            real_label = "Early"
+    for i in range(len(predicted_labels)):
+        cls_prob = predicted_labels[i]
+        for j in range(len(validation_labels[i])):
+            cl = validation_labels[i][j]
+            if cl == 1 and j == 0:
+                real_label = "Early"
 
-        elif  cl == 1 and j == 1:
-            real_label = "Good"
+            elif  cl == 1 and j == 1:
+                real_label = "Good"
 
-        elif  cl == 1 and j == 2:
-            real_label = "Late"
+            elif  cl == 1 and j == 2:
+                real_label = "Late"
 
-    line = [validation_images[i], real_label, str(round(cls_prob[0],3)), str(round(cls_prob[1],3)), str(round(cls_prob[2],3))]
-    predicted_labels_linear.append(np.argmax(cls_prob))
-    prediction_summary.write(";".join(line)+"\n")
+        line = [validation_images[i], real_label, str(round(cls_prob[0],3)), str(round(cls_prob[1],3)), str(round(cls_prob[2],3))]
+        predicted_labels_linear.append(np.argmax(cls_prob))
+        prediction_summary.write(";".join(line)+"\n")
+        prediction_summary.flush()
+
+
+
+    validation_labels_linear = []
+
+    for lbl in validation_labels:
+        if lbl[0] == 1:
+            validation_labels_linear.append(0)
+        if lbl[1] == 1:
+            validation_labels_linear.append(1)
+        if lbl[2] == 1:
+            validation_labels_linear.append(2)
+
+    validation_labels_linear = np.array(validation_labels_linear)
+    predicted_labels_linear = np.array(predicted_labels_linear)
+
+    MCC = multimcc(validation_labels_linear, predicted_labels_linear)
+    mcc_list.append(MCC)
+    perc_white.append(p)
+    prediction_summary.write("MCC=" + str(MCC) + "\n")
+    prediction_summary.flush()+
+
+    prediction_summary.write(str(confusion_matrix(validation_labels_linear, predicted_labels_linear)))
     prediction_summary.flush()
+    prediction_summary.close()
+
+mcc_list = np.array(mcc_list)
+perc_white = np.array(perc_white)
+
+plt.bar(mcc_list, facecolor='#9999ff', edgecolor='white')
 
 
+for x,y in zip(perc_white, mcc_list):
+    plt.text(x+0.4, y+0.05, '%.4f' % y, ha='center', va= 'bottom')
 
-validation_labels_linear = []
-
-for lbl in validation_labels:
-    if lbl[0] == 1:
-        validation_labels_linear.append(0)
-    if lbl[1] == 1:
-        validation_labels_linear.append(1)
-    if lbl[2] == 1:
-        validation_labels_linear.append(2)
-
-validation_labels_linear = np.array(validation_labels_linear)
-predicted_labels_linear = np.array(predicted_labels_linear)
-
-MCC = multimcc(validation_labels_linear, predicted_labels_linear)
-prediction_summary.write("MCC=" + str(MCC) + "\n")
-prediction_summary.flush()
-
-prediction_summary.write(str(confusion_matrix(validation_labels_linear, predicted_labels_linear)))
-prediction_summary.flush()
-prediction_summary.close()
+plt.savefig("plot.png")
+plt.show()
