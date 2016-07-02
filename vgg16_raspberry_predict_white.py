@@ -130,9 +130,8 @@ val_filenames_g = os.listdir(val_path_g)
 val_filenames_l = os.listdir(val_path_l)
 
 
-#perc = [64, 128, 256, 512, 1024, 2048]
+perc = [64, 128, 256, 512, 1024, 2048]
 
-perc = ['64']
 for p in perc:
 
     validation_images = []
