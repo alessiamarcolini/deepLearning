@@ -219,4 +219,4 @@ for x,y in zip(perc_white, mcc_list):
     plt.text(x+0.4, y+0.05, '%.4f' % y, ha='center', va= 'bottom')
 
 plt.savefig("plot.png")
-plt.show()
+#plt.show()
