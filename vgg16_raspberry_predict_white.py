@@ -237,7 +237,7 @@ plt.plot(perc_white, mcc_list, "-", color="red")
 plt.plot(perc_white, mcc_list, "o", color="blue")
 plt.ylabel("MCC")
 plt.xlabel("Blue")
-plt.ylim((-1,1))
+plt.ylim((-0.3,1))
 
 
 
