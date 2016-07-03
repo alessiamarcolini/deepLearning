@@ -129,7 +129,7 @@ val_filenames_e = os.listdir(val_path_e)
 val_filenames_g = os.listdir(val_path_g)
 val_filenames_l = os.listdir(val_path_l)
 
-perc = list(range(1,16))
+perc = list(range(0,16))
 for i in range(len(perc)):
     perc[i] = str(perc[i])
 
@@ -241,6 +241,6 @@ plt.ylim((-0.3,1))
 
 
 
-#plt.xscale("log")
-plt.savefig("plot_white_linear.png")
+plt.xscale("log")
+plt.savefig("plot_white.png")
 #plt.show()
