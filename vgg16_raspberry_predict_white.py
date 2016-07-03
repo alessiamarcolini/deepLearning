@@ -224,7 +224,7 @@ for p in perc:
 mcc_list = np.array(mcc_list)
 perc_white = np.array(perc_white)
 
-
+fig = plt.figure()
 ax = fig.add_subplot(111)
 for i,j in zip(perc_white,mcc_list):
     ax.annotate(str(j),xy=(i,j+0.5))
@@ -233,7 +233,7 @@ plt.plot(perc_white, mcc_list, "-", color="red")
 plt.plot(perc_white, mcc_list, "o", color="blue")
 plt.ylabel("MCC")
 plt.xlabel("Blue")
-fig = plt.figure()
+
 
 
 plt.xscale("log")
