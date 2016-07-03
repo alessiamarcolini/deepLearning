@@ -226,8 +226,8 @@ perc_white = np.array(perc_white)
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
-perc_white_temp = [round(i,3) for i in perc_white]
-for i,j in zip(perc_white_temp,mcc_list):
+mcc_list_round = [round(i,3) for i in mcc_list]
+for i,j in zip(perc_white,mcc_list_round):
     ax.annotate(str(j),xy=(i,j))
 
 
