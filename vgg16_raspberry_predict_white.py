@@ -39,7 +39,7 @@ weights_path = 'vgg16_first_training_raspberry_weights.h5'
 img_width, img_height = 224, 224
 
 
-validation_data_dir = 'BerrySamples_White'
+validation_data_dir = 'BerrySamples_Blue'
 
 
 # build the VGG16 network
@@ -129,7 +129,7 @@ val_filenames_e = os.listdir(val_path_e)
 val_filenames_g = os.listdir(val_path_g)
 val_filenames_l = os.listdir(val_path_l)
 
-perc = range(1,16)
+perc = list(range(1,16))
 for i in range(len(perc)):
     perc[i] = str(perc[i])
 
@@ -173,7 +173,7 @@ for p in perc:
 
     predicted_labels = model.predict(validation)
 
-    prediction_summary = open("EXP/vgg16_first_train_raspberry_prediction_summary_white_" + p + ".csv", "w")
+    prediction_summary = open("EXP/vgg16_first_train_raspberry_prediction_summary_blue_" + p + ".csv", "w")
     prediction_summary.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS'])+'\n')
 
     predicted_labels_linear = []
@@ -228,11 +228,11 @@ perc_white = np.array(perc_white)
 ax = fig.add_subplot(111)
 for i,j in zip(perc_white,mcc_list):
     ax.annotate(str(j),xy=(i,j+0.5))
-    
+
 plt.plot(perc_white, mcc_list, "-", color="red")
 plt.plot(perc_white, mcc_list, "o", color="blue")
 plt.ylabel("MCC")
-plt.xlabel("White")
+plt.xlabel("Blue")
 fig = plt.figure()
 
 
