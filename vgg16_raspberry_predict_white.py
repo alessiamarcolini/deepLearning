@@ -39,7 +39,7 @@ weights_path = 'vgg16_first_training_raspberry_weights.h5'
 img_width, img_height = 224, 224
 
 
-validation_data_dir = 'BerrySamples_Blue'
+validation_data_dir = 'BerrySamples_White'
 
 
 # build the VGG16 network
@@ -173,7 +173,7 @@ for p in perc:
 
     predicted_labels = model.predict(validation)
 
-    prediction_summary = open("EXP/vgg16_first_train_raspberry_prediction_summary_blue_" + p + ".csv", "w")
+    prediction_summary = open("EXP/white/vgg16_first_train_raspberry_prediction_summary_white_" + p + ".csv", "w")
     prediction_summary.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS'])+'\n')
 
     predicted_labels_linear = []
@@ -242,5 +242,5 @@ plt.ylim((-0.3,1))
 
 
 plt.xscale("log")
-plt.savefig("plot.png")
+plt.savefig("plot_white.png")
 #plt.show()
