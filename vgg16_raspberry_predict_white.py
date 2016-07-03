@@ -241,6 +241,6 @@ plt.ylim((-0.3,1))
 
 
 
-plt.xscale("log")
-plt.savefig("plot_white.png")
+#plt.xscale("log")
+plt.savefig("plot_white_linear.png")
 #plt.show()
