@@ -227,9 +227,11 @@ perc_white = np.array(perc_white)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 mcc_list_round = [round(i,3) for i in mcc_list]
+j_old = 0.0
 for i,j in zip(perc_white,mcc_list_round):
-    ax.annotate(str(j),xy=(i,j))
-
+    if j_old != j:
+        ax.annotate(str(j),xy=(i,j))
+    j_old = j
 
 plt.plot(perc_white, mcc_list, "-", color="red")
 plt.plot(perc_white, mcc_list, "o", color="blue")
