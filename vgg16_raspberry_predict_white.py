@@ -230,7 +230,7 @@ mcc_list_round = [round(i,3) for i in mcc_list]
 j_old = 0.0
 for i,j in zip(perc_white,mcc_list_round):
     if j_old != j:
-        ax.annotate(str(j),xy=(i,j))
+        ax.annotate(str(j),xy=(i,j+0.005))
     j_old = j
 
 plt.plot(perc_white, mcc_list, "-", color="red")
