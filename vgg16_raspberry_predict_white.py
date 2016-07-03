@@ -229,8 +229,9 @@ ax = fig.add_subplot(111)
 for i,j in zip(perc_white,mcc_list):
     ax.annotate(str(j),xy=(i,j))
 
-plt.plot(perc_white, mcc_list, "-", color="red")
-plt.plot(perc_white, mcc_list, "o", color="blue")
+perc_white_temp = [round(i,3) for i in perc_white]
+plt.plot(perc_white_temp, mcc_list, "-", color="red")
+plt.plot(perc_white_temp, mcc_list, "o", color="blue")
 plt.ylabel("MCC")
 plt.xlabel("Blue")
 
