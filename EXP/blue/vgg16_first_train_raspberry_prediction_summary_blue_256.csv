@@ -1,0 +1,35 @@
+FILENAME	REAL_LABEL	PREDICTED_LABELS
+BerrySamples_Blue/early/early_W_256_1.jpg;Early;0.037;0.005;0.004
+BerrySamples_Blue/early/early_W_256_7.jpg;Early;0.991;0.0;0.0
+BerrySamples_Blue/early/early_W_256_2.jpg;Early;0.828;0.0;0.001
+BerrySamples_Blue/early/early_W_256_5.jpg;Early;0.018;0.009;0.0
+BerrySamples_Blue/early/early_W_256_3.jpg;Early;0.173;0.007;0.002
+BerrySamples_Blue/early/early_W_256_10.jpg;Early;0.724;0.0;0.002
+BerrySamples_Blue/early/early_W_256_9.jpg;Early;0.886;0.001;0.001
+BerrySamples_Blue/early/early_W_256_8.jpg;Early;0.044;0.014;0.0
+BerrySamples_Blue/early/early_W_256_4.jpg;Early;0.147;0.002;0.0
+BerrySamples_Blue/early/early_W_256_6.jpg;Early;0.975;0.0;0.0
+BerrySamples_Blue/good/good_W_256_1.jpg;Good;0.012;0.004;0.036
+BerrySamples_Blue/good/good_W_256_9.jpg;Good;0.247;0.414;0.0
+BerrySamples_Blue/good/good_W_256_2.jpg;Good;0.053;0.004;0.0
+BerrySamples_Blue/good/good_W_256_8.jpg;Good;0.561;0.017;0.0
+BerrySamples_Blue/good/good_W_256_3.jpg;Good;0.017;0.002;0.066
+BerrySamples_Blue/good/good_W_256_7.jpg;Good;0.771;0.011;0.0
+BerrySamples_Blue/good/good_W_256_6.jpg;Good;0.401;0.001;0.004
+BerrySamples_Blue/good/good_W_256_4.jpg;Good;0.92;0.033;0.0
+BerrySamples_Blue/good/good_W_256_5.jpg;Good;0.031;0.003;0.024
+BerrySamples_Blue/good/good_W_256_10.jpg;Good;0.023;0.019;0.0
+BerrySamples_Blue/late/late_W_256_4.jpg;Late;0.034;0.243;0.0
+BerrySamples_Blue/late/late_W_256_10.jpg;Late;0.129;0.03;0.002
+BerrySamples_Blue/late/late_W_256_5.jpg;Late;0.055;0.005;0.002
+BerrySamples_Blue/late/late_W_256_8.jpg;Late;0.036;0.07;0.0
+BerrySamples_Blue/late/late_W_256_6.jpg;Late;0.159;0.188;0.0
+BerrySamples_Blue/late/late_W_256_1.jpg;Late;0.024;0.03;0.004
+BerrySamples_Blue/late/late_W_256_2.jpg;Late;0.043;0.01;0.002
+BerrySamples_Blue/late/late_W_256_3.jpg;Late;0.108;0.363;0.0
+BerrySamples_Blue/late/late_W_256_7.jpg;Late;0.006;0.038;0.002
+BerrySamples_Blue/late/late_W_256_9.jpg;Late;0.065;0.023;0.001
+MCC=0.0607830673855
+(array([[ 10.,   0.,   0.],
+       [  7.,   1.,   2.],
+       [  4.,   6.,   0.]]), array([0, 1, 2]))
