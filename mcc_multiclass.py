@@ -1,7 +1,5 @@
 import numpy as np
 
-
-
 def multimcc(t,p, classes=None):
     """ Matthews Correlation Coefficient for multiclass
     :Parameters:
@@ -87,7 +85,7 @@ def confusion_matrix(t, p):
     C = np.zeros((nc, nc))
 
     # Fill the confusion matrix
-    for i in xrange(nt):
+    for i in range(nt):
         ct = np.where(classes == tarr[i])[0]
         cp = np.where(classes == parr[i])[0]
         C[ct, cp] += 1
