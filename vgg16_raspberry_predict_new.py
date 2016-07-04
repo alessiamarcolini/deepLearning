@@ -16,7 +16,7 @@ from mcc_multiclass import multimcc, confusion_matrix
 def load_im2(paths):
     l = []
     for name in paths:
-	result = cv2.imread(name)
+	    result = cv2.imread(name)
         im2 = cv2.resize(result, (224, 224)).astype(np.float32)
         im2[:,:,0] -= 103.939
         im2[:,:,1] -= 116.779
@@ -114,21 +114,29 @@ model.compile(loss='binary_crossentropy',
 validation_images = os.listdir(validation_data_dir)
 
 for i in range(len(validation_images)):
-    validation_images[i] = validation_data_dir + validation_images[i] 
+    validation_images[i] = validation_data_dir + validation_images[i]
 
 
 validation = np.array(load_im2(validation_images))
 
 predicted_labels = model.predict(validation)
+predicted_labels_linear = []
 
 prediction_summary = open("vgg16_first_train_raspberry_prediction_new.csv", "w")
 prediction_summary.write("\t".join(['FILENAME', 'PREDICTED_LABELS'])+'\n')
 
+
 for i in range(len(predicted_labels)):
     cls_prob = predicted_labels[i]
-
-    line = [validation_images[i], str(round(cls_prob[0],3)), str(round(cls_prob[1],3)), str(round(cls_prob[2],3))]
     predicted_labels_linear.append(np.argmax(cls_prob))
+    if predicted_labels_linear[i] == 0:
+        predicted_label = "Early"
+    elif predicted_labels_linear[i] == 1:
+        predicted_label = "Good"
+    elif predicted_labels_linear[i] == 2:
+        predicted_label = "Late"
+    line = [validation_images[i], predicted_label, str(round(cls_prob[0],3)), str(round(cls_prob[1],3)), str(round(cls_prob[2],3))]
+
     prediction_summary.write(";".join(line)+"\n")
     prediction_summary.flush()
 
