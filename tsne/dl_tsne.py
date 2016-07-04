@@ -345,27 +345,28 @@ if __name__ == '__main__':
             print("\t Output Images Matrix Shape: ", output_images_fruits.shape)
         
         print('Step 2: Done!', end='\n\n')
-    else:
-        print('Skipping Step 2!')
 
-    # Step 3: t-SNE
-    print('Step 3: t-SNE')
-    
-    if os.path.exists(tsne_matrix_filepath):
-        print("\t t-SNE matrix file exists, loading from file: ", tsne_matrix_filepath)
-        Y_tsne_fruits = np.loadtxt(tsne_matrix_filepath)
-        print("\t Load completed")
-        print("\t tSNE images matrix shape: ", Y_tsne_fruits.shape)
-    else:
+        # Step 3: t-SNE
+        print('Step 3: t-SNE')
+
         print("\t Image file not exists, calculating t-SNE: ", tsne_matrix_filepath)
 
         print('\t t-SNE model to output images')
         Y_tsne_fruits = Y_tsne_model.fit_transform(output_images_fruits)
-        
-        np.savetxt(tsne_matrix_filepath, Y_tsne_fruits)
-        
-    print('Step 3: Done!', end='\n\n')
 
+        # Saving t-SNE resulting matrix
+        np.savetxt(tsne_matrix_filepath, Y_tsne_fruits)
+    else:  # File Exists
+        print('Skipping Step 2!')
+        # Step 3: t-SNE
+        print('Step 3: t-SNE')
+
+        print("\t t-SNE matrix file exists, loading from file: ", tsne_matrix_filepath)
+        Y_tsne_fruits = np.loadtxt(tsne_matrix_filepath)
+        print("\t Load completed")
+        print("\t tSNE images matrix shape: ", Y_tsne_fruits.shape)
+
+    print('Step 3: Done!', end='\n\n')
 
     # Step 4: Plotting
     plot_filename = compose_output_filename(classes, filename_prefix="tsne", 
@@ -374,10 +375,12 @@ if __name__ == '__main__':
                                             ncomp=Y_tsne_model.n_components, 
                                             init_strategy=Y_tsne_model.init)
                                             
-    plot_title = "t-SNE on ImageNet - Init Strategy: {} - Perplexity: {}".format(Y_tsne_model.init, Y_tsne_model.perplexity)
-    
-    image_index_filename = compose_output_filename(classes, 
-                                                   filename_prefix="image_index")
+    plot_title = "t-SNE on ImageNet - "
+    plot_title += "Init Strategy: {} - Perplexity: {}".format(Y_tsne_model.init,
+                                                              Y_tsne_model.perplexity)
+
+    # Store Image Index file (useful in case of annotations)
+    image_index_filename = compose_output_filename(classes, filename_prefix="image_index")
     image_index_filepath = os.path.join(os.path.abspath(os.path.curdir), image_index_filename)
     with open(image_index_filepath, 'w') as image_index:
         for image in input_images:
