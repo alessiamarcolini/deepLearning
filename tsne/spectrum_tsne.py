@@ -7,6 +7,7 @@
 import os
 import numpy as np
 from sklearn.manifold import TSNE
+from sklearn.preprocessing import scale
 from .dl_tsne import make_plot, compose_output_filename
 
 DATA_FILE = os.path.join(os.path.abspath(os.path.curdir), 'data',
@@ -15,6 +16,7 @@ DATA_FILE = os.path.join(os.path.abspath(os.path.curdir), 'data',
 if __name__ == '__main__':
 
     X = np.loadtxt(DATA_FILE)
+    X_scaled = scale(X, axis=1)  # scale samples
 
     SpectrumTSNE = TSNE(n_components=2, init='random', random_state=0,
                         perplexity=30.0)
@@ -25,7 +27,7 @@ if __name__ == '__main__':
                                                    ncomp=SpectrumTSNE.n_components,
                                                    instr=SpectrumTSNE.init)
     if not os.path.exists(tsne_output_filename):
-        X_tsne = SpectrumTSNE.fit_transform(X)
+        X_tsne = SpectrumTSNE.fit_transform(X_scaled)
         np.savetxt(tsne_output_filename, X_tsne)
     else:
         X_tsne = np.loadtxt(tsne_output_filename)
