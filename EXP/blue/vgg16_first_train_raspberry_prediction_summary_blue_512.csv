@@ -1,0 +1,35 @@
+FILENAME	REAL_LABEL	PREDICTED_LABELS
+BerrySamples_Blue/early/early_W_512_6.jpg;Early;0.414;0.0;0.008
+BerrySamples_Blue/early/early_W_512_2.jpg;Early;0.214;0.0;0.002
+BerrySamples_Blue/early/early_W_512_7.jpg;Early;0.587;0.0;0.0
+BerrySamples_Blue/early/early_W_512_8.jpg;Early;0.15;0.0;0.0
+BerrySamples_Blue/early/early_W_512_4.jpg;Early;0.011;0.0;0.0
+BerrySamples_Blue/early/early_W_512_10.jpg;Early;0.322;0.0;0.002
+BerrySamples_Blue/early/early_W_512_9.jpg;Early;0.47;0.0;0.0
+BerrySamples_Blue/early/early_W_512_3.jpg;Early;0.279;0.001;0.002
+BerrySamples_Blue/early/early_W_512_5.jpg;Early;0.086;0.0;0.0
+BerrySamples_Blue/early/early_W_512_1.jpg;Early;0.359;0.001;0.002
+BerrySamples_Blue/good/good_W_512_6.jpg;Good;0.121;0.0;0.001
+BerrySamples_Blue/good/good_W_512_10.jpg;Good;0.388;0.0;0.0
+BerrySamples_Blue/good/good_W_512_3.jpg;Good;0.129;0.001;0.002
+BerrySamples_Blue/good/good_W_512_7.jpg;Good;0.89;0.0;0.0
+BerrySamples_Blue/good/good_W_512_5.jpg;Good;0.129;0.003;0.003
+BerrySamples_Blue/good/good_W_512_2.jpg;Good;0.327;0.001;0.0
+BerrySamples_Blue/good/good_W_512_9.jpg;Good;0.54;0.017;0.0
+BerrySamples_Blue/good/good_W_512_1.jpg;Good;0.25;0.002;0.004
+BerrySamples_Blue/good/good_W_512_8.jpg;Good;0.533;0.001;0.001
+BerrySamples_Blue/good/good_W_512_4.jpg;Good;0.912;0.013;0.0
+BerrySamples_Blue/late/late_W_512_3.jpg;Late;0.132;0.034;0.001
+BerrySamples_Blue/late/late_W_512_9.jpg;Late;0.414;0.002;0.001
+BerrySamples_Blue/late/late_W_512_5.jpg;Late;0.086;0.013;0.002
+BerrySamples_Blue/late/late_W_512_4.jpg;Late;0.619;0.015;0.0
+BerrySamples_Blue/late/late_W_512_7.jpg;Late;0.263;0.0;0.001
+BerrySamples_Blue/late/late_W_512_10.jpg;Late;0.078;0.006;0.002
+BerrySamples_Blue/late/late_W_512_2.jpg;Late;0.178;0.0;0.0
+BerrySamples_Blue/late/late_W_512_1.jpg;Late;0.114;0.001;0.002
+BerrySamples_Blue/late/late_W_512_8.jpg;Late;0.134;0.004;0.0
+BerrySamples_Blue/late/late_W_512_6.jpg;Late;0.925;0.007;0.0
+MCC=0
+(array([[ 10.,   0.,   0.],
+       [ 10.,   0.,   0.],
+       [ 10.,   0.,   0.]]), array([0, 1, 2]))

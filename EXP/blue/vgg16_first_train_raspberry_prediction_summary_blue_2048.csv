@@ -1,0 +1,35 @@
+FILENAME	REAL_LABEL	PREDICTED_LABELS
+BerrySamples_Blue/early/early_W_2048_2.jpg;Early;0.049;0.001;0.005
+BerrySamples_Blue/early/early_W_2048_8.jpg;Early;0.187;0.003;0.022
+BerrySamples_Blue/early/early_W_2048_1.jpg;Early;0.203;0.021;0.022
+BerrySamples_Blue/early/early_W_2048_7.jpg;Early;0.142;0.013;0.009
+BerrySamples_Blue/early/early_W_2048_5.jpg;Early;0.133;0.003;0.03
+BerrySamples_Blue/early/early_W_2048_10.jpg;Early;0.153;0.106;0.036
+BerrySamples_Blue/early/early_W_2048_4.jpg;Early;0.11;0.002;0.03
+BerrySamples_Blue/early/early_W_2048_9.jpg;Early;0.094;0.068;0.006
+BerrySamples_Blue/early/early_W_2048_3.jpg;Early;0.195;0.014;0.018
+BerrySamples_Blue/early/early_W_2048_6.jpg;Early;0.298;0.072;0.006
+BerrySamples_Blue/good/good_W_2048_7.jpg;Good;0.155;0.053;0.01
+BerrySamples_Blue/good/good_W_2048_3.jpg;Good;0.259;0.045;0.017
+BerrySamples_Blue/good/good_W_2048_10.jpg;Good;0.537;0.008;0.003
+BerrySamples_Blue/good/good_W_2048_5.jpg;Good;0.343;0.012;0.023
+BerrySamples_Blue/good/good_W_2048_2.jpg;Good;0.192;0.015;0.008
+BerrySamples_Blue/good/good_W_2048_1.jpg;Good;0.444;0.011;0.017
+BerrySamples_Blue/good/good_W_2048_6.jpg;Good;0.166;0.027;0.013
+BerrySamples_Blue/good/good_W_2048_8.jpg;Good;0.118;0.027;0.029
+BerrySamples_Blue/good/good_W_2048_9.jpg;Good;0.143;0.076;0.02
+BerrySamples_Blue/good/good_W_2048_4.jpg;Good;0.214;0.075;0.027
+BerrySamples_Blue/late/late_W_2048_2.jpg;Late;0.28;0.023;0.003
+BerrySamples_Blue/late/late_W_2048_10.jpg;Late;0.173;0.179;0.088
+BerrySamples_Blue/late/late_W_2048_5.jpg;Late;0.268;0.278;0.01
+BerrySamples_Blue/late/late_W_2048_8.jpg;Late;0.037;0.048;0.04
+BerrySamples_Blue/late/late_W_2048_1.jpg;Late;0.323;0.096;0.014
+BerrySamples_Blue/late/late_W_2048_3.jpg;Late;0.075;0.101;0.033
+BerrySamples_Blue/late/late_W_2048_4.jpg;Late;0.061;0.049;0.094
+BerrySamples_Blue/late/late_W_2048_9.jpg;Late;0.02;0.072;0.094
+BerrySamples_Blue/late/late_W_2048_7.jpg;Late;0.286;0.051;0.006
+BerrySamples_Blue/late/late_W_2048_6.jpg;Late;0.048;0.029;0.033
+MCC=0.140487871737
+(array([[ 10.,   0.,   0.],
+       [ 10.,   0.,   0.],
+       [  4.,   4.,   2.]]), array([0, 1, 2]))

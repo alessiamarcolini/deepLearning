@@ -1,0 +1,35 @@
+FILENAME	REAL_LABEL	PREDICTED_LABELS
+BerrySamples_White/early/early_W_4_4.jpg;Early;0.238;0.995;0.0
+BerrySamples_White/early/early_W_4_6.jpg;Early;0.821;0.577;0.0
+BerrySamples_White/early/early_W_4_9.jpg;Early;0.9;0.049;0.0
+BerrySamples_White/early/early_W_4_2.jpg;Early;0.558;0.21;0.0
+BerrySamples_White/early/early_W_4_1.jpg;Early;0.021;0.693;0.0
+BerrySamples_White/early/early_W_4_8.jpg;Early;0.112;0.957;0.0
+BerrySamples_White/early/early_W_4_3.jpg;Early;0.283;0.899;0.0
+BerrySamples_White/early/early_W_4_7.jpg;Early;0.949;0.006;0.0
+BerrySamples_White/early/early_W_4_10.jpg;Early;0.652;0.306;0.0
+BerrySamples_White/early/early_W_4_5.jpg;Early;0.025;0.999;0.0
+BerrySamples_White/good/good_W_4_7.jpg;Good;0.053;0.99;0.0
+BerrySamples_White/good/good_W_4_5.jpg;Good;0.0;1.0;0.0
+BerrySamples_White/good/good_W_4_1.jpg;Good;0.0;0.986;0.0
+BerrySamples_White/good/good_W_4_2.jpg;Good;0.002;1.0;0.0
+BerrySamples_White/good/good_W_4_10.jpg;Good;0.0;1.0;0.0
+BerrySamples_White/good/good_W_4_9.jpg;Good;0.0;1.0;0.0
+BerrySamples_White/good/good_W_4_6.jpg;Good;0.071;0.844;0.0
+BerrySamples_White/good/good_W_4_3.jpg;Good;0.002;0.93;0.0
+BerrySamples_White/good/good_W_4_8.jpg;Good;0.0;1.0;0.0
+BerrySamples_White/good/good_W_4_4.jpg;Good;0.0;1.0;0.0
+BerrySamples_White/late/late_W_4_6.jpg;Late;0.0;1.0;0.0
+BerrySamples_White/late/late_W_4_9.jpg;Late;0.0;1.0;0.0
+BerrySamples_White/late/late_W_4_3.jpg;Late;0.0;1.0;0.0
+BerrySamples_White/late/late_W_4_7.jpg;Late;0.0;0.724;0.005
+BerrySamples_White/late/late_W_4_10.jpg;Late;0.0;1.0;0.0
+BerrySamples_White/late/late_W_4_1.jpg;Late;0.0;0.986;0.006
+BerrySamples_White/late/late_W_4_2.jpg;Late;0.0;0.521;0.02
+BerrySamples_White/late/late_W_4_8.jpg;Late;0.0;1.0;0.0
+BerrySamples_White/late/late_W_4_5.jpg;Late;0.0;1.0;0.0
+BerrySamples_White/late/late_W_4_4.jpg;Late;0.0;1.0;0.0
+MCC=0.387298334621
+(array([[  5.,   5.,   0.],
+       [  0.,  10.,   0.],
+       [  0.,  10.,   0.]]), array([0, 1, 2]))
