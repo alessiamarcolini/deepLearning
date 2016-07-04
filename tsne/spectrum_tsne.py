@@ -8,7 +8,7 @@ import os
 import numpy as np
 from sklearn.manifold import TSNE
 from sklearn.preprocessing import scale
-from .dl_tsne import make_plot, compose_output_filename
+from tsne.dl_tsne import make_plot, compose_output_filename
 
 DATA_FILE = os.path.join(os.path.abspath(os.path.curdir), 'data',
                          'spectrum', 'allspectra_red.dat')

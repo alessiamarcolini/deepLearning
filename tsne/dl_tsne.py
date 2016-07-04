@@ -15,9 +15,9 @@ from matplotlib import pyplot as plt
 from sklearn.manifold import TSNE
 
 # Settings
-from .settings import (WEIGHTS_PATH, IMAGE_PATH, MARKERS, COLOURS,
-                       CLASSES_OF_INTEREST, OUTPUT_IMAGES_FILE_PREFIX,
-                       DEFAULT_IMAGES_FILENAME, OUTPUT_TSNE_FILE_PREFIX)
+from tsne.settings import (WEIGHTS_PATH, IMAGE_PATH, MARKERS, COLOURS,
+                           CLASSES_OF_INTEREST, OUTPUT_IMAGES_FILE_PREFIX,
+                           DEFAULT_IMAGES_FILENAME, OUTPUT_TSNE_FILE_PREFIX)
 
 
 def make_plot(X, Y, colours, classes, fig_filename, title,
