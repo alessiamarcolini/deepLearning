@@ -50,6 +50,8 @@ COLOURS = {RASPBERRY: '#ff6666',
            PLUM: '#9615f0',
            APRICOT: '#f0b015',
            GOOSEBERRY: '#15f024'}
+           
+CLASSES_OF_INTEREST = [APRICOT, PLUM, CHERRY, BLUEBERRY]
 
 # dimensions of our images.
 IMG_WIDTH, IMG_HEIGHT = 224, 224
@@ -237,14 +239,14 @@ def collect_images(path=IMAGE_PATH):
     sample_names = []
     for root, dirs, files in os.walk(path):
         _, class_name = os.path.split(root)
-        for file in files:
-            name, ext = os.path.splitext(file)
-            if ext.lower() in ['.jpeg']:
-	    #if ext.lower() in ['.jpg', '.png', '.gif', '.jpeg']:
-                input_images.append(os.path.join(root, file))
-                classes.append(class_name)
-                colors.append(COLOURS[class_name])
-                sample_names.append(name)
+        if class_name in CLASSES_OF_INTEREST:
+            for file in files:
+                name, ext = os.path.splitext(file)
+                if ext.lower() in ['.jpeg']:
+                    input_images.append(os.path.join(root, file))
+                    classes.append(class_name)
+                    colors.append(COLOURS[class_name])
+                    sample_names.append(name)
 
     return input_images, sample_names, classes, colors
 
@@ -350,7 +352,7 @@ if __name__ == '__main__':
     # (with the SAME configuration parameters)
     # Instantiate t-SNE Model
     
-    Y_tsne_model = TSNE(n_components=2, init='pca')
+    Y_tsne_model = TSNE(n_components=2, init='random', random_state=0)
     
     tsne_matrix_filename = compose_output_filename(classes, 
                                                    filename_prefix=OUTPUT_TSNE_FILE_PREFIX,
@@ -416,9 +418,18 @@ if __name__ == '__main__':
                                             perpl=Y_tsne_model.perplexity,
                                             ncomp=Y_tsne_model.n_components, 
                                             init_strategy=Y_tsne_model.init)
+                                            
+    plot_title = "t-SNE on ImageNet - Init Strategy: {} - Perplexity: {}".format(Y_tsne_model.init, Y_tsne_model.perplexity)
+    
+    image_index_filename = compose_output_filename(classes, 
+                                                   filename_prefix="image_index")
+    image_index_filepath = os.path.join(os.path.abspath(os.path.curdir), image_index_filename)
+    with open(image_index_filepath, 'w') as image_index:
+        for image in input_images:
+            image_index.write("{}\n".format(image))  
                                                                                                   
     make_plot(X=Y_tsne_fruits[:, 0], Y=Y_tsne_fruits[:, 1], s=25, 
-              colours=colours, classes=classes, 
-              sample_names=[i for i, _ in enumerate(input_images)], 
-              fig_filename=plot_filename, title="t-SNE on Fruit Images")
+              colours=colours, classes=classes, annotate=False, 
+              sample_names=[i+1 for i, _ in enumerate(input_images)], 
+              fig_filename=plot_filename, title=plot_title)
 
