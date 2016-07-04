@@ -16,7 +16,8 @@ from mcc_multiclass import multimcc, confusion_matrix
 def load_im2(paths):
     l = []
     for name in paths:
-        im2 = cv2.resize(cv2.imread(name), (224, 224)).astype(np.float32)
+	result = cv2.imread(name)
+        im2 = cv2.resize(result, (224, 224)).astype(np.float32)
         im2[:,:,0] -= 103.939
         im2[:,:,1] -= 116.779
         im2[:,:,2] -= 123.68
@@ -34,7 +35,7 @@ weights_path = 'vgg16_first_training_raspberry_weights.h5'
 img_width, img_height = 224, 224
 
 
-validation_data_dir = 'datasets/so3'
+validation_data_dir = 'datasets/so3/'
 
 
 # build the VGG16 network
