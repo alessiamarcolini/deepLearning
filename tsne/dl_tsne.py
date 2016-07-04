@@ -63,6 +63,8 @@ def make_plot(X, Y, colours, classes, fig_filename, title,
         yc = [p for (j, p) in enumerate(Y) if classes[j] == cla]
         if sample_names:
             nc = [p for (j, p) in enumerate(sample_names) if classes[j] == cla]
+        else:
+            nc = None
         cols = [c for (j, c) in enumerate(colours) if classes[j] == cla]
         if cla in MARKERS:
             marker = MARKERS[cla]
@@ -71,7 +73,7 @@ def make_plot(X, Y, colours, classes, fig_filename, title,
             marker = 'o'  # default marker value
         plt.scatter(xc, yc, s=s, marker=marker, c=cols, label=cla)
 
-        if annotate:
+        if annotate and nc:
             for j, txt in enumerate(nc):
                 plt.annotate(txt, (xc[j], yc[j]))
                 
