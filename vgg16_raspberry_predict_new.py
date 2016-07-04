@@ -112,6 +112,7 @@ model.compile(loss='binary_crossentropy',
 
 
 validation_images = os.listdir(validation_data_dir)
+validation_images.sort()
 
 for i in range(len(validation_images)):
     validation_images[i] = validation_data_dir + validation_images[i]
@@ -123,7 +124,7 @@ predicted_labels = model.predict(validation)
 predicted_labels_linear = []
 
 prediction_summary = open("vgg16_first_train_raspberry_prediction_new.csv", "w")
-prediction_summary.write("\t".join(['FILENAME', 'PREDICTED_LABELS'])+'\n')
+prediction_summary.write("\t".join(['FILENAME', 'PREDICTED_LABELS', 'E', 'G', 'L'])+'\n')
 
 
 for i in range(len(predicted_labels)):
