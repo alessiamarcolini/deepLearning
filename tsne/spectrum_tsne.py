@@ -31,6 +31,7 @@ if __name__ == '__main__':
         X_tsne = np.loadtxt(tsne_output_filename)
 
     make_plot(X_tsne[:, 0], X_tsne[:, 1], classes=['red'],
+              colours=['r' for i in range(X_tsne[:, 0].size())],
               fig_filename=tsne_output_filename.replace('txt', 'pdf'),
               title='tSNE on Spectrum - Init: {} Perplexity: {}'.format(
                   SpectrumTSNE.init, SpectrumTSNE.perplexity))
