@@ -9,7 +9,7 @@ from keras.models import Sequential
 from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.optimizers import SGD
-from matplotlib import pyplot
+from matplotlib import pyplot as plt
 from sklearn.manifold import TSNE
 
 # path to the model weights files.
@@ -35,14 +35,14 @@ MARKERS = {RASPBERRY: 'o',
            RED_CURRANT: 'D',
            WHITE_CURRANT: 'h',
            BLUEBERRY: 's',
-           CHERRY: 'b',
+           CHERRY: 'd',
            PLUM: '8',
            APRICOT: 'p',
            GOOSEBERRY: '<'}
 
 COLOURS = {RASPBERRY: '#ff6666',
            STRAWBERRY: '#794044',
-           BLACKBERRY: '#000',
+           BLACKBERRY: '#000000',
            RED_CURRANT: '#f03939',
            WHITE_CURRANT: '#f0f688',
            BLUEBERRY: '#3a539b',
@@ -56,10 +56,13 @@ IMG_WIDTH, IMG_HEIGHT = 224, 224
 
 #output array file
 OUTPUT_IMAGES_FILE_PREFIX = "images_matrix"
-DEFAULT_IMAGES_FILEMANE = OUTPUT_IMAGES_FILE_PREFIX + ".txt"
+DEFAULT_IMAGES_FILENAME = OUTPUT_IMAGES_FILE_PREFIX + ".txt"
+
+# output array for t-SNE
+OUTPUT_TSNE_FILE_PREFIX = "tsne_matrix"
 
 def make_plot(X, Y, colours, classes, sample_names,
-              fig, title, s=10, marker='o', annotate=False):
+              fig_filename, title, s=10, annotate=False):
     """
     generates and shows a scatter plot
 
@@ -74,9 +77,6 @@ def make_plot(X, Y, colours, classes, sample_names,
     s : int (default=10)
         dimension of markers
 
-    marker : str (default='o')
-        shape of the marker
-
     colours : list
         colour of the markers of the different classes
 
@@ -86,7 +86,7 @@ def make_plot(X, Y, colours, classes, sample_names,
     sample_names : list
         list of labels for each dot (only if annotate=True)
 
-    fig : str
+    fig_filename : str
         name of the image file of the graph saved
 
     title : str
@@ -97,22 +97,28 @@ def make_plot(X, Y, colours, classes, sample_names,
 
 
     """
-    pyplot.title(title)
+    plt.figure()
+    plt.title(title)
     for (i, cla) in enumerate(set(classes)):
         xc = [p for (j, p) in enumerate(X) if classes[j] == cla]
         yc = [p for (j, p) in enumerate(Y) if classes[j] == cla]
         nc = [p for (j, p) in enumerate(sample_names) if classes[j] == cla]
         cols = [c for (j, c) in enumerate(colours) if classes[j] == cla]
-        pyplot.scatter(xc, yc, s=s, marker=marker, c=cols, label=cla)
+        if cla in MARKERS:
+            marker = MARKERS[cla]
+        else:
+            print('\t WARNING: Class {} not found in MARKERS'.format(cla))
+            marker = 'o'  # default marker value
+        plt.scatter(xc, yc, s=s, marker=marker, c=cols, label=cla)
 
         if annotate:
             for j, txt in enumerate(nc):
-                pyplot.annotate(txt, (xc[j], yc[j]))
+                plt.annotate(txt, (xc[j], yc[j]))
                 
-    pyplot.legend(loc=4)
-    pyplot.savefig(fig)
-    pyplot.show()
-    pyplot.clf()
+    plt.legend(loc=0)
+    plt.savefig(fig_filename)
+    plt.show()
+    plt.clf()
 
 
 def VGG_16(weights_path=None, add_fully_connected=False):
@@ -221,42 +227,47 @@ def collect_images(path=IMAGE_PATH):
     classes : list
         The list of all the classes associated to corresponding images
 
-
-    markers : list
-        The list of markers for each image, depending on the corresponding class
-        (used in plots)
-
-
     colors : list
         The list of colors of each image (used in plots)
 
     """
     input_images = []
     classes = []
-    markers = []
     colors = []
     sample_names = []
     for root, dirs, files in os.walk(path):
         _, class_name = os.path.split(root)
         for file in files:
             name, ext = os.path.splitext(file)
-            if ext.lower() in ['.jpg', '.png', '.gif', '.jpeg']:
+            if ext.lower() in ['.jpeg']:
+	    #if ext.lower() in ['.jpg', '.png', '.gif', '.jpeg']:
                 input_images.append(os.path.join(root, file))
                 classes.append(class_name)
-                markers.append(MARKERS[class_name])
                 colors.append(COLOURS[class_name])
                 sample_names.append(name)
 
-    return input_images, sample_names, classes, markers, colors
+    return input_images, sample_names, classes, colors
 
-def compose_matrix_filename(classes):
+def compose_output_filename(classes, filename_prefix=OUTPUT_IMAGES_FILE_PREFIX,
+                            file_ext='.txt', **additional_args):
     """
-    compose the name of file name with the classes
+    Compose the name of file name including a short name for classes, according
+    to the given `filename_prefix` template name.
+    
 
     Parameters
     ----------
     classes: list
         the list of the classes for all the collected images
+        
+    filename_prefix: str (default: `OUTPUT_IMAGES_FILE_PREFIX`)
+        The reference prefix for the composed file name.
+        
+    file_ext: str (default: .txt)
+        The extension of the output filename
+        
+    additional_args: dict (optional)
+        Dictionary containing additional parameters to include in the output filename.
 
     Returns
     -------
@@ -264,15 +275,21 @@ def compose_matrix_filename(classes):
         the name of the output matrix file
 
     """
-    classes_set = set(classes)
-    matrix_filename = OUTPUT_IMAGES_FILE_PREFIX
+    classes_set = sorted([cl.lower() for cl in set(classes)])
+    matrix_filename = filename_prefix + '_'
     for class_name in classes_set:
-        matrix_filename += class_name[:5]+"_"
-    matrix_filename += ".txt"
+        matrix_filename += class_name[:5].lower() + "_"
+        
+    if additional_args:
+        for name in sorted(additional_args):
+            value = additional_args[name]
+            matrix_filename += '{}_{}_'.format(name, value)
+        
+    matrix_filename += file_ext
     return matrix_filename
 
 
-def predict_images(input_images, save_txt=True, file_name=DEFAULT_IMAGES_FILEMANE):
+def predict_images(input_images, save_txt=True, file_name=DEFAULT_IMAGES_FILENAME):
     """
     Takes the images from directory and predicts them.
     It saves the output if save_txt=True
@@ -295,7 +312,7 @@ def predict_images(input_images, save_txt=True, file_name=DEFAULT_IMAGES_FILEMAN
     """
     output_images = []
     for image_file_path in input_images:
-        print('Processing Image: ', image_file_path)
+        #print('Processing Image: ', image_file_path)
         im = cv2.resize(cv2.imread(image_file_path), (224, 224)).astype(np.float32)
         im[:, :, 0] -= 103.939
         im[:, :, 1] -= 116.779
@@ -304,7 +321,7 @@ def predict_images(input_images, save_txt=True, file_name=DEFAULT_IMAGES_FILEMAN
         im = np.expand_dims(im, axis=0)
         output = model.predict(im)
         output_images.append(list(output[0]))
-    print('loading and predicting completed')
+    print('loading and predicting completed for a total of %d images' % (len(input_images)))
     output_images = np.array(output_images)
     output_images = output_images.astype(np.float32)
 
@@ -322,55 +339,86 @@ if __name__ == '__main__':
     
     # Step 1: Collect Fruit Images
     print('Step 1: Collecting images:')
-    input_images, sample_names, classes, markers, colours = collect_images()
+    input_images, sample_names, classes, colours = collect_images()
     print('Collected %d images' % len(input_images))
     if not len(input_images):
         print('no image')
         exit()
     print('Step 1: Done!', end='\n\n')
-
-    # Step 2: Load Image Matrices from File OR Generate Image Matrices
-    print('Step 2: Generate Image Matrices')
-    images_fruit_filename = compose_matrix_filename(classes)
-    if os.path.exists(images_fruit_filename):
-        print("\t Image file exists, loading from file")
-        output_images_fruits = np.loadtxt(images_fruit_filename)
-        print("\t Load completed")
-        print("\t Output images matrix shape: ", output_images_fruits.shape)
-    else:
-        print("\t Image file not exists, predicting")
-
-        # build the VGG16 network
-        print('\t Building VGG_16 network')
-        model = VGG_16(weights_path=WEIGHTS_PATH, add_fully_connected=False)
-
-        sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
-        print('\t Stochastic Gradient Descent Done')
-        model.compile(optimizer=sgd, loss='categorical_crossentropy')
-
-        # predicting images
-        print('\t Starting Prediction!')
-        output_images_fruits = predict_images(input_images, file_name=images_fruit_filename)
-
-        print("\t Prediction Completed for all %d Fruit Images" % (len(input_images)))
-        print("\t Output Images Matrix Shape: ", output_images_fruits.shape)
     
-    print('Step 2: Done!', end='\n\n')
+    # First of all, instantiate t-SNE model and check if the matrix file already exists
+    # (with the SAME configuration parameters)
+    # Instantiate t-SNE Model
+    
+    Y_tsne_model = TSNE(n_components=2, init='pca')
+    
+    tsne_matrix_filename = compose_output_filename(classes, 
+                                                   filename_prefix=OUTPUT_TSNE_FILE_PREFIX,
+                                                   perpl=Y_tsne_model.perplexity,
+                                                   ncomp=Y_tsne_model.n_components,
+                                                   init_strategy=Y_tsne_model.init)
+    tsne_matrix_filepath = os.path.join(os.path.abspath(os.path.curdir), tsne_matrix_filename)
+
+    if not os.path.exists(tsne_matrix_filepath):
+        # Step 2: Load Image Matrices from File OR Generate Image Matrices
+        print('Step 2: Generate Image Matrices')
+        images_fruit_filename = compose_output_filename(classes)
+        images_fruit_filepath = os.path.join(os.path.abspath(os.path.curdir), images_fruit_filename)
+        if os.path.exists(images_fruit_filepath):
+            print("\t Image file exists, loading from file: ", images_fruit_filepath)
+            output_images_fruits = np.loadtxt(images_fruit_filename)
+            print("\t Load completed")
+            print("\t Output images matrix shape: ", output_images_fruits.shape)
+        else:
+            print("\t Image file not exists, predicting: ", images_fruit_filepath)
+
+            # build the VGG16 network
+            print('\t Building VGG_16 network')
+            model = VGG_16(weights_path=WEIGHTS_PATH, add_fully_connected=False)
+
+            sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
+            print('\t Stochastic Gradient Descent Done')
+            model.compile(optimizer=sgd, loss='categorical_crossentropy')
+
+            # predicting images
+            print('\t Starting Prediction!')
+            output_images_fruits = predict_images(input_images, file_name=images_fruit_filename)
+
+            print("\t Prediction Completed for all %d Fruit Images" % (len(input_images)))
+            print("\t Output Images Matrix Shape: ", output_images_fruits.shape)
+        
+        print('Step 2: Done!', end='\n\n')
+    else:
+        print('Skipping Step 2!')
 
     # Step 3: t-SNE
     print('Step 3: t-SNE')
-    Y_tsne_model = TSNE(n_components=2, random_state=0)
+    
+    if os.path.exists(tsne_matrix_filepath):
+        print("\t t-SNE matrix file exists, loading from file: ", tsne_matrix_filepath)
+        Y_tsne_fruits = np.loadtxt(tsne_matrix_filepath)
+        print("\t Load completed")
+        print("\t tSNE images matrix shape: ", Y_tsne_fruits.shape)
+    else:
+        print("\t Image file not exists, calculating t-SNE: ", tsne_matrix_filepath)
 
-    print('\t t-SNE model to output images')
-    Y_tsne_fruits = Y_tsne_model.fit_transform(output_images_fruits)
+        print('\t t-SNE model to output images')
+        Y_tsne_fruits = Y_tsne_model.fit_transform(output_images_fruits)
+        
+        np.savetxt(tsne_matrix_filepath, Y_tsne_fruits)
+        
     print('Step 3: Done!', end='\n\n')
 
 
     # Step 4: Plotting
-    plot_filename = "tsne_comp%d_perplexity%d.pdf" % (Y_tsne_model.n_components,
-                                                      Y_tsne_model.perplexity)
-    make_plot(X=Y_tsne_fruits[:, 0], Y=Y_tsne_fruits[:, 1], s=10, 
-              marker=markers, colours=colours, classes=classes, 
+    plot_filename = compose_output_filename(classes, filename_prefix="tsne", 
+                                            file_ext='.pdf',
+                                            perpl=Y_tsne_model.perplexity,
+                                            ncomp=Y_tsne_model.n_components, 
+                                            init_strategy=Y_tsne_model.init)
+                                                                                                  
+    make_plot(X=Y_tsne_fruits[:, 0], Y=Y_tsne_fruits[:, 1], s=25, 
+              colours=colours, classes=classes, 
               sample_names=[i for i, _ in enumerate(input_images)], 
-              fig=plot_filename, title="t-SNE on Fruit Images")
+              fig_filename=plot_filename, title="t-SNE on Fruit Images")
 
