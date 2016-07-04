@@ -1,67 +1,24 @@
-#importiamo cose
+"""Applies the VGG16 model and compute the t-SNE method for feature reduction
+applied on a set of input images, corresponding to a specified set of
+labelled classes.
+"""
+
 import os
 import cv2
 import h5py
 import numpy as np
-from keras.preprocessing.image import ImageDataGenerator
-from keras import optimizers
-from keras.models import Sequential
 from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
-from keras.layers import Activation, Dropout, Flatten, Dense
+from keras.layers import Dropout, Flatten, Dense
+from keras.models import Sequential
 from keras.optimizers import SGD
 from matplotlib import pyplot as plt
 from sklearn.manifold import TSNE
 
-# path to the model weights files.
-WEIGHTS_PATH = 'vgg16_weights.h5'
+# Settings
+from tsne.settings import (WEIGHTS_PATH, IMAGE_PATH, MARKERS, COLOURS,
+                           CLASSES_OF_INTEREST, OUTPUT_IMAGES_FILE_PREFIX,
+                           DEFAULT_IMAGES_FILENAME, OUTPUT_TSNE_FILE_PREFIX)
 
-#general path
-IMAGE_PATH = '/data/webvalley/fruit_images/'
-#fruits paths
-RASPBERRY = 'raspberry'
-STRAWBERRY = 'strawberry'
-BLACKBERRY = 'blackberry'
-RED_CURRANT = 'redcurrant'
-WHITE_CURRANT ='whitecurrant'
-BLUEBERRY = 'blueberry'
-CHERRY = 'cherry'
-PLUM = 'plum'
-APRICOT = 'apricot'
-GOOSEBERRY = 'Gooseberry'
-
-MARKERS = {RASPBERRY: 'o',
-           STRAWBERRY: '+',
-           BLACKBERRY: '*',
-           RED_CURRANT: 'D',
-           WHITE_CURRANT: 'h',
-           BLUEBERRY: 's',
-           CHERRY: 'd',
-           PLUM: '8',
-           APRICOT: 'p',
-           GOOSEBERRY: '<'}
-
-COLOURS = {RASPBERRY: '#ff6666',
-           STRAWBERRY: '#794044',
-           BLACKBERRY: '#000000',
-           RED_CURRANT: '#f03939',
-           WHITE_CURRANT: '#f0f688',
-           BLUEBERRY: '#3a539b',
-           CHERRY: '#f688b4',
-           PLUM: '#9615f0',
-           APRICOT: '#f0b015',
-           GOOSEBERRY: '#15f024'}
-           
-CLASSES_OF_INTEREST = [APRICOT, PLUM, CHERRY, BLUEBERRY]
-
-# dimensions of our images.
-IMG_WIDTH, IMG_HEIGHT = 224, 224
-
-#output array file
-OUTPUT_IMAGES_FILE_PREFIX = "images_matrix"
-DEFAULT_IMAGES_FILENAME = OUTPUT_IMAGES_FILE_PREFIX + ".txt"
-
-# output array for t-SNE
-OUTPUT_TSNE_FILE_PREFIX = "tsne_matrix"
 
 def make_plot(X, Y, colours, classes, sample_names,
               fig_filename, title, s=10, annotate=False):
@@ -216,20 +173,17 @@ def collect_images(path=IMAGE_PATH):
     The input path must correspond to the main folder containing all images
     organized into multiple folders, one per each class.
 
-    Each subfolder will be matched against the list of accepted classes.
+    Each sub-folder will be matched against the list of accepted classes.
 
     Returns
     -------
-    input_images : list
+    input_images: list
         A list containing all the different input images gathered from folders
-    
-    sample_names : list
+    sample_names: list
         A list containing names of each image.
-
-    classes : list
+    classes: list
         The list of all the classes associated to corresponding images
-
-    colors : list
+    colors: list
         The list of colors of each image (used in plots)
 
     """
@@ -249,6 +203,7 @@ def collect_images(path=IMAGE_PATH):
                     sample_names.append(name)
 
     return input_images, sample_names, classes, colors
+
 
 def compose_output_filename(classes, filename_prefix=OUTPUT_IMAGES_FILE_PREFIX,
                             file_ext='.txt', **additional_args):
@@ -298,7 +253,7 @@ def predict_images(input_images, save_txt=True, file_name=DEFAULT_IMAGES_FILENAM
 
     Parameters
     ----------
-    input_images : str
+    input_images : list
         directory of the images
 
     save_txt : bool (default=True)
@@ -309,7 +264,7 @@ def predict_images(input_images, save_txt=True, file_name=DEFAULT_IMAGES_FILENAM
 
     Returns
     -------
-    output_images : list
+    output_images : numpy.ndarray
 
     """
     output_images = []
@@ -354,7 +309,7 @@ if __name__ == '__main__':
     
     Y_tsne_model = TSNE(n_components=2, init='random', random_state=0)
     
-    tsne_matrix_filename = compose_output_filename(classes, 
+    tsne_matrix_filename = compose_output_filename(classes,
                                                    filename_prefix=OUTPUT_TSNE_FILE_PREFIX,
                                                    perpl=Y_tsne_model.perplexity,
                                                    ncomp=Y_tsne_model.n_components,
