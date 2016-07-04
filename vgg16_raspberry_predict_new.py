@@ -112,6 +112,8 @@ model.compile(loss='binary_crossentropy',
 
 validation_images = os.listdir(validation_data_dir)
 
+for i in range(len(validation_images)):
+    validation_images[i] = validation_data_dir + validation_images[i] 
 
 
 validation = np.array(load_im2(validation_images))
