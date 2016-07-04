@@ -20,8 +20,8 @@ from tsne.settings import (WEIGHTS_PATH, IMAGE_PATH, MARKERS, COLOURS,
                            DEFAULT_IMAGES_FILENAME, OUTPUT_TSNE_FILE_PREFIX)
 
 
-def make_plot(X, Y, colours, classes, sample_names,
-              fig_filename, title, s=10, annotate=False):
+def make_plot(X, Y, colours, classes, fig_filename, title,
+              s=10, annotate=False, sample_names=None):
     """
     generates and shows a scatter plot
 
@@ -61,7 +61,8 @@ def make_plot(X, Y, colours, classes, sample_names,
     for (i, cla) in enumerate(set(classes)):
         xc = [p for (j, p) in enumerate(X) if classes[j] == cla]
         yc = [p for (j, p) in enumerate(Y) if classes[j] == cla]
-        nc = [p for (j, p) in enumerate(sample_names) if classes[j] == cla]
+        if sample_names:
+            nc = [p for (j, p) in enumerate(sample_names) if classes[j] == cla]
         cols = [c for (j, c) in enumerate(colours) if classes[j] == cla]
         if cla in MARKERS:
             marker = MARKERS[cla]
