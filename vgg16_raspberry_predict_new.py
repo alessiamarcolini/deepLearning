@@ -16,7 +16,7 @@ from mcc_multiclass import multimcc, confusion_matrix
 def load_im2(paths):
     l = []
     for name in paths:
-	    result = cv2.imread(name)
+        result = cv2.imread(name)
         im2 = cv2.resize(result, (224, 224)).astype(np.float32)
         im2[:,:,0] -= 103.939
         im2[:,:,1] -= 116.779
