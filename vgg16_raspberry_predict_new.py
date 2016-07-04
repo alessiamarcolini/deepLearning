@@ -110,13 +110,8 @@ model.compile(loss='binary_crossentropy',
               metrics=['accuracy'])
 
 
-validation_images = []
-val_paths = [validation_data_dir + "/" + str(i) + "/" for i in range(1,17)]
-val_filenames = os.listdir(val_paths)
+validation_images = os.listdir(validation_data_dir)
 
-for path in val_paths:
-    for name in val_filenames:
-        validation_images.append(path + name)
 
 
 validation = np.array(load_im2(validation_images))
