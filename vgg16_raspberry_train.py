@@ -136,11 +136,11 @@ print('Model loaded.')
 
 # build a classifier model to put on top of the convolutional model
 model.add(Flatten())
-model.add(Dense(128, activation='sigmoid'))
+model.add(Dense(768, activation='sigmoid'))
 model.add(Dropout(0.0))
-model.add(Dense(128, activation='sigmoid'))
+model.add(Dense(768, activation='sigmoid'))
 model.add(Dropout(0.0))
-model.add(Dense(3, activation='softmax'))
+model.add(Dense(3, activation='sigmoid'))
 
 # note that it is necessary to start with a fully-trained
 # classifier, including the top classifier,
@@ -155,8 +155,8 @@ for layer in model.layers[:25]:
 
 # compile the model with a SGD/momentum optimizer
 # and a very slow learning rate.
-model.compile(loss='categorical_crossentropy',
-              optimizer=optimizers.SGD(lr=1e-4, momentum=0.7),
+model.compile(loss='binary_crossentropy',
+              optimizer=optimizers.Adam(lr=1e-4, epsilon=1e-08),
               metrics=['accuracy'])
 
 train_images = []
