@@ -185,19 +185,26 @@ def file_generator(predict_mcc, validation_images, validation_labels, predicted_
 
 
 def MCC_CM_calculator(validation_labels_linear, predicted_labels_linear):
-    '''Return MCC and confusion matrix'''
+    #Return MCC and confusion matrix
 
-    print(len(validation_labels_linear), validation_labels_linear.shape)
-    print(len(predicted_labels_linear), predicted_labels_linear.shape)
     MCC = multimcc(validation_labels_linear, predicted_labels_linear)
     MCC = round(MCC,3)
-    MCC_line = "MCC=" + str(MCC) + "\n"
+    MCC_line = "MCC=" + str(MCC)
 
     CM = confusion_matrix(validation_labels_linear, predicted_labels_linear)
-    CM_lines = ""
 
-    for i in range(len(CM)):
-        for j in CM[i]:
+    CM_lines = ";p_E;p_G;p_L\n"
+
+    for i in range(len(CM[0])):
+        if i == 0:
+            l = "r_E"
+        elif i == 1:
+            l = "r_G"
+        elif i == 2:
+            l = "r_L"
+
+        CM_lines += l + ";"
+        for j in CM[0][i]:
             CM_lines += str(j) + ";"
         CM_lines += "\n"
 
