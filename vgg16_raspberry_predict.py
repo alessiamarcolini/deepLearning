@@ -97,9 +97,9 @@ def create_validationImg_validationLabel_list(predict_mcc, validation_data_dir):
 
         validation_labels = []
 
-        val_path_e = validation_data_dir + "/early/"
-        val_path_g = validation_data_dir + "/good/"
-        val_path_l = validation_data_dir + "/late/"
+        val_path_e = validation_data_dir + "early/"
+        val_path_g = validation_data_dir + "good/"
+        val_path_l = validation_data_dir + "late/"
         val_paths = [val_path_e, val_path_g, val_path_l]
 
         val_filenames_e = os.listdir(val_path_e)
