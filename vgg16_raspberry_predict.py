@@ -235,12 +235,16 @@ def main():
     prediction_summary = open("vgg16_first_train_raspberry_prediction_summary_{}.csv".format(dataset), "w")
     prediction_summary.write("\t".join(['FILENAME', 'PREDICTED_LABEL', 'PREDICTED_LABELS', 'REAL_LABEL'])+'\n')
 
+
+
+    lines, validation_labels_linear, predicted_labels_linear = file_generator(predict_mcc, validation_images, predicted_labels)
+
+
     if predict_mcc:
         MCC_line, CM_line = MCC_CM_calculator(validation_labels_linear, predicted_labels_linear)
         file_lines.append(MCC_line)
         file_lines.append(CM_line)
 
-    lines, validation_labels_linear, predicted_labels_linear = file_generator(predict_mcc, validation_images, predicted_labels)
     file_lines.extend(lines)
 
     for line in file_lines:
