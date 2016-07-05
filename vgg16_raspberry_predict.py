@@ -151,19 +151,19 @@ def file_generator(predict_mcc, validation_images, validation_labels, predicted_
         line = [validation_images[i], predicted_label, str(round(cls_prob[0],3)),
                 str(round(cls_prob[1],3)), str(round(cls_prob[2],3))]
 
-        if predict_mcc:
+    if predict_mcc:
 
-            for j in range(len(validation_labels[i])):
-                cl = validation_labels[i][j]
-                validation_labels_linear.append(j)
-                if cl == 1 and j == 0:
-                    real_label = "Early"
+        for j in range(len(validation_labels[i])):
+            cl = validation_labels[i][j]
+            validation_labels_linear.append(j)
+            if cl == 1 and j == 0:
+                real_label = "Early"
 
-                elif  cl == 1 and j == 1:
-                    real_label = "Good"
+            elif  cl == 1 and j == 1:
+                real_label = "Good"
 
-                elif  cl == 1 and j == 2:
-                    real_label = "Late"
+            elif  cl == 1 and j == 2:
+                real_label = "Late"
 
             line.append(real_label)
 
