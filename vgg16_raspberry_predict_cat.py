@@ -253,7 +253,7 @@ def main():
     # compile the model with a SGD/momentum optimizer
     # and a very slow learning rate.
     model.compile(loss='categorical_crossentropy',
-                  optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
+                  optimizer=optimizers.adam(),
                   metrics=['accuracy'])
 
 
@@ -265,7 +265,7 @@ def main():
     np.savetxt("predicted_features.txt", predicted_features)
 
     top_model.compile(loss='categorical_crossentropy',
-                  optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
+                  optimizer=optimizers.adam(),
                   metrics=['accuracy'])
 
     predicted_labels = top_model.predict(predicted_features)
