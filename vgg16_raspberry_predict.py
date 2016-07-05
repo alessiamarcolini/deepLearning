@@ -217,7 +217,7 @@ def main():
     # (trained on ImageNet, won the ILSVRC competition in 2014)
     # note: when there is a complete match between your model definition
     # and your weight savefile, you can simply call model.load_weights(filename
-    model = vgg(weights_path)
+    model = vgg16(weights_path)
     #model, top_model = vgg16(weights_path)
 
     assert os.path.exists(weights_path), 'Model weights not found (see "weights_path" variable in script).'
