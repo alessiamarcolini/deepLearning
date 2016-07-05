@@ -8,8 +8,48 @@ Matplotlib and Bokeh frameworks
 
 from matplotlib import pyplot as plt
 from bokeh.charts import Scatter, output_file, show
-from bokeh.sampledata.iris import flowers as data
 
+# ================
+# ImageNet Classes
+# ================
+RASPBERRY = 'raspberry'
+STRAWBERRY = 'strawberry'
+BLACKBERRY = 'blackberry'
+RED_CURRANT = 'redcurrant'
+WHITE_CURRANT ='whitecurrant'
+BLUEBERRY = 'blueberry'
+CHERRY = 'cherry'
+PLUM = 'plum'
+APRICOT = 'apricot'
+GOOSEBERRY = 'Gooseberry'
+
+MARKERS = {RASPBERRY: 'o',
+           STRAWBERRY: '+',
+           BLACKBERRY: '*',
+           RED_CURRANT: 'D',
+           WHITE_CURRANT: 'h',
+           BLUEBERRY: 's',
+           CHERRY: 'd',
+           PLUM: '8',
+           APRICOT: 'p',
+           GOOSEBERRY: '<'}
+
+COLOURS = {RASPBERRY: '#ff6666',
+           STRAWBERRY: '#794044',
+           BLACKBERRY: '#000000',
+           RED_CURRANT: '#f03939',
+           WHITE_CURRANT: '#f0f688',
+           BLUEBERRY: '#3a539b',
+           CHERRY: '#f688b4',
+           PLUM: '#9615f0',
+           APRICOT: '#f0b015',
+           GOOSEBERRY: '#15f024'}
+
+CLASSES_OF_INTEREST = [APRICOT, PLUM, CHERRY, BLUEBERRY]
+
+# =======================================================
+
+RASPBERRY_BASE_CLASSES = ['E', 'G', 'L']
 
 def make_plot(X, Y, colours, classes, fig_filename, title,
               s=10, annotate=False, sample_names=None):
@@ -72,44 +112,14 @@ def make_plot(X, Y, colours, classes, fig_filename, title,
     plt.clf()
 
 
-def make_interactive_plot():
-    scatter = Scatter(data, x='petal_length', y='petal_width',
-                      color='species', marker='species',
-                      title='Iris Dataset Color and Marker by Species',
-                      legend=True)
+def make_interactive_plot(data, fig_filename="tsne_plot.html",
+                          title="t-SNE for Raspberries"):
 
-    output_file("iris_simple.html", title="iris_simple.py example")
+    scatter = Scatter(data, x='X', y='Y',
+                      color='classes', marker='classes',
+                      title='t-SNE',
+                      legend=True)
+    output_file(fig_filename, title=title)
     show(scatter)
 
 
-RASPBERRY = 'raspberry'
-STRAWBERRY = 'strawberry'
-BLACKBERRY = 'blackberry'
-RED_CURRANT = 'redcurrant'
-WHITE_CURRANT ='whitecurrant'
-BLUEBERRY = 'blueberry'
-CHERRY = 'cherry'
-PLUM = 'plum'
-APRICOT = 'apricot'
-GOOSEBERRY = 'Gooseberry'
-MARKERS = {RASPBERRY: 'o',
-           STRAWBERRY: '+',
-           BLACKBERRY: '*',
-           RED_CURRANT: 'D',
-           WHITE_CURRANT: 'h',
-           BLUEBERRY: 's',
-           CHERRY: 'd',
-           PLUM: '8',
-           APRICOT: 'p',
-           GOOSEBERRY: '<'}
-COLOURS = {RASPBERRY: '#ff6666',
-           STRAWBERRY: '#794044',
-           BLACKBERRY: '#000000',
-           RED_CURRANT: '#f03939',
-           WHITE_CURRANT: '#f0f688',
-           BLUEBERRY: '#3a539b',
-           CHERRY: '#f688b4',
-           PLUM: '#9615f0',
-           APRICOT: '#f0b015',
-           GOOSEBERRY: '#15f024'}
-CLASSES_OF_INTEREST = [APRICOT, PLUM, CHERRY, BLUEBERRY]
