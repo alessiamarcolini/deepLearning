@@ -225,7 +225,8 @@ def main():
         weights = [g[g.attrs['weight_names'][p]] for p in range(len(g.attrs['weight_names']))]
         if k >= len(model.layers):
             top_model.layers[k-len(model.layers)].set_weights(weights)
-        model.layers[k].set_weights(weights)
+        else:
+            model.layers[k].set_weights(weights)
     f.close()
     print('Model loaded.')
 
