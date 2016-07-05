@@ -243,7 +243,8 @@ def main():
     lines, validation_labels_linear, predicted_labels_linear = file_generator(predict_mcc, validation_images, predicted_labels)
     file_lines.extend(lines)
 
-
+    for line in file_lines:
+        prediction_summary.write(line)
     prediction_summary.close()
 
 
