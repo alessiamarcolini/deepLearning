@@ -79,9 +79,9 @@ def vgg16(weights_path=None, add_fully_connected=True):
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(Flatten())
-    model.add(Dense(128, activation='sigmoid'))
+    model.add(Dense(768, activation='sigmoid'))
     model.add(Dropout(0.0))
-    model.add(Dense(128, activation='sigmoid'))
+    model.add(Dense(768, activation='sigmoid'))
     model.add(Dropout(0.0))
 
 
@@ -248,7 +248,7 @@ def main():
     # compile the model with a SGD/momentum optimizer
     # and a very slow learning rate.
     model.compile(loss='binary_crossentropy',
-                  optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
+                  optimizer=optimizers.Adam(lr=1e-4, epsilon=1e-08),
                   metrics=['accuracy'])
 
 
@@ -259,7 +259,7 @@ def main():
     np.savetxt("predicted_features.txt", predicted_features)
 
     top_model.compile(loss='binary_crossentropy',
-                  optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
+                  optimizer=optimizers.Adam(lr=1e-4, epsilon=1e-08),
                   metrics=['accuracy'])
 
     predicted_labels = top_model.predict(predicted_features)
