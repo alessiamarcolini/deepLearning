@@ -230,7 +230,7 @@ def main():
            top_model.layers[k-len(model.layers)].set_weights(weights)
        else:
            model.layers[k].set_weights(weights)
-   f.close()
+    f.close()
 
 
     print('Model loaded.')
