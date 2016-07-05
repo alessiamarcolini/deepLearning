@@ -247,7 +247,8 @@ if __name__ == '__main__':
             data_dict['labels'] = labels_all.ravel()
             data_dict['classes'] = classes_all.ravel()
             data = pd.DataFrame(data=data_dict)
-            make_interactive_plot(data, fig_filename='tsne_plot_{}.html'.format(model_name))
+            make_interactive_plot(data, fig_filename='tsne_plot_{}.html'.format(model_name),
+                                  title='t-SNE for SO Raspberries (Model: {})'.format(model_name))
 
 
 
