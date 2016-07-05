@@ -130,7 +130,7 @@ def create_validationImg_validationLabel_list(predict_mcc, validation_data_dir):
 
     return validation_images, validation_labels
 
-def file_generator(predict_mcc):
+def file_generator(predict_mcc, predicted_labels):
 
     lines = []
     predicted_labels_linear = []
@@ -240,7 +240,7 @@ def main():
         file_lines.append(MCC_line)
         file_lines.append(CM_line)
 
-    lines, validation_labels_linear, predicted_labels_linear = file_generator(predict_mcc)
+    lines, validation_labels_linear, predicted_labels_linear = file_generator(predict_mcc, predicted_labels)
     file_lines.extend(lines)
 
 
