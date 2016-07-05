@@ -86,7 +86,7 @@ def vgg16(weights_path=None, add_fully_connected=True):
     top_model = None
     if add_fully_connected:
         top_model = Sequential()
-        top_model.add(Dense(3, input_dim = model.output_shape[1:], activation='sigmoid'))
+        top_model.add(Dense(3, input_dim = model.output_shape[1], activation='sigmoid'))
 
     return model, top_model
 
@@ -220,6 +220,7 @@ def main():
 
     assert os.path.exists(weights_path), 'Model weights not found (see "weights_path" variable in script).'
     f = h5py.File(weights_path)
+    print f.attrs
     for k in range(f.attrs['nb_layers']):
         g = f['layer_{}'.format(k)]
         weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
