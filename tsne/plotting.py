@@ -117,11 +117,11 @@ def make_interactive_plot(data, fig_filename="tsne_plot.html",
                           title="t-SNE for Raspberries"):
     tools = "pan, wheel_zoom, box_select, box_zoom, reset, resize, save"
 
-    colormap = {'E': 'orange', 'G': 'red', 'L': 'purple'}
-    colors = np.array([colormap[x] for x in data['classes']])
+    # colormap = {'E': 'orange', 'G': 'red', 'L': 'purple'}
+    # colors = np.array([colormap[x] for x in data['classes']])
 
     scatter = Scatter(data, x='X', y='Y',
-                      color=colors, marker='labels',
+                      color='classes', marker='markers',
                       title=title, plot_width=1024, plot_height=768,
                       tools=tools, legend='bottom_right',
                       # legend_sort_field='marker',

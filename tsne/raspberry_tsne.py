@@ -244,8 +244,15 @@ if __name__ == '__main__':
 
             # Compose the expected Pandas DataFrame
             data_dict = {'X': X_all[:, 0], 'Y': X_all[:, 1]}
-            data_dict['labels'] = labels_all.ravel()
-            data_dict['classes'] = classes_all.ravel()
+            labels_all = labels_all.ravel()
+            classes_all = classes_all.ravel()
+            markers_all = np.copy(labels_all)
+            markers_all[markers_all=='L_so2_t'] = 'Traing'
+            markers_all[markers_all == 'G_so2_t'] = 'Traing'
+            markers_all[markers_all == 'E_so2_t'] = 'Traing'
+            data_dict['labels'] = labels_all
+            data_dict['classes'] = classes_all
+            data_dict['markers'] = markers_all
             data = pd.DataFrame(data=data_dict)
             make_interactive_plot(data, fig_filename='tsne_plot_{}.html'.format(model_name),
                                   title='t-SNE for SO Raspberries (Model: {})'.format(model_name))
