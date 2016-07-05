@@ -62,7 +62,7 @@ def collect_data_files(target_folder=PREDICTED_FEATURES_FOLDER,
                 model_name, dataset_name_w_ext = file.split(split_pattern)
                 dataset_name, _ = os.path.splitext(dataset_name_w_ext)
                 dataset_maps.setdefault(dataset_name, dict())
-                dataset_maps[dataset_name][model_name] = os.path.join(root, file)
+                dataset_maps[model_name][dataset_name] = os.path.join(root, file)
     return dataset_maps
 
 
@@ -211,9 +211,9 @@ if __name__ == '__main__':
         print('\t Deep Learning Models: {}'.format(dl_models))
         # Preparing data to load data and apply t-SNE
         process_data = list()
-        for dataset_name in dataset_features_map:
-            for model_name in dataset_features_map[dataset_name]:
-                matrix_filepath = dataset_features_map[dataset_name][model_name]
+        for model_name in dataset_features_map:
+            for dataset_name in dataset_features_map[model_name]:
+                matrix_filepath = dataset_features_map[model_name][dataset_name]
                 tsne_filename = '{}_tsne_{}.txt'.format(model_name, dataset_name)
                 tsne_filepath = os.path.join(os.path.abspath(os.path.curdir),
                                              'tsne_data', tsne_filename)
@@ -224,12 +224,11 @@ if __name__ == '__main__':
         print('Execution Mode: Plot')
         labels_features_map = collect_data_files(target_folder=VALIDATION_LABELS_FOLDER,
                                                  split_pattern='_validation_labels_')
-
-        X_all = None
-        labels_all = None
-        classes_all = None
-        for dataset_name in labels_features_map:
-            for model_name in labels_features_map[dataset_name]:
+        for model_name in labels_features_map:
+            X_all = None
+            labels_all = None
+            classes_all = None
+            for dataset_name in labels_features_map[model_name]:
                 validation_filepath = labels_features_map[dataset_name][model_name]
                 # Load lables and t-SNE data
                 labels, classes, X_tsne = load_tsne_data_for_plots(validation_filepath,
@@ -243,13 +242,12 @@ if __name__ == '__main__':
                     X_all = np.vstack((X_all, X_tsne))
                     labels_all = np.vstack((labels_all, labels))
                     classes_all = np.vstack((classes_all, classes))
-
-        # Compose the expected Pandas DataFrame
-        data_dict = {'X': X_all[:, 0], 'Y': X_all[:, 1]}
-        data_dict['labels'] = labels_all.ravel()
-        data_dict['classes'] = classes_all.ravel()
-        data = pd.DataFrame(data=data_dict)
-        make_interactive_plot(data)
+            # Compose the expected Pandas DataFrame
+            data_dict = {'X': X_all[:, 0], 'Y': X_all[:, 1]}
+            data_dict['labels'] = labels_all.ravel()
+            data_dict['classes'] = classes_all.ravel()
+            data = pd.DataFrame(data=data_dict)
+            make_interactive_plot(data, fig_filename='tsne_plot_{}.html'.format(model_name))
 
 
 
