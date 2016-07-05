@@ -162,7 +162,7 @@ def load_tsne_data_for_plots(validation_filepath, model_name, dataset_name):
                            for label in RASPBERRY_BASE_CLASSES])
     labels_map = np.loadtxt(validation_filepath)
     labels = ds_classes[np.argmax(labels_map, axis=1)]
-    labels = labels.reshape(np.newaxis)  # reshaping to allow future np.vstack
+    labels = labels.reshape(labels.shape[0], 1)  # reshaping to allow future np.vstack
 
     tsne_filepath = validation_filepath.replace(VALIDATION_LABELS_FOLDER, TSNE_FEATURES_FOLDER)
     tsne_filepath = tsne_filepath.replace('validation_labels', 'tsne')
