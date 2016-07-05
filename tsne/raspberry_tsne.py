@@ -11,7 +11,10 @@ from sklearn.manifold import TSNE
 import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
-from .plotting import make_interactive_plot, RASPBERRY_BASE_CLASSES
+try:
+    from .plotting import make_interactive_plot, RASPBERRY_BASE_CLASSES
+except ImportError:
+    from plotting import make_interactive_plot, RASPBERRY_BASE_CLASSES
 
 from argparse import ArgumentParser
 
@@ -225,7 +228,7 @@ if __name__ == '__main__':
 
         # Compose the expected Pandas DataFrame
         data_dict = {'X': X_all[:, 0], 'Y': X_all[:, 1]}
-        data_dict['clases'] = labels_all
+        data_dict['classes'] = labels_all
         data = pd.DataFrame(data=data_dict)
         make_interactive_plot(data)
 
