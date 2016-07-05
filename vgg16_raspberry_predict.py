@@ -262,7 +262,7 @@ def main():
 
     #predicted_labels = model.predict(validation)
     predicted_features = model.predict(validation)
-    np.savetxt("predicted_features.txt", predicted_features)
+    np.savetxt("predicted_features_{}.txt".format(dataset), predicted_features)
 
     top_model.compile(loss='binary_crossentropy',
                   optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
