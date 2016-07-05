@@ -222,7 +222,7 @@ def main():
     f = h5py.File(weights_path)
     for k in range(len(f.attrs['layer_names'])):
         g = f[f.attrs['layer_names'][k]]
-        weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
+        weights = [g[g.attrs['weight_names'][p]] for p in range(len(g.attrs['weight_names']))]
         if k >= len(model.layers):
             top_model.layers[k-len(model.layers)].set_weights(weights)
         model.layers[k].set_weights(weights)
