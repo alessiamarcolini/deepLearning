@@ -13,7 +13,7 @@ import pandas as pd
 from joblib import Parallel, delayed
 try:
     from .plotting import make_interactive_plot, RASPBERRY_BASE_CLASSES
-except ImportError:
+except ImportError, SystemError:
     from plotting import make_interactive_plot, RASPBERRY_BASE_CLASSES
 
 from argparse import ArgumentParser
