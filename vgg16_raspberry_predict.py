@@ -270,7 +270,7 @@ def main():
 
     predicted_labels = top_model.predict(predicted_features)
 
-    prediction_summary = open("vgg16_first_train_raspberry_prediction_summary_{}.csv".format(dataset), "w")
+    prediction_summary = open("retults/vgg16_first_train_raspberry_prediction_summary_{}.csv".format(dataset), "w")
 
 
 
