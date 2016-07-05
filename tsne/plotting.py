@@ -119,7 +119,7 @@ def make_interactive_plot(data, fig_filename="tsne_plot.html",
                       color='labels', marker='classes',
                       title=title, plot_width=1024, plot_height=768,
                       tools=tools, legend='bottom_right',
-                      legend_sort_field='labels',
+                      legend_sort_field='marker',
                       legend_sort_direction='ascending')
     output_file(fig_filename, title=title)
     show(scatter)
