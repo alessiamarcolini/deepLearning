@@ -284,7 +284,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
                       metrics=['accuracy'])
 
         # fit the model
-        batch_size = 256
+        batch_size = 128
         print "\t#Chosen batch size:", batch_size,"\n"
         model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
         predicted_labels = model.predict(validation)
