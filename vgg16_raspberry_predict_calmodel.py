@@ -220,6 +220,7 @@ def main():
 
     assert os.path.exists(weights_path), 'Model weights not found (see "weights_path" variable in script).'
     f = h5py.File(weights_path)
+    print f.attrs
     for k in range(f.attrs['nb_layers']):
         g = f['layer_{}'.format(k)]
         weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
