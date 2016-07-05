@@ -122,7 +122,7 @@ def create_validationImg_validationLabel_list(predict_mcc):
     else:
         validation_images = os.listdir(validation_data_dir)
         validation_images.sort()
-        for i range(len(validation_images)):
+        for i in range(len(validation_images)):
             validation_images[i] = validation_data_dir + validation_images[i]
         validation_labels = None
 
