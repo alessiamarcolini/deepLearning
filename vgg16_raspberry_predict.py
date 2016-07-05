@@ -37,6 +37,8 @@ def dataset_to_parameters(dataset):
     return predict_mcc
 
 def vgg16(weights_path=None, add_fully_connected=True):
+    img_width, img_height = 224, 224
+    
     model = Sequential()
     model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
 
@@ -179,7 +181,7 @@ def main():
     weights_path = 'vgg16_first_training_raspberry_weights.h5'
 
     # dimensions of our images.
-    img_width, img_height = 224, 224
+
     predict_mcc = dataset_to_parameters(dataset)
 
     # load the weights of the VGG16 networks
