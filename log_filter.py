@@ -10,8 +10,11 @@ for line in log:
 trials_dict = {}
 trial_config = {}
 for line in filt_1:
+#	print line
+#	raw_input()
 	if line.startswith("0."):
 		trials_dict[float(line.strip())] = trial_config
+		trial_config = {}
 	else:
 		line = line.replace("#Chosen ", "").strip().split(":")
 		line[0] = line[0].strip()
