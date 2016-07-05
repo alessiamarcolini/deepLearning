@@ -237,12 +237,6 @@ def main():
 
     # build a classifier model to put on top of the convolutional model
 
-    # note that it is necessary to start with a fully-trained
-    # classifier, including the top classifier,
-    # in order to successfully do fine-tuning
-    top_model.load_weights(top_model_weights_path)
-
-
     # set the first 25 layers (up to the last conv block)
     # to non-trainable (weights will not be updated)
     for layer in model.layers[:25]:
