@@ -1,6 +1,7 @@
-MCC=0.837
-[ 63.   4.   1.];[  10.  165.    4.];[  0.  14.  74.];
-0;1;2;
+MCC=0.837;p_E;p_G;p_L
+r_E;63.0;4.0;1.0;
+r_G;10.0;165.0;4.0;
+r_L;0.0;14.0;74.0;
 FILENAME	PREDICTED_LABEL	E	G	L	REAL_LABEL
 datasets/so2_v-g/early/0014.jpg;Early;0.999;0.001;0.001;Early
 datasets/so2_v-g/early/0_21.jpg;Early;0.999;0.001;0.001;Early
