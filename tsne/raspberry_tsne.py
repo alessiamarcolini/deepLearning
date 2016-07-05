@@ -213,7 +213,7 @@ if __name__ == '__main__':
             for model_name in labels_features_map[dataset_name]:
                 validation_filepath = labels_features_map[dataset_name][model_name]
                 # Load lables and t-SNE data
-                labels, X_tsne = load_tsne_data_for_plots(validation_filepath)
+                labels, X_tsne = load_tsne_data_for_plots(validation_filepath, model_name, dataset_name)
 
                 # Stack data accordingly
                 if X_all is None:
