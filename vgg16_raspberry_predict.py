@@ -87,7 +87,7 @@ def vgg16(weights_path=None, add_fully_connected=True):
     if add_fully_connected:
         top_model = Sequential()
         top_model.add(Dense(3, input_dim = model.output_shape[1], activation='sigmoid'))
-        
+
 
     return model, top_model
     #return model
@@ -184,15 +184,14 @@ def file_generator(predict_mcc, validation_images, validation_labels, predicted_
 
 
 def MCC_CM_calculator(validation_labels_linear, predicted_labels_linear):
-    '''Return MCC and confusion matrix'''
+    #Return MCC and confusion matrix
 
-    print(len(validation_labels_linear), validation_labels_linear.shape)
-    print(len(predicted_labels_linear), predicted_labels_linear.shape)
     MCC = multimcc(validation_labels_linear, predicted_labels_linear)
     MCC = round(MCC,3)
     MCC_line = "MCC=" + str(MCC) + "\n"
 
     CM = confusion_matrix(validation_labels_linear, predicted_labels_linear)
+
     CM_lines = ""
 
     for i in range(len(CM)):
@@ -201,6 +200,7 @@ def MCC_CM_calculator(validation_labels_linear, predicted_labels_linear):
         CM_lines += "\n"
 
     return MCC_line, CM_lines
+
 
 
 def main():
