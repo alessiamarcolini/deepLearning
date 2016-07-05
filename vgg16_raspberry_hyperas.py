@@ -156,22 +156,22 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
         print('Model loaded.')
 
         # build a classifier model to put on top of the convolutional model
-        activation_function = {{choice(['relu', 'sigmoid', 'tanh'])}}
+        activation_function = 'relu'
         print "\n\t#Chosen Activation:", activation_function
-        dense_size = {{choice([64,128, 256, 512, 768,1024])}}
+        dense_size = 512
         print "\t#Chosen Dense Size:", dense_size
         dropout_rate = {{choice([0.0,0.25,0.5,0.75])}}
         print "\t#Chosen Dropout Rate:", dropout_rate
         model.add(Flatten())
         model.add(Dense(dense_size, activation=activation_function))
         model.add(Dropout(dropout_rate))
-        if {{choice(['one', 'two'])}} == 'two':
+        if 'two' == 'two':
             print "\t#Chosen FC Size: Double"
             model.add(Dense(dense_size, activation=activation_function))
             model.add(Dropout(dropout_rate))
         else:
             print "\t#Chosen FC Size: Single"
-        final_classifier = {{choice(['softmax', 'sigmoid'])}}
+        final_classifier = 'softmax'
         print "\t#Chosen Final Classifier:", final_classifier
         model.add(Dense(3, activation=final_classifier))
 
@@ -187,12 +187,16 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
             layer.trainable = False
 
         trial_model_optimizer_dict = {}
-        trial_model_optimizer_list = {{choice(['rmsprop', 'adam', 'sgd','adagrad','adadelta','adamax'])}}
+        #trial_model_optimizer_list = {{choice(['rmsprop', 'adam', 'sgd','adagrad','adadelta','adamax'])}}
+        trial_model_optimizer_list = {{choice([ 'adam', 'sgd'])}}
         print "\t#Chosen Optimizer: ", trial_model_optimizer_list
         epsilon = 1e-08
+        lr = {{choice([1e-1, 1e-2,1e-3,1e-4,1e-5,1e-6,1e-7])}}
+        momentum={{choice([0.7,0.8,0.9,1.0])}}
+        nesterov = {{choice([True,False])}}
         if trial_model_optimizer_list == 'adam':
             print "\t\t#Chosen Epsilon:", epsilon
-            lr = 1e-4
+
             print "\t\t#Chosen Learning Rate:", lr
             # beta_1 = {{uniform(0.5, 1)}}
             # beta_2 = {{uniform(0.6, 1)}}
@@ -205,7 +209,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
             #epsilon={{choice([0,1e-04, 1e-05,1e-06,1e-07,1e-08, 1e-09, 1e-10])}}
             print "\t\t#Chosen Epsilon:", epsilon
             #lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
-            lr = 1e-4
+
             print "\t\t#Chosen Learning Rate:", lr
             # rho = {{uniform(0.5, 1)}}
             #trial_model_optimizer = RMSprop(lr=lr, rho=rho, epsilon=epsilon)
@@ -214,12 +218,12 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
                                               'epsilon': epsilon}
 
         elif trial_model_optimizer_list == 'sgd':
-            nesterov = True
+
             print "\t\t#Chosen Nesterov:", nesterov
             #lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
-            lr =1e-4
+
             print "\t\t#Chosen Learning Rate:", lr
-            momentum={{choice([0.7,0.8,0.9,1.0])}}
+
             print "\t\t#Chosen Momentum:", momentum
             # decay={{uniform(0, 0.5)}}
             #trial_model_optimizer = SGD(lr=lr, momentum=momentum, decay=decay, nesterov=nesterov)
@@ -229,7 +233,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
                                               'nesterov': nesterov}
         elif trial_model_optimizer_list == 'adagrad':
             print "\t\t#Chosen Epsilon:", epsilon
-            lr = 1e-4
+
             print "\t\t#Chosen Learning Rate:", lr
             # beta_1 = {{uniform(0.5, 1)}}
             # beta_2 = {{uniform(0.6, 1)}}
@@ -239,7 +243,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
                                               'epsilon': epsilon}
         elif trial_model_optimizer_list == 'adamax':
             print "\t\t#Chosen Epsilon:", epsilon
-            lr = 1e-4
+
             print "\t\t#Chosen Learning Rate:", lr
             # beta_1 = {{uniform(0.5, 1)}}
             # beta_2 = {{uniform(0.6, 1)}}
@@ -249,7 +253,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
                                               'epsilon': epsilon}
         elif trial_model_optimizer_list == 'adadelta':
             print "\t\t#Chosen Epsilon:", epsilon
-            lr = 1e-4
+
             print "\t\t#Chosen Learning Rate:", lr
             # beta_1 = {{uniform(0.5, 1)}}
             # beta_2 = {{uniform(0.6, 1)}}
@@ -257,16 +261,16 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
             trial_model_optimizer = Adadelta(lr=lr,epsilon=epsilon )
             trial_model_optimizer_dict['adadelta'] = {'lr': lr,
                                               'epsilon': epsilon}
-        elif trial_model_optimizer_list == 'nadam':
-            print "\t\t#Chosen Epsilon:", epsilon
-            lr = 1e-4
-            print "\t\t#Chosen Learning Rate:", lr
-            # beta_1 = {{uniform(0.5, 1)}}
-            # beta_2 = {{uniform(0.6, 1)}}
-            #trial_model_optimizer = Adam(lr=lr, beta_1=beta_1, beta_2=beta_2,epsilon=epsilon )
-            trial_model_optimizer = Nadam(lr=lr,epsilon=epsilon )
-            trial_model_optimizer_dict['nadam'] = {'lr': lr,
-                                              'epsilon': epsilon}
+        # elif trial_model_optimizer_list == 'nadam':
+        #     print "\t\t#Chosen Epsilon:", epsilon
+        #     lr = 1e-4
+        #     print "\t\t#Chosen Learning Rate:", lr
+        #     # beta_1 = {{uniform(0.5, 1)}}
+        #     # beta_2 = {{uniform(0.6, 1)}}
+        #     #trial_model_optimizer = Adam(lr=lr, beta_1=beta_1, beta_2=beta_2,epsilon=epsilon )
+        #     trial_model_optimizer = Nadam(lr=lr,epsilon=epsilon )
+        #     trial_model_optimizer_dict['nadam'] = {'lr': lr,
+        #                                       'epsilon': epsilon}
 
 
 
@@ -275,12 +279,12 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
 
         # compile the model with a SGD/momentum optimizer
         # and a very slow learning rate.
-        model.compile(loss='binary_crossentropy',
+        model.compile(loss='categorical_crossentropy',
                       optimizer=trial_model_optimizer,
                       metrics=['accuracy'])
 
         # fit the model
-        batch_size = {{choice([16, 32, 64, 96,128])}}
+        batch_size = 256
         print "\t#Chosen batch size:", batch_size,"\n"
         model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
         predicted_labels = model.predict(validation)
