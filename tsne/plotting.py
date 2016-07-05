@@ -114,11 +114,13 @@ def make_plot(X, Y, colours, classes, fig_filename, title,
 
 def make_interactive_plot(data, fig_filename="tsne_plot.html",
                           title="t-SNE for Raspberries"):
-    tools = "pan, wheel_zoom, box_select, box_zoom, lasso_select, reset, resize, crosshair, save"
+    tools = "pan, wheel_zoom, box_select, box_zoom, reset, resize, save"
     scatter = Scatter(data, x='X', y='Y',
-                      color='classes', marker='classes',
-                      title=title, plot_width=800, plot_height=800,
-                      tools=tools, legend=True)
+                      color='labels', marker='classes',
+                      title=title, plot_width=1024, plot_height=768,
+                      tools=tools, legend='bottom_right',
+                      legend_sort_field='labels',
+                      legend_sort_direction='ascending')
     output_file(fig_filename, title=title)
     show(scatter)
 
