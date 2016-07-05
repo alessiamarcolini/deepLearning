@@ -179,8 +179,8 @@ def file_generator(predict_mcc, validation_images, validation_labels, predicted_
 def MCC_CM_calculator(validation_labels_linear, predicted_labels_linear):
     '''Return MCC and confusion matrix'''
 
-    print(validation_labels_linear)
-    print(predicted_labels_linear)
+    print(len(validation_labels_linear), validation_labels_linear.shape)
+    print(len(predicted_labels_linear), predicted_labels_linear.shape)
     MCC = multimcc(validation_labels_linear, predicted_labels_linear)
     MCC_line = "MCC=" + str(MCC) + "\n"
 
