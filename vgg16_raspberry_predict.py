@@ -225,8 +225,8 @@ def main():
                   optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
                   metrics=['accuracy'])
 
-    if predict_mcc:
-        validation_images, validation_labels = create_validationImg_validationLabel_list()
+
+    validation_images, validation_labels = create_validationImg_validationLabel_list(predict_mcc)
     validation = np.array(load_im2(validation_images))
 
     predicted_labels = model.predict(validation)
