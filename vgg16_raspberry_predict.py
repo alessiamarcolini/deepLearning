@@ -34,7 +34,7 @@ def dataset_to_parameters(dataset):
     else:
         predict_mcc= False
 
-    return predict_mcc
+    return predict_mcc, validation_data_dir
 
 def vgg16(weights_path=None, add_fully_connected=True):
     img_width, img_height = 224, 224
@@ -89,7 +89,7 @@ def vgg16(weights_path=None, add_fully_connected=True):
 
 
 
-def create_validationImg_validationLabel_list(predict_mcc):
+def create_validationImg_validationLabel_list(predict_mcc, validation_data_dir):
     validation_images = []
 
     if predict_mcc:
@@ -194,7 +194,7 @@ def main():
 
     # dimensions of our images.
 
-    predict_mcc = dataset_to_parameters(dataset)
+    predict_mcc, validation_data_dir = dataset_to_parameters(dataset)
 
     # load the weights of the VGG16 networks
     # (trained on ImageNet, won the ILSVRC competition in 2014)
