@@ -174,7 +174,7 @@ def MCC_CM_calculator(validation_labels_linear, predicted_labels_linear):
 
 def main():
     file_lines = []
-    dataset = sys.argv[0]
+    dataset = sys.argv[1]
     # path to the model weights files.
     weights_path = 'vgg16_first_training_raspberry_weights.h5'
 
