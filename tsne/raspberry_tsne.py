@@ -119,6 +119,7 @@ def load_and_apply_tsne(matrix_filepath, tsne_filepath):
     tsne_filepath : str
         Path to the file where to store t-SNE computation
     """
+    print('Executing t-SNE on {}'.format(matrix_filepath))
     X = np.loadtxt(matrix_filepath)
     apply_tsne(X, store_result=True, filename=tsne_filepath)
 
