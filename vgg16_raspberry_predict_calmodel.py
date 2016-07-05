@@ -88,7 +88,7 @@ def vgg16(weights_path=None, add_fully_connected=True):
     top_model = None
     if add_fully_connected:
         top_model = Sequential()
-        top_model.add(Dense(3, input_dim = model.output_shape[1], activation='softmax'))
+        top_model.add(Dense(3, input_dim = model.output_shape[1], activation='sigmoid'))
 
     return model, top_model
 
