@@ -228,7 +228,7 @@ if __name__ == '__main__':
 
         # Compose the expected Pandas DataFrame
         data_dict = {'X': X_all[:, 0], 'Y': X_all[:, 1]}
-        data_dict['classes'] = labels_all
+        data_dict['classes'] = labels_all.ravel()
         data = pd.DataFrame(data=data_dict)
         make_interactive_plot(data)
 
