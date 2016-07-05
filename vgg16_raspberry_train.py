@@ -136,10 +136,8 @@ print('Model loaded.')
 
 # build a classifier model to put on top of the convolutional model
 model.add(Flatten())
-model.add(Dense(768, activation='sigmoid'))
-model.add(Dropout(0.0))
-model.add(Dense(768, activation='sigmoid'))
-model.add(Dropout(0.0))
+model.add(Dense(256, activation='relu'))
+model.add(Dropout(0.5))
 model.add(Dense(3, activation='sigmoid'))
 
 # note that it is necessary to start with a fully-trained
@@ -156,7 +154,7 @@ for layer in model.layers[:25]:
 # compile the model with a SGD/momentum optimizer
 # and a very slow learning rate.
 model.compile(loss='binary_crossentropy',
-              optimizer=optimizers.Adam(lr=1e-4, epsilon=1e-08),
+              optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
               metrics=['accuracy'])
 
 train_images = []
@@ -229,7 +227,7 @@ train = np.array(load_im2(train_images))
 validation = np.array(load_im2(validation_images))
 
 # fit the model
-model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=128)
+model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=16)
 model.save_weights(OUTDIR + "vgg16_first_training_raspberry_weights_calmodel.h5", overwrite=True)
 predicted_labels = model.predict(validation)
 
