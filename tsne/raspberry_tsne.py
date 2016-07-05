@@ -153,19 +153,34 @@ def load_tsne_data_for_plots(validation_filepath, model_name, dataset_name):
          different classes properly modified according to the input model
          and dataset
 
+    classes: numpy.ndarray
+        A numpy array containing only class labels (encoded as string)
+        corresponding to different classes of samples loaded from
+        input `validation_filepath`.
+
     X_tsne : numpy.ndarray
         The t-SNE data loaded from matrix file retrieved according to the
         `validation_filepath`.
     """
 
+    # load labels from file (i.e. validation_filepath)
+    labels_map = np.loadtxt(validation_filepath)
+
+    # Generate Labels depending on the specific model and dataset
     class_label = '{label}_{mname}_{dsname}'
-    ds_classes = np.array([class_label.format(label=label,
+    ds_labels = np.array([class_label.format(label=label,
                                               mname=model_name,
                                               dsname=dataset_name)
                            for label in RASPBERRY_BASE_CLASSES])
-    labels_map = np.loadtxt(validation_filepath)
-    labels = ds_classes[np.argmax(labels_map, axis=1)]
+    labels = ds_labels[np.argmax(labels_map, axis=1)]
     labels = labels.reshape(labels.shape[0], 1)  # reshaping to allow future np.vstack
+
+    # Generate ONLY Class labels accordingly (used for markers in plots)
+    class_only = '{label}'
+    ds_classes = np.array([class_only.format(label=label)
+                          for label in RASPBERRY_BASE_CLASSES])
+    classes = ds_classes[np.argmax(labels_map, axis=1)]
+    classes = classes.reshape(classes.shape[0], 1)  # reshaping to allow future np.vstack
 
     tsne_filepath = validation_filepath.replace(VALIDATION_LABELS_FOLDER, TSNE_FEATURES_FOLDER)
     tsne_filepath = tsne_filepath.replace('validation_labels', 'tsne')
@@ -175,7 +190,7 @@ def load_tsne_data_for_plots(validation_filepath, model_name, dataset_name):
         return
     X_tsne = np.loadtxt(tsne_filepath)
 
-    return labels, X_tsne
+    return labels, classes, X_tsne
 
 
 if __name__ == '__main__':
@@ -212,23 +227,27 @@ if __name__ == '__main__':
 
         X_all = None
         labels_all = None
+        classes_all = None
         for dataset_name in labels_features_map:
             for model_name in labels_features_map[dataset_name]:
                 validation_filepath = labels_features_map[dataset_name][model_name]
                 # Load lables and t-SNE data
-                labels, X_tsne = load_tsne_data_for_plots(validation_filepath, model_name, dataset_name)
-
+                labels, classes, X_tsne = load_tsne_data_for_plots(validation_filepath,
+                                                                   model_name, dataset_name)
                 # Stack data accordingly
                 if X_all is None:
                     X_all = X_tsne
                     labels_all = labels
+                    classes_all = classes
                 else:
                     X_all = np.vstack((X_all, X_tsne))
                     labels_all = np.vstack((labels_all, labels))
+                    classes_all = np.vstack((classes_all, classes))
 
         # Compose the expected Pandas DataFrame
         data_dict = {'X': X_all[:, 0], 'Y': X_all[:, 1]}
-        data_dict['classes'] = labels_all.ravel()
+        data_dict['labels'] = labels_all.ravel()
+        data_dict['classes'] = classes_all.ravel()
         data = pd.DataFrame(data=data_dict)
         make_interactive_plot(data)
 
