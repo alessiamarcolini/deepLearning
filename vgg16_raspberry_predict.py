@@ -185,11 +185,18 @@ def MCC_CM_calculator(validation_labels_linear, predicted_labels_linear):
     print(len(validation_labels_linear), validation_labels_linear.shape)
     print(len(predicted_labels_linear), predicted_labels_linear.shape)
     MCC = multimcc(validation_labels_linear, predicted_labels_linear)
+    MCC = round(MCC,3)
     MCC_line = "MCC=" + str(MCC) + "\n"
 
-    CM_line = str(confusion_matrix(validation_labels_linear, predicted_labels_linear))
+    CM = confusion_matrix(validation_labels_linear, predicted_labels_linear)
+    CM_lines = ""
 
-    return MCC_line, CM_line
+    for i in range(len(CM)):
+        for j in range(len(CM[i])):
+            CM_lines += (str(CM[j]) + ";")
+        CM_lines += ("\n")
+
+    return MCC_line, CM_lines
 
 
 def main():
@@ -238,7 +245,6 @@ def main():
     predicted_labels = model.predict(validation)
 
     prediction_summary = open("vgg16_first_train_raspberry_prediction_summary_{}.csv".format(dataset), "w")
-    prediction_summary.write("\t".join(['FILENAME', 'PREDICTED_LABEL', 'PREDICTED_LABELS', 'REAL_LABEL'])+'\n')
 
 
 
@@ -246,9 +252,12 @@ def main():
 
 
     if predict_mcc:
-        MCC_line, CM_line = MCC_CM_calculator(validation_labels_linear, predicted_labels_linear)
+        MCC_line, CM_lines = MCC_CM_calculator(validation_labels_linear, predicted_labels_linear)
         file_lines.append(MCC_line)
-        file_lines.append(CM_line + "\n")
+        file_lines.append(CM_lines)
+
+    file_lines.append("\t".join(['FILENAME', 'PREDICTED_LABEL', 'E', 'G', 'L', 'REAL_LABEL'])+'\n')
+
 
     file_lines.extend(lines)
 
