@@ -248,7 +248,7 @@ def main():
     if predict_mcc:
         MCC_line, CM_line = MCC_CM_calculator(validation_labels_linear, predicted_labels_linear)
         file_lines.append(MCC_line)
-        file_lines.append(CM_line)
+        file_lines.append(CM_line + "\n")
 
     file_lines.extend(lines)
 
