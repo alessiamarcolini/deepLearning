@@ -7,7 +7,6 @@
 # License: BSD 3 clause
 
 import os
-from tsne.plotting import make_plot
 from sklearn.manifold import TSNE
 import numpy as np
 from joblib import Parallel, delayed
