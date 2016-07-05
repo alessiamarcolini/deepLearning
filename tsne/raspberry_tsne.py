@@ -9,12 +9,15 @@
 import os
 from sklearn.manifold import TSNE
 import numpy as np
+import pandas as pd
 from joblib import Parallel, delayed
+from .plotting import make_interactive_plot, RASPBERRY_BASE_CLASSES
 
 from argparse import ArgumentParser
 
 PREDICTED_FEATURES_FOLDER = os.path.join(os.path.abspath(os.path.curdir), 'predicted_features')
 VALIDATION_LABELS_FOLDER = os.path.join(os.path.abspath(os.path.curdir), 'validation_labels')
+TSNE_FEATURES_FOLDER = os.path.join(os.path.abspath(os.path.curdir), 'tsne_data')
 
 REFERENCE_CLASSES = ['EARLY', 'GOOD', 'LATE']
 
@@ -123,6 +126,55 @@ def load_and_apply_tsne(matrix_filepath, tsne_filepath):
     apply_tsne(X, store_result=True, filename=tsne_filepath)
 
 
+def load_tsne_data_for_plots(validation_filepath, model_name, dataset_name):
+    """Load labels from input `validation_filepath` and transform them in a
+    proper np.ndarray for further processing. Moreover, corresponding t-SNE
+    data saved in a file are collected and returned as well.
+
+    Parameters
+    ----------
+    validation_filepath : str
+        The path to the validation file containing labels for the prediction
+        for the corresponding model_name and dataset_name
+
+    model_name: str
+        The name of the Deep Learning model to which lables refer to.
+
+    dataset_name: str
+        The name of the corresponding dataset to which labels refer to.
+
+    Returns
+    -------
+    labels : numpy.ndarray
+        A numpy array containing labels (encoded as string) corresponding to
+         different classes properly modified according to the input model
+         and dataset
+
+    X_tsne : numpy.ndarray
+        The t-SNE data loaded from matrix file retrieved according to the
+        `validation_filepath`.
+    """
+
+    class_label = '{label}_{mname}_{dsname}'
+    ds_classes = np.array([class_label.format(label=label,
+                                              mname=model_name,
+                                              dsname=dataset_name)
+                           for label in RASPBERRY_BASE_CLASSES])
+    labels_map = np.loadtxt(validation_filepath)
+    labels = ds_classes[np.argmax(labels_map, axis=1)]
+    labels = labels.reshape(np.newaxis)  # reshaping to allow future np.vstack
+
+    tsne_filepath = validation_filepath.replace(VALIDATION_LABELS_FOLDER, TSNE_FEATURES_FOLDER)
+    tsne_filepath = tsne_filepath.replace('validation_labels', 'tsne')
+
+    if not os.path.exists(tsne_filepath):
+        print('ERROR: {} does not exist!'.format(tsne_filepath))
+        return
+    X_tsne = np.loadtxt(tsne_filepath)
+
+    return labels, X_tsne
+
+
 if __name__ == '__main__':
 
     parser = ArgumentParser(usage='''This scripts may run in two modes: 'tsne' and 'plot'.
@@ -144,7 +196,7 @@ if __name__ == '__main__':
         for dataset_name in dataset_features_map:
             for model_name in dataset_features_map[dataset_name]:
                 matrix_filepath = dataset_features_map[dataset_name][model_name]
-                tsne_filename = 'tsne_{}_{}.txt'.format(model_name, dataset_name)
+                tsne_filename = '{}_tsne_{}.txt'.format(model_name, dataset_name)
                 tsne_filepath = os.path.join(os.path.abspath(os.path.curdir),
                                              'tsne_data', tsne_filename)
                 process_data.append((matrix_filepath, tsne_filepath))
@@ -154,6 +206,28 @@ if __name__ == '__main__':
         print('Execution Mode: Plot')
         labels_features_map = collect_data_files(target_folder=VALIDATION_LABELS_FOLDER,
                                                  split_pattern='_validation_labels_')
+
+        X_all = None
+        labels_all = None
+        for dataset_name in labels_features_map:
+            for model_name in labels_features_map[dataset_name]:
+                validation_filepath = labels_features_map[dataset_name][model_name]
+                # Load lables and t-SNE data
+                labels, X_tsne = load_tsne_data_for_plots(validation_filepath)
+
+                # Stack data accordingly
+                if X_all is None:
+                    X_all = X_tsne
+                    labels_all = labels
+                else:
+                    X_all = np.vstack((X_all, X_tsne))
+                    labels_all = np.vstack((labels_all, labels))
+
+        # Compose the expected Pandas DataFrame
+        data_dict = {'X': X_all[:, 0], 'Y': X_all[:, 1]}
+        data_dict['clases'] = labels_all
+        data = pd.DataFrame(data=data_dict)
+        make_interactive_plot(data)
 
 
 
