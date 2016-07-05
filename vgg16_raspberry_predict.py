@@ -29,6 +29,7 @@ def load_im2(paths):
 
 def dataset_to_parameters(dataset):
     validation_data_dir = ("/".join(["datasets", dataset.lower()]))
+    validation_data_dir += "/"
     if len(os.listdir(validation_data_dir)) == 3:
         predict_mcc = True
     else:
