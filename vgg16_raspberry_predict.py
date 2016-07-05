@@ -260,6 +260,8 @@ def main():
     validation_images, validation_labels = create_validationImg_validationLabel_list(predict_mcc, validation_data_dir)
     validation = np.array(load_im2(validation_images))
 
+    np.savetxt("tsne/validation_labels/cal1_validation_labels_{}.txt".format(dataset), validation_labels)
+
     #predicted_labels = model.predict(validation)
     predicted_features = model.predict(validation)
     np.savetxt("tsne/predicted_features/am1_predicted_features_{}.txt".format(dataset), predicted_features)
