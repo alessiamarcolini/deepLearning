@@ -455,7 +455,7 @@ elif OPTIMIZER_dict.keys()[0] == 'adadelta':
 
 
 best_model = model_from_json(best_model_dict['model'])
-best_model.compile(loss='categorical_crossentropy', optimizer=OPTIMIZER, metrics=['accuracy'])
+best_model.compile(loss='binary_crossentropy', optimizer=OPTIMIZER, metrics=['accuracy'])
 print("\n\n#########EXECUTING RETRAIN OF THE BEST MODEL TO SAVE WEIGHTS")
 best_model.fit(train, train_labels,
                     batch_size=best_model_dict['batch_size'],

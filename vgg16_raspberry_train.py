@@ -229,7 +229,7 @@ train = np.array(load_im2(train_images))
 validation = np.array(load_im2(validation_images))
 
 # fit the model
-model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=16)
+model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=128)
 model.save_weights(OUTDIR + "vgg16_first_training_raspberry_weights_calmodel.h5", overwrite=True)
 predicted_labels = model.predict(validation)
 
