@@ -79,14 +79,16 @@ def vgg16(weights_path=None, add_fully_connected=True):
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(Flatten())
-    model.add(Dense(256, activation='relu'))
-    model.add(Dropout(0.5))
+    model.add(Dense(128, activation='sigmoid'))
+    model.add(Dropout(0.0))
+    model.add(Dense(128, activation='sigmoid'))
+    model.add(Dropout(0.0))
 
 
     top_model = None
     if add_fully_connected:
         top_model = Sequential()
-        top_model.add(Dense(3, input_dim = model.output_shape[1], activation='sigmoid'))
+        top_model.add(Dense(3, input_dim = model.output_shape[1], activation='softmax'))
 
     return model, top_model
 
