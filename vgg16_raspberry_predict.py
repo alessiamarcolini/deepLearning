@@ -226,7 +226,7 @@ def main():
                   metrics=['accuracy'])
 
 
-    validation_images, validation_labels = create_validationImg_validationLabel_list(predict_mcc)
+    validation_images, validation_labels = create_validationImg_validationLabel_list(predict_mcc, validation_data_dir)
     validation = np.array(load_im2(validation_images))
 
     predicted_labels = model.predict(validation)
@@ -239,7 +239,7 @@ def main():
         file_lines.append(MCC_line)
         file_lines.append(CM_line)
 
-    lines, validation_labels_linear, predicted_labels_linear = file_generator(predict_mcc,)
+    lines, validation_labels_linear, predicted_labels_linear = file_generator(predict_mcc)
     file_lines.extend(lines)
 
 
