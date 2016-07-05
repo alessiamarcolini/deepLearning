@@ -117,6 +117,8 @@ def create_validationImg_validationLabel_list(predict_mcc):
                     validation_images.append(path + name)
                     validation_labels.append([0,0,1])
 
+        return validation_images, validation_labels
+
 def file_generator(predict_mcc):
 
     lines = []
@@ -214,7 +216,7 @@ def main():
                   metrics=['accuracy'])
 
 
-    create_validationImg_validationLabel_list(predict_mcc)
+    validation_images, validation_labels = create_validationImg_validationLabel_list(predict_mcc)
 
     validation = np.array(load_im2(validation_images))
     predicted_labels = model.predict(validation)
