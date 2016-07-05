@@ -502,7 +502,7 @@ MCC = multimcc(validation_labels_linear, predicted_labels_linear)
 print ("MCC of the best model:",MCC)
 prediction_summary.write("\n\nMCC:" + str(MCC))
 prediction_summary.close()
-best_model.save_weights(OUTDIR + "vgg16_first_training_raspberry_weights.h5", overwrite=True)
+best_model.save_weights(OUTDIR + "vgg16_first_training_raspberry_weights_hyperas.h5", overwrite=True)
 
 
 ##RANDOM LABEL
