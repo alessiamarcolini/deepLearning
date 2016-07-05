@@ -38,7 +38,7 @@ def dataset_to_parameters(dataset):
 
 def vgg16(weights_path=None, add_fully_connected=True):
     img_width, img_height = 224, 224
-    
+
     model = Sequential()
     model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
 
@@ -81,9 +81,9 @@ def vgg16(weights_path=None, add_fully_connected=True):
     model.add(Dense(256, activation='relu'))
     model.add(Dropout(0.5))
 
-    fully_connected()
+    fully_connected(model)
 
-def fully_connected():
+def fully_connected(model):
 
     model.add(Dense(3, activation='sigmoid'))
 
