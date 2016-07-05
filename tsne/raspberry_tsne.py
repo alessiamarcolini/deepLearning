@@ -229,7 +229,7 @@ if __name__ == '__main__':
             labels_all = None
             classes_all = None
             for dataset_name in labels_features_map[model_name]:
-                validation_filepath = labels_features_map[dataset_name][model_name]
+                validation_filepath = labels_features_map[model_name][dataset_name]
                 # Load lables and t-SNE data
                 labels, classes, X_tsne = load_tsne_data_for_plots(validation_filepath,
                                                                    model_name, dataset_name)
