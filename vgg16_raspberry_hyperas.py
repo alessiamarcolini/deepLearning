@@ -79,7 +79,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
     import h5py
     from hyperas.distributions import choice
     from mcc_multiclass import multimcc
-    import keras.backend.tensorflow_backend as K
+    #import keras.backend.tensorflow_backend as K
     import numpy as np
     from keras.models import Sequential
     from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
@@ -95,8 +95,10 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
     img_width, img_height = 224, 224
     nb_epochs = NB_EPOCHS
     print ("Entering GPU Model")
-    with K.tf.device('/gpu:' + str(GPU)):
-        K.set_session(K.tf.Session(config=K.tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)))
+    #with K.tf.device('/gpu:' + str(GPU)):
+    with open('FAKELOG',"w"):
+        #K.set_session(K.tf.Session(config=K.tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)))
+        #session = K.get_session()
         # build the VGG16 network
         model = Sequential()
         model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
@@ -154,22 +156,24 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
         print('Model loaded.')
 
         # build a classifier model to put on top of the convolutional model
-        activation_function = {{choice(['relu', 'sigmoid', 'tanh', 'linear'])}}
-        print ("#Chosen Activation:", activation_function)
-        dense_size = {{choice([50, 100, 256, 512, 1024])}}
-        print ("#Chosen Dense Size:", dense_size)
-        dropout_rate = {{choice([0.0, 0.1, 0.2, 0.3,0.4,0.5,0.6])}}
-        print ("#Chosen Dropout Rate:", dropout_rate)
+        activation_function = {{choice(['relu', 'sigmoid', 'tanh'])}}
+        print "\n\t#Chosen Activation:", activation_function
+        dense_size = {{choice([64,128, 256, 512, 768,1024])}}
+        print "\t#Chosen Dense Size:", dense_size
+        dropout_rate = {{choice([0.0,0.25,0.5,0.75])}}
+        print "\t#Chosen Dropout Rate:", dropout_rate
         model.add(Flatten())
         model.add(Dense(dense_size, activation=activation_function))
         model.add(Dropout(dropout_rate))
         if {{choice(['one', 'two'])}} == 'two':
-            print ("#Chosen FC Size: Double")
+            print "\t#Chosen FC Size: Double"
             model.add(Dense(dense_size, activation=activation_function))
             model.add(Dropout(dropout_rate))
         else:
-            print ("#Chosen FC Size: Single")
-        model.add(Dense(3, activation={{choice(['softmax', 'sigmoid'])}}))
+            print "\t#Chosen FC Size: Single"
+        final_classifier = {{choice(['softmax', 'sigmoid'])}}
+        print "\t#Chosen Final Classifier:", final_classifier
+        model.add(Dense(3, activation=final_classifier))
 
         # note that it is necessary to start with a fully-trained
         # classifier, including the top classifier,
@@ -183,13 +187,13 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
             layer.trainable = False
 
         trial_model_optimizer_dict = {}
-        trial_model_optimizer_list = {{choice(['rmsprop', 'adam', 'sgd'])}}
-        print "#Chosen Optimizer: ", trial_model_optimizer_list
+        trial_model_optimizer_list = {{choice(['rmsprop', 'adam', 'sgd','adagrad','adadelta','adamax'])}}
+        print "\t#Chosen Optimizer: ", trial_model_optimizer_list
+        epsilon = 1e-08
         if trial_model_optimizer_list == 'adam':
-            epsilon={{choice([0,1e-04, 1e-05,1e-06,1e-07,1e-08, 1e-09, 1e-10])}}
-            print "\t#Chosen Epsilon:", epsilon
-            lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
-            print "\t#Chosen Learning Rate:", lr
+            print "\t\t#Chosen Epsilon:", epsilon
+            lr = 1e-4
+            print "\t\t#Chosen Learning Rate:", lr
             # beta_1 = {{uniform(0.5, 1)}}
             # beta_2 = {{uniform(0.6, 1)}}
             #trial_model_optimizer = Adam(lr=lr, beta_1=beta_1, beta_2=beta_2,epsilon=epsilon )
@@ -198,10 +202,11 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
                                               'epsilon': epsilon}
 
         elif trial_model_optimizer_list == 'rmsprop':
-            epsilon={{choice([0,1e-04, 1e-05,1e-06,1e-07,1e-08, 1e-09, 1e-10])}}
-            print "\t#Chosen Epsilon:", epsilon
-            lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
-            print "\t#Chosen Learning Rate:", lr
+            #epsilon={{choice([0,1e-04, 1e-05,1e-06,1e-07,1e-08, 1e-09, 1e-10])}}
+            print "\t\t#Chosen Epsilon:", epsilon
+            #lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
+            lr = 1e-4
+            print "\t\t#Chosen Learning Rate:", lr
             # rho = {{uniform(0.5, 1)}}
             #trial_model_optimizer = RMSprop(lr=lr, rho=rho, epsilon=epsilon)
             trial_model_optimizer = RMSprop(lr=lr, epsilon=epsilon)
@@ -209,30 +214,74 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
                                               'epsilon': epsilon}
 
         elif trial_model_optimizer_list == 'sgd':
-            nesterov = {{choice([True,False])}}
-            print "\t#Chosen Nesterov:", nesterov
-            lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
-            print "\t#Chosen Learning Rate:", lr
-            momentum={{choice([0.1,0.5,0.7,0.8,0.9])}}
-            print "\t#Chosen Momentum:", momentum
+            nesterov = True
+            print "\t\t#Chosen Nesterov:", nesterov
+            #lr = {{choice([0.1,0.5,0.01,0.05,0.001,0.005,0.0001,0.0005])}}
+            lr =1e-4
+            print "\t\t#Chosen Learning Rate:", lr
+            momentum={{choice([0.7,0.8,0.9,1.0])}}
+            print "\t\t#Chosen Momentum:", momentum
             # decay={{uniform(0, 0.5)}}
             #trial_model_optimizer = SGD(lr=lr, momentum=momentum, decay=decay, nesterov=nesterov)
             trial_model_optimizer = SGD(lr=lr, momentum=momentum, nesterov=nesterov)
             trial_model_optimizer_dict['sgd'] = {'lr': lr,
                                               'momentum': momentum,
                                               'nesterov': nesterov}
+        elif trial_model_optimizer_list == 'adagrad':
+            print "\t\t#Chosen Epsilon:", epsilon
+            lr = 1e-4
+            print "\t\t#Chosen Learning Rate:", lr
+            # beta_1 = {{uniform(0.5, 1)}}
+            # beta_2 = {{uniform(0.6, 1)}}
+            #trial_model_optimizer = Adam(lr=lr, beta_1=beta_1, beta_2=beta_2,epsilon=epsilon )
+            trial_model_optimizer = Adagrad(lr=lr,epsilon=epsilon )
+            trial_model_optimizer_dict['adagrad'] = {'lr': lr,
+                                              'epsilon': epsilon}
+        elif trial_model_optimizer_list == 'adamax':
+            print "\t\t#Chosen Epsilon:", epsilon
+            lr = 1e-4
+            print "\t\t#Chosen Learning Rate:", lr
+            # beta_1 = {{uniform(0.5, 1)}}
+            # beta_2 = {{uniform(0.6, 1)}}
+            #trial_model_optimizer = Adam(lr=lr, beta_1=beta_1, beta_2=beta_2,epsilon=epsilon )
+            trial_model_optimizer = Adamax(lr=lr,epsilon=epsilon )
+            trial_model_optimizer_dict['adamax'] = {'lr': lr,
+                                              'epsilon': epsilon}
+        elif trial_model_optimizer_list == 'adadelta':
+            print "\t\t#Chosen Epsilon:", epsilon
+            lr = 1e-4
+            print "\t\t#Chosen Learning Rate:", lr
+            # beta_1 = {{uniform(0.5, 1)}}
+            # beta_2 = {{uniform(0.6, 1)}}
+            #trial_model_optimizer = Adam(lr=lr, beta_1=beta_1, beta_2=beta_2,epsilon=epsilon )
+            trial_model_optimizer = Adadelta(lr=lr,epsilon=epsilon )
+            trial_model_optimizer_dict['adadelta'] = {'lr': lr,
+                                              'epsilon': epsilon}
+        elif trial_model_optimizer_list == 'nadam':
+            print "\t\t#Chosen Epsilon:", epsilon
+            lr = 1e-4
+            print "\t\t#Chosen Learning Rate:", lr
+            # beta_1 = {{uniform(0.5, 1)}}
+            # beta_2 = {{uniform(0.6, 1)}}
+            #trial_model_optimizer = Adam(lr=lr, beta_1=beta_1, beta_2=beta_2,epsilon=epsilon )
+            trial_model_optimizer = Nadam(lr=lr,epsilon=epsilon )
+            trial_model_optimizer_dict['nadam'] = {'lr': lr,
+                                              'epsilon': epsilon}
+
+
+
 
         saved_clean_model = model.to_json()
 
         # compile the model with a SGD/momentum optimizer
         # and a very slow learning rate.
-        model.compile(loss='categorical_crossentropy',
+        model.compile(loss='binary_crossentropy',
                       optimizer=trial_model_optimizer,
                       metrics=['accuracy'])
 
         # fit the model
-        batch_size = {{choice([1, 2, 4, 8, 16, 32, 64, 128])}}
-        print "#Chosen batch size:", batch_size
+        batch_size = {{choice([16, 32, 64, 96,128])}}
+        print "\t#Chosen batch size:", batch_size,"\n"
         model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
         predicted_labels = model.predict(validation)
         predicted_labels_linear = []
@@ -260,6 +309,7 @@ def model(train, train_labels, validation, validation_labels, GPU, NB_EPOCHS, VG
             'optimizer': trial_model_optimizer_dict,
             'batch_size': batch_size
         }
+    #session.close()
     return {'loss': -MCC, 'status': STATUS_OK, 'model': output_model}
 
 
@@ -271,7 +321,7 @@ import numpy as np
 import os
 from images_utils import load_im2
 from keras.utils import np_utils
-from keras.optimizers import SGD, RMSprop, Adam
+from keras.optimizers import SGD, RMSprop, Adam, Adagrad, Adadelta, Adamax
 from mcc_multiclass import multimcc
 from keras.models import model_from_json
 
@@ -394,6 +444,15 @@ elif OPTIMIZER_dict.keys()[0] == 'rmsprop':
 elif OPTIMIZER_dict.keys()[0] == 'sgd':
     OPTIMIZER = SGD(lr=OPTIMIZER_dict['sgd']['lr'], momentum=OPTIMIZER_dict['sgd']['momentum'],
                     nesterov=OPTIMIZER_dict['sgd']['nesterov'])
+elif OPTIMIZER_dict.keys()[0] == 'adamax':
+    OPTIMIZER = Adamax(lr=OPTIMIZER_dict['adamax']['lr'], epsilon=OPTIMIZER_dict['adamax']['epsilon'])
+elif OPTIMIZER_dict.keys()[0] == 'adagrad':
+    OPTIMIZER = Adagrad(lr=OPTIMIZER_dict['adagrad']['lr'], epsilon=OPTIMIZER_dict['adagrad']['epsilon'])
+elif OPTIMIZER_dict.keys()[0] == 'adadelta':
+    OPTIMIZER = Adadelta(lr=OPTIMIZER_dict['adadelta']['lr'], epsilon=OPTIMIZER_dict['adadelta']['epsilon'])
+#elif OPTIMIZER_dict.keys()[0] == 'nadam':
+#    OPTIMIZER = Nadam(lr=OPTIMIZER_dict['nadam']['lr'], epsilon=OPTIMIZER_dict['nadam']['epsilon'])
+
 
 best_model = model_from_json(best_model_dict['model'])
 best_model.compile(loss='categorical_crossentropy', optimizer=OPTIMIZER, metrics=['accuracy'])
@@ -461,7 +520,7 @@ np.random.shuffle(random_train_labels_linear)
 random_train_labels = np_utils.to_categorical(random_train_labels_linear, max(random_train_labels_linear) + 1)
 
 random_model = model_from_json(best_model_dict['model'])
-random_model.compile(loss='categorical_crossentropy', optimizer=OPTIMIZER, metrics=['accuracy'])
+random_model.compile(loss='binary_crossentropy', optimizer=OPTIMIZER, metrics=['accuracy'])
 print("\n\n#########EXECUTING RANDOM LABEL OF THE BEST MODEL")
 random_model.fit(train, random_train_labels,
                     batch_size=best_model_dict['batch_size'],
