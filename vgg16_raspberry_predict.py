@@ -81,11 +81,11 @@ def vgg16(weights_path=None, add_fully_connected=True):
     model.add(Dense(256, activation='relu'))
     model.add(Dropout(0.5))
 
-    fully_connected(model)
+    if add_fully_connected:
+        model.add(Dense(3, activation='sigmoid'))
 
-def fully_connected(model):
+    return model
 
-    model.add(Dense(3, activation='sigmoid'))
 
 
 
@@ -188,7 +188,7 @@ def main():
     # (trained on ImageNet, won the ILSVRC competition in 2014)
     # note: when there is a complete match between your model definition
     # and your weight savefile, you can simply call model.load_weights(filename
-    vgg16(weights_path)
+    model = vgg16(weights_path)
 
     assert os.path.exists(weights_path), 'Model weights not found (see "weights_path" variable in script).'
     model.load_weights(weights_path)
