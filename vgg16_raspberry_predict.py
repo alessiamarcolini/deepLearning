@@ -192,7 +192,7 @@ def MCC_CM_calculator(validation_labels_linear, predicted_labels_linear):
 
     CM = confusion_matrix(validation_labels_linear, predicted_labels_linear)
 
-    CM_lines = "p_E;p_G;p_L"
+    CM_lines = "p_E;p_G;p_L\n"
 
     for i in range(len(CM[0])):
         if i == 0:
