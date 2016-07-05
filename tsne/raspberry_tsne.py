@@ -61,7 +61,7 @@ def collect_data_files(target_folder=PREDICTED_FEATURES_FOLDER,
             if file.endswith('.txt'):
                 model_name, dataset_name_w_ext = file.split(split_pattern)
                 dataset_name, _ = os.path.splitext(dataset_name_w_ext)
-                dataset_maps.setdefault(dataset_name, dict())
+                dataset_maps.setdefault(model_name, dict())
                 dataset_maps[model_name][dataset_name] = os.path.join(root, file)
     return dataset_maps
 
