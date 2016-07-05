@@ -82,6 +82,7 @@ def vgg16(weights_path=None, add_fully_connected=True):
     model.add(Dense(256, activation='relu'))
     model.add(Dropout(0.5))
 
+
     if add_fully_connected:
         model.add(Dense(3, activation='sigmoid'))
 
