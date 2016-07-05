@@ -167,10 +167,8 @@ def load_tsne_data_for_plots(validation_filepath, model_name, dataset_name):
     labels_map = np.loadtxt(validation_filepath)
 
     # Generate Labels depending on the specific model and dataset
-    class_label = '{label}_{mname}_{dsname}'
-    ds_labels = np.array([class_label.format(label=label,
-                                              mname=model_name,
-                                              dsname=dataset_name)
+    class_label = '{label}_{dsname}'
+    ds_labels = np.array([class_label.format(label=label, dsname=dataset_name)
                            for label in RASPBERRY_BASE_CLASSES])
     labels = ds_labels[np.argmax(labels_map, axis=1)]
     labels = labels.reshape(labels.shape[0], 1)  # reshaping to allow future np.vstack
@@ -228,6 +226,7 @@ if __name__ == '__main__':
             X_all = None
             labels_all = None
             classes_all = None
+
             for dataset_name in labels_features_map[model_name]:
                 validation_filepath = labels_features_map[model_name][dataset_name]
                 # Load lables and t-SNE data
@@ -242,6 +241,7 @@ if __name__ == '__main__':
                     X_all = np.vstack((X_all, X_tsne))
                     labels_all = np.vstack((labels_all, labels))
                     classes_all = np.vstack((classes_all, classes))
+
             # Compose the expected Pandas DataFrame
             data_dict = {'X': X_all[:, 0], 'Y': X_all[:, 1]}
             data_dict['labels'] = labels_all.ravel()

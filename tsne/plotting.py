@@ -8,6 +8,7 @@ Matplotlib and Bokeh frameworks
 
 from matplotlib import pyplot as plt
 from bokeh.charts import Scatter, output_file, show
+import numpy as np
 
 # ================
 # ImageNet Classes
@@ -117,7 +118,7 @@ def make_interactive_plot(data, fig_filename="tsne_plot.html",
     tools = "pan, wheel_zoom, box_select, box_zoom, reset, resize, save"
 
     colormap = {'E': 'orange', 'G': 'red', 'L': 'purple'}
-    colors = [colormap[x] for x in data['classes']]
+    colors = np.array([colormap[x] for x in data['classes']])
 
     scatter = Scatter(data, x='X', y='Y',
                       color=colors, marker='labels',
