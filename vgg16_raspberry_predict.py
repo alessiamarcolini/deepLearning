@@ -89,33 +89,31 @@ def vgg16(weights_path=None, add_fully_connected=True):
 
 
 
-def create_validationImg_validationLabel_list(predict_mcc):
+def create_validationImg_validationLabel_list():
+    validation_images = []
+    validation_labels = []
+    val_path_e = validation_data_dir + "/early/"
+    val_path_g = validation_data_dir + "/good/"
+    val_path_l = validation_data_dir + "/late/"
+    val_paths = [val_path_e, val_path_g, val_path_l]
 
-    if predict_mcc:
-        validation_images = []
-        validation_labels = []
-        val_path_e = validation_data_dir + "/early/"
-        val_path_g = validation_data_dir + "/good/"
-        val_path_l = validation_data_dir + "/late/"
-        val_paths = [val_path_e, val_path_g, val_path_l]
+    val_filenames_e = os.listdir(val_path_e)
+    val_filenames_g = os.listdir(val_path_g)
+    val_filenames_l = os.listdir(val_path_l)
 
-        val_filenames_e = os.listdir(val_path_e)
-        val_filenames_g = os.listdir(val_path_g)
-        val_filenames_l = os.listdir(val_path_l)
-
-        for path in val_paths:
-            if path == val_path_e:
-                for name in val_filenames_e:
-                    validation_images.append(path + name)
-                    validation_labels.append([1,0,0])
-            elif path == val_path_g:
-                for name in val_filenames_g:
-                    validation_images.append(path + name)
-                    validation_labels.append([0,1,0])
-            elif path == val_path_l:
-                for name in val_filenames_l:
-                    validation_images.append(path + name)
-                    validation_labels.append([0,0,1])
+    for path in val_paths:
+        if path == val_path_e:
+            for name in val_filenames_e:
+                validation_images.append(path + name)
+                validation_labels.append([1,0,0])
+        elif path == val_path_g:
+            for name in val_filenames_g:
+                validation_images.append(path + name)
+                validation_labels.append([0,1,0])
+        elif path == val_path_l:
+            for name in val_filenames_l:
+                validation_images.append(path + name)
+                validation_labels.append([0,0,1])
 
     return validation_images, validation_labels
 
@@ -215,11 +213,10 @@ def main():
                   optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
                   metrics=['accuracy'])
 
-
-    validation_images, validation_labels = create_validationImg_validationLabel_list(predict_mcc)
-
-    validation = np.array(load_im2(validation_images))
-    predicted_labels = model.predict(validation)
+    if predict_mcc:
+        validation_images, validation_labels = create_validationImg_validationLabel_list(predict_mcc)
+        validation = np.array(load_im2(validation_images))
+        predicted_labels = model.predict(validation)
 
     prediction_summary = open("vgg16_first_train_raspberry_prediction_summary_{}.csv".format(dataset), "w")
     prediction_summary.write("\t".join(['FILENAME', 'PREDICTED_LABEL', 'PREDICTED_LABELS', 'REAL_LABEL'])+'\n')
