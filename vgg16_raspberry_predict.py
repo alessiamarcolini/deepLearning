@@ -78,15 +78,17 @@ def vgg16(weights_path=None, add_fully_connected=True):
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
-    model.add(Flatten(input_shape=model.output_shape[1:]))
+    model.add(Flatten())
     model.add(Dense(256, activation='relu'))
     model.add(Dropout(0.5))
 
 
+    top_model = None
     if add_fully_connected:
-        model.add(Dense(3, activation='sigmoid'))
+        top_model = Sequential()
+        top_model.add(Dense(3, input_dim = model.output_shape[1:], activation='sigmoid'))
 
-    return model
+    return model, top_model
 
 
 
@@ -193,9 +195,9 @@ def MCC_CM_calculator(validation_labels_linear, predicted_labels_linear):
     CM_lines = ""
 
     for i in range(len(CM)):
-        for j in range(len(CM[i])):
-            CM_lines += (str(CM[j]) + ";")
-        CM_lines += ("\n")
+        for j in CM[i]:
+            CM_lines += str(j) + ";"
+        CM_lines += "\n"
 
     return MCC_line, CM_lines
 
@@ -214,10 +216,17 @@ def main():
     # (trained on ImageNet, won the ILSVRC competition in 2014)
     # note: when there is a complete match between your model definition
     # and your weight savefile, you can simply call model.load_weights(filename
-    model = vgg16(weights_path)
+    model, top_model = vgg16(weights_path)
 
     assert os.path.exists(weights_path), 'Model weights not found (see "weights_path" variable in script).'
-    model.load_weights(weights_path)
+    f = h5py.File(weights_path)
+    for k in range(f.attrs['nb_layers']):
+        g = f['layer_{}'.format(k)]
+        weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
+        if k >= len(model.layers):
+            top_model.layers[k-len(model.layers)].set_weights(weights)
+        model.layers[k].set_weights(weights)
+    f.close()
     print('Model loaded.')
 
     # build a classifier model to put on top of the convolutional model
@@ -243,7 +252,14 @@ def main():
     validation_images, validation_labels = create_validationImg_validationLabel_list(predict_mcc, validation_data_dir)
     validation = np.array(load_im2(validation_images))
 
-    predicted_labels = model.predict(validation)
+    predicted_features = model.predict(validation)
+    np.savetxt("predicted_features.txt", predicted_features)
+
+    top_model.compile(loss='binary_crossentropy',
+                  optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
+                  metrics=['accuracy'])
+
+    predicted_labels = top_model.predict(predicted_features)
 
     prediction_summary = open("vgg16_first_train_raspberry_prediction_summary_{}.csv".format(dataset), "w")
 
