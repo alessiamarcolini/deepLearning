@@ -450,8 +450,8 @@ elif OPTIMIZER_dict.keys()[0] == 'adagrad':
     OPTIMIZER = Adagrad(lr=OPTIMIZER_dict['adagrad']['lr'], epsilon=OPTIMIZER_dict['adagrad']['epsilon'])
 elif OPTIMIZER_dict.keys()[0] == 'adadelta':
     OPTIMIZER = Adadelta(lr=OPTIMIZER_dict['adadelta']['lr'], epsilon=OPTIMIZER_dict['adadelta']['epsilon'])
-elif OPTIMIZER_dict.keys()[0] == 'adagrad':
-    OPTIMIZER = Nadam(lr=OPTIMIZER_dict['nadam']['lr'], epsilon=OPTIMIZER_dict['nadam']['epsilon'])
+#elif OPTIMIZER_dict.keys()[0] == 'nadam':
+#    OPTIMIZER = Nadam(lr=OPTIMIZER_dict['nadam']['lr'], epsilon=OPTIMIZER_dict['nadam']['epsilon'])
 
 
 best_model = model_from_json(best_model_dict['model'])
