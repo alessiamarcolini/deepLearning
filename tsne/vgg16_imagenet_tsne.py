@@ -11,76 +11,24 @@ from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.layers import Dropout, Flatten, Dense
 from keras.models import Sequential
 from keras.optimizers import SGD
-from matplotlib import pyplot as plt
 from sklearn.manifold import TSNE
 
 # Settings
-from tsne.settings import (WEIGHTS_PATH, IMAGE_PATH, MARKERS, COLOURS,
-                           CLASSES_OF_INTEREST, OUTPUT_IMAGES_FILE_PREFIX,
-                           DEFAULT_IMAGES_FILENAME, OUTPUT_TSNE_FILE_PREFIX)
+from tsne.plotting import make_plot, COLOURS, CLASSES_OF_INTEREST
 
 
-def make_plot(X, Y, colours, classes, fig_filename, title,
-              s=10, annotate=False, sample_names=None):
-    """
-    generates and shows a scatter plot
+# dimensions of our images (used in model building)
+IMG_WIDTH, IMG_HEIGHT = 224, 224
 
-    Parameters
-    ----------
-    X : numpy.ndarray
-        values of x
+# VGG16 Model weights filename
+WEIGHTS_PATH = 'vgg16_weights.h5'
 
-    Y : numpy.ndarray
-        values of y
+IMAGE_PATH = '/data/webvalley/fruit_images/'
 
-    s : int (default=10)
-        dimension of markers
-
-    colours : list
-        colour of the markers of the different classes
-
-    classes : list
-        predicted classes of the values
-
-    sample_names : list
-        list of labels for each dot (only if annotate=True)
-
-    fig_filename : str
-        name of the image file of the graph saved
-
-    title : str
-        title of the plot
-
-    annotate : bool
-        title of the plot
-
-
-    """
-    plt.figure()
-    plt.title(title)
-    for (i, cla) in enumerate(set(classes)):
-        xc = [p for (j, p) in enumerate(X) if classes[j] == cla]
-        yc = [p for (j, p) in enumerate(Y) if classes[j] == cla]
-        if sample_names:
-            nc = [p for (j, p) in enumerate(sample_names) if classes[j] == cla]
-        else:
-            nc = None
-        cols = [c for (j, c) in enumerate(colours) if classes[j] == cla]
-        if cla in MARKERS:
-            marker = MARKERS[cla]
-        else:
-            print('\t WARNING: Class {} not found in MARKERS'.format(cla))
-            marker = 'o'  # default marker value
-        plt.scatter(xc, yc, s=s, marker=marker, c=cols, label=cla)
-
-        if annotate and nc:
-            for j, txt in enumerate(nc):
-                plt.annotate(txt, (xc[j], yc[j]))
-                
-    plt.legend(loc=0)
-    plt.savefig(fig_filename)
-    plt.show()
-    plt.clf()
+# Output filename templates
+OUTPUT_TSNE_FILE_PREFIX = "tsne_matrix"
+OUTPUT_IMAGES_FILE_PREFIX = "images_matrix"
+DEFAULT_IMAGES_FILENAME = OUTPUT_IMAGES_FILE_PREFIX + ".txt"
 
 
 def VGG_16(weights_path=None, add_fully_connected=False):
@@ -389,8 +337,8 @@ if __name__ == '__main__':
         for image in input_images:
             image_index.write("{}\n".format(image))  
                                                                                                   
-    make_plot(X=Y_tsne_fruits[:, 0], Y=Y_tsne_fruits[:, 1], s=25, 
-              colours=colours, classes=classes, annotate=False, 
-              sample_names=[i+1 for i, _ in enumerate(input_images)], 
+    make_plot(X=Y_tsne_fruits[:, 0], Y=Y_tsne_fruits[:, 1], s=25,
+              colours=colours, classes=classes, annotate=False,
+              sample_names=[i+1 for i, _ in enumerate(input_images)],
               fig_filename=plot_filename, title=plot_title)
 
