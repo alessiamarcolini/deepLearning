@@ -117,7 +117,7 @@ def create_validationImg_validationLabel_list(predict_mcc):
                     validation_images.append(path + name)
                     validation_labels.append([0,0,1])
 
-        return validation_images, validation_labels
+    return validation_images, validation_labels
 
 def file_generator(predict_mcc):
 
