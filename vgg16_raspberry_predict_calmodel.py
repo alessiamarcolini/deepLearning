@@ -290,7 +290,7 @@ def main():
 
     # compile the model with a SGD/momentum optimizer
     # and a very slow learning rate.
-    model.compile(loss='binary_crossentropy',
+    model.compile(loss='categorical_crossentropy',
                   optimizer=optimizers.Adam(lr=1e-4, epsilon=1e-08),
                   metrics=['accuracy'])
 
@@ -303,7 +303,7 @@ def main():
     predicted_features = model.predict(validation)
     np.savetxt("tsne/predicted_features/cal1_predicted_features_{}.txt".format(dataset), predicted_features)
 
-    top_model.compile(loss='binary_crossentropy',
+    top_model.compile(loss='categorical_crossentropy',
                   optimizer=optimizers.Adam(lr=1e-4, epsilon=1e-08),
                   metrics=['accuracy'])
 
