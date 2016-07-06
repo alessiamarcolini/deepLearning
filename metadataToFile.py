@@ -30,6 +30,7 @@ for dataset in dataset_list:
         DATASET = "SO1"
         SQUALITY = "NA"
         l_dir = os.listdir(dataset)
+        print(dataset, l_dir)
         for d in l_dir:
             l_images = os.listdir(d)
 
@@ -76,6 +77,7 @@ for dataset in dataset_list:
         for l_dir in l_dirs:
             for d in l_dir:
                 l_images = os.listdir(d)
+
 
                 for name in l_images:
                     FILENAME = name
@@ -152,10 +154,12 @@ for dataset in dataset_list:
     if dataset == "so3_p":
         DATASET = "SO3"
         SQUALITY = "NA"
-        l_dir = os.listdir(dataset)
         VARIETY = ""
         CAMERA = "Prosumer"
         SBG = lBG[1]
+        l_dir = os.listdir(dataset)
+        print(dataset, l_dir)
+
 
         for d in l_dir:
             l_images = os.listdir(d)
