@@ -62,7 +62,7 @@ for dataset in dataset_list:
                     SBG = lSBG[2]
                 elif form == "gb":
                     SBG = lSBG[3]
-                line = "\t".join(FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY)
+                line = "\t".join([FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY])
                 metadata_file.write(line)
 
 
@@ -107,7 +107,7 @@ for dataset in dataset_list:
                         SBG = lSBG[2]
                     if form == "gb":
                         SBG = lSBG[3]
-                    line = "\t".join(FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY)
+                    line = "\t".join([FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY])
                     metadata_file.write(line)
 
     if dataset == "so3":
@@ -148,7 +148,7 @@ for dataset in dataset_list:
                     SBG = lSBG[2]
                 elif form == "gb":
                     SBG = lSBG[3]
-                line = "\t".join(FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY)
+                line = "\t".join([FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY])
                 metadata_file.write(line)
 
     if dataset == "so3_p":
@@ -181,6 +181,6 @@ for dataset in dataset_list:
                 elif matur == "late":
                     EGL = l-EGL[2]
 
-                line = "\t".join(FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY)
+                line = "\t".join([FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY])
                 metadata_file.write(line)
 metadata_file.close()
