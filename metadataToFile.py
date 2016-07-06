@@ -169,7 +169,7 @@ for dataset in dataset_list:
     if dataset == "so3_p":
         DATASET = "SO3"
         SQUALITY = "NA"
-        VARIETY = ""
+        VARIETY = "NA"
         CAMERA = "Prosumer"
         SBG = lSBG[1]
         l_dir = os.listdir("/".join([dataset_path, dataset]))
