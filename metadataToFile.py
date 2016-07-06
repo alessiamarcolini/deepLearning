@@ -87,6 +87,7 @@ for dataset in dataset_list:
                     FILENAME = name
 
                     meta = name.split("_")
+
                     var = meta[1]
                     matur = meta[3]
                     form = meta[4]
@@ -129,7 +130,8 @@ for dataset in dataset_list:
                 meta = name.split("_")
                 matur = meta[1]
                 form = meta[2]
-                num = int(meta[3])
+                num = meta[3]
+                num = (num.split("."))[0]
 
                 if num%2==0:
                     CAMERA = "Chiara"
@@ -174,8 +176,6 @@ for dataset in dataset_list:
                 meta = name.split("_")
                 matur = meta[1]
                 form = meta[2]
-                num = meta[3]
-                num = (num.split("."))[0]
 
 
                 if matur == "early":
