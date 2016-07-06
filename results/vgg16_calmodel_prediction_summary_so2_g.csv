@@ -1,0 +1,21 @@
+MCC=0.597;p_E;p_G;p_L
+r_E;1.0;3.0;0.0;
+r_G;1.0;7.0;0.0;
+r_L;0.0;0.0;4.0;
+FILENAME	PREDICTED_LABEL	E	G	L	REAL_LABEL
+datasets/so2_g/early/IMG_20160628_164510.jpg;Early;0.999;0.001;0.001;Early
+datasets/so2_g/early/0016.jpg;Good;0.001;0.999;0.0;Early
+datasets/so2_g/early/IMG_20160628_164343.jpg;Good;0.139;0.824;0.0;Early
+datasets/so2_g/early/0034.jpg;Good;0.001;0.999;0.0;Early
+datasets/so2_g/good/IMG_20160628_162325.jpg;Good;0.001;0.999;0.001;Good
+datasets/so2_g/good/0516.jpg;Good;0.001;0.998;0.001;Good
+datasets/so2_g/good/0470.jpg;Good;0.001;0.999;0.001;Good
+datasets/so2_g/good/0501.jpg;Good;0.001;0.999;0.0;Good
+datasets/so2_g/good/IMG_20160628_161717.jpg;Early;0.414;0.098;0.002;Good
+datasets/so2_g/good/IMG_20160628_161632.jpg;Good;0.001;0.999;0.0;Good
+datasets/so2_g/good/IMG_20160628_161756.jpg;Good;0.001;0.999;0.0;Good
+datasets/so2_g/good/0468.jpg;Good;0.001;0.999;0.0;Good
+datasets/so2_g/late/IMG_20160628_163647.jpg;Late;0.003;0.001;0.995;Late
+datasets/so2_g/late/0671.jpg;Late;0.0;0.117;0.946;Late
+datasets/so2_g/late/IMG_20160628_163905.jpg;Late;0.002;0.001;0.999;Late
+datasets/so2_g/late/0709.jpg;Late;0.0;0.063;0.975;Late
