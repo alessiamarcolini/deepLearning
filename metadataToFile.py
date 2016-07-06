@@ -1,7 +1,7 @@
 import os
 
 
-dataset_path = "datasets_new/"
+dataset_path = "datasets_new"
 
 
 dataset_list = os.listdir(dataset_path)
@@ -29,10 +29,10 @@ for dataset in dataset_list:
         CAMERA = "NA"
         DATASET = "SO1"
         SQUALITY = "NA"
-        l_dir = os.listdir(dataset)
+        l_dir = os.listdir("/".join([dataset_path, dataset])
         print(dataset, l_dir)
         for d in l_dir:
-            l_images = os.listdir(d)
+            l_images = os.listdir("/".join([dataset_path, dataset, d])
 
             for name in l_images:
                 FILENAME = name
@@ -70,13 +70,13 @@ for dataset in dataset_list:
         CAMERA = "Francisca"
         DATASET = "SO2"
         SQUALITY = "NA"
-        l_dir1 = os.listdir("/".join(dataset,"train"))
-        l_dir2 = os.listdir("/".join(dataset,"validation"))
+        l_dir1 = os.listdir("/".join(dataset_path, dataset,"train"))
+        l_dir2 = os.listdir("/".join(dataset_path, dataset,"validation"))
         l_dirs = [l_dir1, l_dir2]
 
         for l_dir in l_dirs:
             for d in l_dir:
-                l_images = os.listdir(d)
+                l_images = os.listdir("/".join([dataset_path, dataset, d])
 
 
                 for name in l_images:
@@ -113,11 +113,11 @@ for dataset in dataset_list:
     if dataset == "so3":
         DATASET = "SO3"
         SQUALITY = "NA"
-        l_dir = os.listdir(dataset)
+        l_dir = os.listdir("/".join([dataset_path, dataset])
         VARIETY = "NA"
 
         for d in l_dir:
-            l_images = os.listdir(d)
+            l_images = os.listdir("/".join([dataset_path, dataset, d])
 
             for name in l_images:
                 FILENAME = name
@@ -157,12 +157,12 @@ for dataset in dataset_list:
         VARIETY = ""
         CAMERA = "Prosumer"
         SBG = lSBG[1]
-        l_dir = os.listdir(dataset)
+        l_dir = os.listdir("/".join([dataset_path, dataset])
         print(dataset, l_dir)
 
 
         for d in l_dir:
-            l_images = os.listdir(d)
+            l_images = os.listdir("/".join([dataset_path, dataset, d])
 
             for name in l_images:
                 FILENAME = name
