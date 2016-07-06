@@ -71,8 +71,8 @@ weights_path = VGG_WEIGHTS
 img_width, img_height = 224, 224
 nb_epochs = NB_EPOCHS
 
-train_data_dir = INDIR
-validation_data_dir = INDIR
+train_data_dir = INDIR + "datasets/so2-3_t"
+validation_data_dir = INDIR + "datasets/so2-3_t"
 
 random.seed(0)
 
