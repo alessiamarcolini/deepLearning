@@ -212,6 +212,11 @@ if __name__ == '__main__':
     # Preparing data to load data and apply t-SNE
     process_data = list()
     for model_name in dataset_features_map:
+        # First of all, check that there is a Training set for the current
+        # model, otherwise SKIP IT!
+        if not args.training_dataset_name in dataset_features_map[model_name]:
+            print('Skipping Model: ', model_name)
+            continue
         # Create the t-SNE Embedding
         training_set_matrix_filepath = dataset_features_map[model_name][args.training_dataset_name]
         tsne_filepath = compose_tsne_filepath(args.tsne_init, args.tsne_perplexity,
