@@ -7,7 +7,7 @@ dataset_path = "datasets_new"
 dataset_list = os.listdir(dataset_path)
 
 metadata_file = open("metadata_so1_so2_so3.csv", "w")
-metadata_file.write("\t".join("FILENAME","DATASET", "E-G-L", "CAMERA", "S-B-G", "VARIETY", "S-QUALITY"))
+metadata_file.write("\t".join(["FILENAME","DATASET", "E-G-L", "CAMERA", "S-B-G", "VARIETY", "S-QUALITY"]))
 
 lEGL = ["E", "G", "L"]
 lSBG = ["S", "B", "G", "GB"]
