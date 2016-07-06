@@ -7,8 +7,6 @@ Matplotlib and Bokeh frameworks
 # License: BSD 3 clause
 
 from matplotlib import pyplot as plt
-from bokeh.charts import Scatter, output_file, show
-import numpy as np
 
 # ================
 # ImageNet Classes
@@ -99,7 +97,7 @@ def make_plot(X, Y, colours, classes, fig_filename, title,
         if cla in MARKERS:
             marker = MARKERS[cla]
         else:
-            print('\t WARNING: Class {} not found in MARKERS'.format(cla))
+            print('\t WARNING: Class {} not found in BOKEH_MARKERS'.format(cla))
             marker = 'o'  # default marker value
         plt.scatter(xc, yc, s=s, marker=marker, c=cols, label=cla)
 
@@ -113,21 +111,17 @@ def make_plot(X, Y, colours, classes, fig_filename, title,
     plt.clf()
 
 
-def make_interactive_plot(data, fig_filename="tsne_plot.html",
-                          title="t-SNE for Raspberries"):
-    tools = "pan, wheel_zoom, box_select, box_zoom, reset, resize, save"
-
-    # colormap = {'E': 'orange', 'G': 'red', 'L': 'purple'}
-    # colors = np.array([colormap[x] for x in data['classes']])
-
-    scatter = Scatter(data, x='X', y='Y',
-                      color='classes', marker='markers',
-                      title=title, plot_width=1024, plot_height=768,
-                      tools=tools, legend='bottom_right',
-                      # legend_sort_field='marker',
-                      # legend_sort_direction='ascending'
-                      )
-    output_file(fig_filename, title=title)
-    show(scatter)
+# def make_interactive_plot(data, fig_filename="tsne_plot.html",
+#                           title="t-SNE for Raspberries"):
+#     tools = "pan, wheel_zoom, box_select, box_zoom, reset, resize, save"
+#     scatter = Scatter(data, x='X', y='Y',
+#                       color='colors', marker='markers',
+#                       title=title, plot_width=1024, plot_height=768,
+#                       tools=tools, legend='bottom_right',
+#                       # legend_sort_field='marker',
+#                       # legend_sort_direction='ascending'
+#                       )
+#     output_file(fig_filename, title=title)
+#     show(scatter)
 
 

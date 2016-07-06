@@ -9,20 +9,12 @@
 import os
 from sklearn.manifold import TSNE
 import numpy as np
-import pandas as pd
 from joblib import Parallel, delayed
-try:
-    from .plotting import make_interactive_plot, RASPBERRY_BASE_CLASSES
-except (ImportError, SystemError):
-    from plotting import make_interactive_plot, RASPBERRY_BASE_CLASSES
-
 from argparse import ArgumentParser
 
-PREDICTED_FEATURES_FOLDER = os.path.join(os.path.abspath(os.path.curdir), 'predicted_features')
-VALIDATION_LABELS_FOLDER = os.path.join(os.path.abspath(os.path.curdir), 'validation_labels')
-TSNE_FEATURES_FOLDER = os.path.join(os.path.abspath(os.path.curdir), 'tsne_data')
-
-REFERENCE_CLASSES = ['EARLY', 'GOOD', 'LATE']
+PREDICTED_FEATURES_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'predicted_features')
+TSNE_FEATURES_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'tsne_data')
+TSNE_SPLIT_PATTERN = 'tsne-init-{}-perp-{}'
 
 
 def collect_data_files(target_folder=PREDICTED_FEATURES_FOLDER,
@@ -59,15 +51,17 @@ def collect_data_files(target_folder=PREDICTED_FEATURES_FOLDER,
     for root, dirs, files in os.walk(target_folder):
         for file in files:
             if file.endswith('.txt'):
+                dataset_filepath = os.path.join(root, file)
                 model_name, dataset_name_w_ext = file.split(split_pattern)
                 dataset_name, _ = os.path.splitext(dataset_name_w_ext)
                 dataset_maps.setdefault(model_name, dict())
-                dataset_maps[model_name][dataset_name] = os.path.join(root, file)
+                dataset_maps[model_name][dataset_name] = dataset_filepath
     return dataset_maps
 
 
 def apply_tsne(X, store_result=True, filename='tnse_result.txt',
-               perplexity=30.0, init='random', n_components=2):
+               perplexity=30.0, init='random', n_components=2,
+               TSNE_model=None):
     """Apply t-SNE (t-distributed Stochastic Neighbor Embedding.) to input data
     configured with passed parameters. The implementation of the t-SNE
     is the one included in scikit-learn.
@@ -96,23 +90,47 @@ def apply_tsne(X, store_result=True, filename='tnse_result.txt',
     n_components : int (default: 2)
         The `n_components` parameter of the `sklearn.manifold.TSNE` model.
 
+    TSNE_model: sklearn.manifold.TSNE (default: None)
+        The instance of an existing t-SNE model already
+        fitted to generate the corresponding embedding.
+        If None (default), a new t-SNE model will be created
+        and provided data (i.e. `X`) will be
+        used to fit the model, and finally transformed in the
+        resulting embedding.
+
     Returns
     -------
+    sklearn.manifold.TSNE
+        The t-SNE model created if `TSNE_model=None` parameter was provided
+        (default value). Otherwise, a `None` is returned instead
+
     numpy.ndarray
         The results of the `fit_transform` method of the `TNSE` model
         applied to input data.
 
+    Notes
+    -----
+    TSNE_model and (init, perplexity, n_components) parameters are
+    mutually exclusive. In other words, if an existing TSNE_model
+    is passed to the function, the other three parameters are
+    discarded because useless. Otherwise, they will be used to create
+    a **new** model which will be `fit` and `transform` on the passed
+    `X` data.
     """
-
-    RaspberryTSNE = TSNE(n_components=n_components, perplexity=perplexity,
-                         init=init, random_state=0)
+    if TSNE_model is None:
+        RaspberryTSNE = TSNE(n_components=n_components, perplexity=perplexity,
+                             init=init, random_state=0)
+    else:
+        RaspberryTSNE = TSNE_model
     X_tsne = RaspberryTSNE.fit_transform(X)
     if store_result:
         np.savetxt(filename, X_tsne)
-    return X_tsne
+    return RaspberryTSNE, X_tsne
 
 
-def load_and_apply_tsne(matrix_filepath, tsne_filepath):
+def load_and_apply_tsne(matrix_filepath, tsne_filepath,
+                        tsne_init='random', tsne_perplexity=30.0,
+                        TSNE_model=None):
     """Load the matrix from the `matrix_filepath` and apply
     the t-SNE algorithm, storing results to the `tsne_filepath`
 
@@ -123,139 +141,98 @@ def load_and_apply_tsne(matrix_filepath, tsne_filepath):
 
     tsne_filepath : str
         Path to the file where to store t-SNE computation
-    """
-    print('Executing t-SNE on {}'.format(matrix_filepath))
-    X = np.loadtxt(matrix_filepath)
-    apply_tsne(X, store_result=True, filename=tsne_filepath)
 
+    tsne_init : str (default: random)
+        The initialisation strategy to apply for t-SNE Model
 
-def load_tsne_data_for_plots(validation_filepath, model_name, dataset_name):
-    """Load labels from input `validation_filepath` and transform them in a
-    proper np.ndarray for further processing. Moreover, corresponding t-SNE
-    data saved in a file are collected and returned as well.
+    tsne_perplexity: float (default: 30.0)
+        The perplexity parameter for the t-SNE Model
 
-    Parameters
-    ----------
-    validation_filepath : str
-        The path to the validation file containing labels for the prediction
-        for the corresponding model_name and dataset_name
-
-    model_name: str
-        The name of the Deep Learning model to which lables refer to.
-
-    dataset_name: str
-        The name of the corresponding dataset to which labels refer to.
+    TSNE_model: sklearn.manifold.TSNE
 
     Returns
     -------
-    labels : numpy.ndarray
-        A numpy array containing labels (encoded as string) corresponding to
-         different classes properly modified according to the input model
-         and dataset
+    sklearn.manifold.TSNE
+        The instance of the t-SNE model created is returned, **only if**
+        the `TSNE_model=None` parameter has been provided.
+        Otherwise, `None` is returned instead.
 
-    classes: numpy.ndarray
-        A numpy array containing only class labels (encoded as string)
-        corresponding to different classes of samples loaded from
-        input `validation_filepath`.
-
-    X_tsne : numpy.ndarray
-        The t-SNE data loaded from matrix file retrieved according to the
-        `validation_filepath`.
+    See Also
+    --------
+    Please see the `apply_tsne` function notes for further details.
     """
 
-    # load labels from file (i.e. validation_filepath)
-    labels_map = np.loadtxt(validation_filepath)
+    print('Executing t-SNE on {}'.format(matrix_filepath))
+    X = np.loadtxt(matrix_filepath)
+    if TSNE_model is None:
+        RaspberryTSNE, _ = apply_tsne(X, store_result=True, filename=tsne_filepath,
+                                      init=tsne_init, perplexity=tsne_perplexity)
+        return RaspberryTSNE
+    else:
+        RaspberryTSNE, _ = apply_tsne(X, store_result=True, filename=tsne_filepath,
+                                      TSNE_model=TSNE_model)
+        return None
 
-    # Generate Labels depending on the specific model and dataset
-    class_label = '{label}_{dsname}'
-    ds_labels = np.array([class_label.format(label=label, dsname=dataset_name)
-                           for label in RASPBERRY_BASE_CLASSES])
-    labels = ds_labels[np.argmax(labels_map, axis=1)]
-    labels = labels.reshape(labels.shape[0], 1)  # reshaping to allow future np.vstack
 
-    # Generate ONLY Class labels accordingly (used for markers in plots)
-    class_only = '{label}'
-    ds_classes = np.array([class_only.format(label=label)
-                          for label in RASPBERRY_BASE_CLASSES])
-    classes = ds_classes[np.argmax(labels_map, axis=1)]
-    classes = classes.reshape(classes.shape[0], 1)  # reshaping to allow future np.vstack
+def compose_tsne_filepath(tsne_init, tsne_perplexity, model_name, dataset_name):
+    """Utility function to compose the path to the
+    tsne_filepath according to provided parameters."""
 
-    tsne_filepath = validation_filepath.replace(VALIDATION_LABELS_FOLDER, TSNE_FEATURES_FOLDER)
-    tsne_filepath = tsne_filepath.replace('validation_labels', 'tsne')
-
-    if not os.path.exists(tsne_filepath):
-        print('ERROR: {} does not exist!'.format(tsne_filepath))
-        return
-    X_tsne = np.loadtxt(tsne_filepath)
-
-    return labels, classes, X_tsne
+    tsne_split_pattern = TSNE_SPLIT_PATTERN.format(tsne_init,
+                                                   tsne_perplexity)
+    tsne_filename = '{}_{}_{}.txt'.format(model_name, tsne_split_pattern,
+                                          dataset_name)
+    tsne_filepath = os.path.join(os.path.abspath(os.path.curdir),
+                                 'tsne_data', tsne_filename)
+    return tsne_filepath
 
 
 if __name__ == '__main__':
 
     parser = ArgumentParser(usage='''This scripts may run in two modes: 'tsne' and 'plot'.
                                     Use the --mode option to decide''')
-    parser.add_argument('--mode', help='Execution Mode', choices=['tsne', 'plot'], dest='exec_mode')
+    parser.add_argument('--init', help='t-SNE Initialisation Strategy',
+                        choices=['random', 'pca'], dest='tsne_init',default='pca')
+    parser.add_argument('--perplexity', type=float, dest='tsne_perplexity',
+                        default=30.0, help='t-SNE Initialisation Strategy')
+    parser.add_argument('--training_set', type=str, dest='training_dataset_name',
+                        default='so2_t', help='t-SNE Embedding Dataset')
     args = parser.parse_args()
 
-    if args.exec_mode == 'tsne':
-        print('Execution Mode: t-SNE')
-        dataset_features_map = collect_data_files(target_folder=PREDICTED_FEATURES_FOLDER,
-                                                  split_pattern='_predicted_features_')
 
-        dl_models = set(mname for ds in dataset_features_map for mname in dataset_features_map[ds])
-        print('Found a total of {} datasets for {} models'.format(len(dataset_features_map),
-                                                                  len(dl_models)))
-        print('\t Deep Learning Models: {}'.format(dl_models))
-        # Preparing data to load data and apply t-SNE
-        process_data = list()
-        for model_name in dataset_features_map:
-            for dataset_name in dataset_features_map[model_name]:
-                matrix_filepath = dataset_features_map[model_name][dataset_name]
-                tsne_filename = '{}_tsne_{}.txt'.format(model_name, dataset_name)
-                tsne_filepath = os.path.join(os.path.abspath(os.path.curdir),
-                                             'tsne_data', tsne_filename)
-                process_data.append((matrix_filepath, tsne_filepath))
-        Parallel(n_jobs=-1, backend='threading')(
-            delayed(load_and_apply_tsne)(mfp, tsnefp) for mfp, tsnefp in process_data)
-    else:
-        print('Execution Mode: Plot')
-        labels_features_map = collect_data_files(target_folder=VALIDATION_LABELS_FOLDER,
-                                                 split_pattern='_validation_labels_')
-        for model_name in labels_features_map:
-            X_all = None
-            labels_all = None
-            classes_all = None
+    print('Execution Mode: t-SNE')
+    dataset_features_map = collect_data_files(target_folder=PREDICTED_FEATURES_FOLDER,
+                                              split_pattern='_predicted_features_')
 
-            for dataset_name in labels_features_map[model_name]:
-                validation_filepath = labels_features_map[model_name][dataset_name]
-                # Load lables and t-SNE data
-                labels, classes, X_tsne = load_tsne_data_for_plots(validation_filepath,
-                                                                   model_name, dataset_name)
-                # Stack data accordingly
-                if X_all is None:
-                    X_all = X_tsne
-                    labels_all = labels
-                    classes_all = classes
-                else:
-                    X_all = np.vstack((X_all, X_tsne))
-                    labels_all = np.vstack((labels_all, labels))
-                    classes_all = np.vstack((classes_all, classes))
+    dl_models = set(mname for ds in dataset_features_map for mname in dataset_features_map[ds])
+    print('Found a total of {} datasets for {} models'.format(len(dataset_features_map),
+                                                              len(dl_models)))
+    print('\t Deep Learning Models: {}'.format(dl_models))
+    # Preparing data to load data and apply t-SNE
+    process_data = list()
+    for model_name in dataset_features_map:
+        # First of all, check that there is a Training set for the current
+        # model, otherwise SKIP IT!
+        if not args.training_dataset_name in dataset_features_map[model_name]:
+            print('Skipping Model: ', model_name)
+            continue
+        # Create the t-SNE Embedding
+        training_set_matrix_filepath = dataset_features_map[model_name][args.training_dataset_name]
+        tsne_filepath = compose_tsne_filepath(args.tsne_init, args.tsne_perplexity,
+                                              model_name, args.training_dataset_name)
+        RaspberryTSNE = load_and_apply_tsne(training_set_matrix_filepath, tsne_filepath,
+                                            args.tsne_init, args.tsne_perplexity)
+        for dataset_name in dataset_features_map[model_name]:
+            if dataset_name == 'training_set':
+                continue  # skip training set
+            matrix_filepath = dataset_features_map[model_name][dataset_name]
+            tsne_filepath = compose_tsne_filepath(args.tsne_init, args.tsne_perplexity,
+                                                  model_name, dataset_name)
+            process_data.append((matrix_filepath, tsne_filepath, RaspberryTSNE))
 
-            # Compose the expected Pandas DataFrame
-            data_dict = {'X': X_all[:, 0], 'Y': X_all[:, 1]}
-            labels_all = labels_all.ravel()
-            classes_all = classes_all.ravel()
-            markers_all = np.copy(labels_all)
-            markers_all[markers_all=='L_so2_t'] = 'Train'
-            markers_all[markers_all == 'G_so2_t'] = 'Train'
-            markers_all[markers_all == 'E_so2_t'] = 'Train'
-            data_dict['labels'] = labels_all
-            data_dict['classes'] = classes_all
-            data_dict['markers'] = markers_all
-            data = pd.DataFrame(data=data_dict)
-            make_interactive_plot(data, fig_filename='tsne_plot_{}.html'.format(model_name),
-                                  title='t-SNE for SO Raspberries (Model: {})'.format(model_name))
+    Parallel(n_jobs=-1, backend='threading')(
+        delayed(load_and_apply_tsne)(matrix_filepath=mfp, tsne_filepath=tsnefp,
+                                     TSNE_model=tsne_model) for mfp, tsnefp, tsne_model in process_data)
 
 
 

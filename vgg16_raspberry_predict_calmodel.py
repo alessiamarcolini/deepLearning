@@ -29,9 +29,11 @@ parser = myArgumentParser(description='Run a training experiment using pretraine
         fromfile_prefix_chars='@')
 parser.add_argument('--fc_model', dest='FC_MODEL', type=str, choices=['tom', 'cal'], default='tom', help='Fully connected model on top (default: %(tom)s)')
 parser.add_argument('--fc_weights', dest='FC_WEIGHTS',type=str, default=None, help='Fully Connected on top Weights')
+parser.add_argument('--dataset', dest='DATASET',type=str, default=None, help='Input directory of the images')
 args = parser.parse_args()
 FC_MODEL = args.FC_MODEL
 FC_WEIGHTS = args.FC_WEIGHTS
+DATASET = args.DATASET
 
 
 def load_im2(paths):
@@ -248,7 +250,7 @@ def MCC_CM_calculator(validation_labels_linear, predicted_labels_linear):
 
 def main():
     file_lines = []
-    dataset = sys.argv[1]
+    dataset = DATASET
     # path to the model weights files.
     # weights_path = 'weights/vgg16_weights_calmodel.h5'
     weights_path = FC_WEIGHTS
