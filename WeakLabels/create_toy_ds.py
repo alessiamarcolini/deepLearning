@@ -9,6 +9,18 @@ vaj_e = "./BerryPhotos_LV/V/train/early/"
 vaj_g = "./BerryPhotos_LV/V/train/good/"
 vaj_l = "./BerryPhotos_LV/V/train/late/"
 
+label_dict = {
+                "L_E":0,
+                "L_G":1,
+                "L_L":2,
+                "V_E":3,
+                "V_G":4,
+                "V_L":5,
+                "E":0,
+                "G":1,
+                "L":2
+            }
+
 weak_dict_lbl = {"L_E":[],
                 "L_G":[],
                 "L_L":[],
@@ -55,13 +67,13 @@ for m in img:
 out = open("weak_map.txt", "w")
 for k in weak_dict_lbl.keys():
     for p in weak_dict_lbl[k]:
-        out.write("\t".join([p,k])+"\n")
+        out.write("\t".join([p,label_dict[k]])+"\n")
 out.close()
 
 out = open("hard_map.txt", "w")
 for k in hard_dict_lbl.keys():
     for p in hard_dict_lbl[k]:
-        out.write("\t".join([p,k])+"\n")
+        out.write("\t".join([p,label_dict[k]])+"\n")
 out.close()
 
 
