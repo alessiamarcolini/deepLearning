@@ -175,8 +175,7 @@ def load_and_apply_tsne(matrix_filepath, tsne_filepath,
         return None
 
 
-def compose_tsne_filepath(tsne_init, tsne_perplexity, model_name, dataset_name,
-                          tsne_filename):
+def compose_tsne_filepath(tsne_init, tsne_perplexity, model_name, dataset_name):
     """Utility function to compose the path to the
     tsne_filepath according to provided parameters."""
 
