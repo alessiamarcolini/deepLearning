@@ -404,7 +404,7 @@ if HARD_VALIDATION_MAP is not None:
 
 nb_epochs = NB_EPOCHS
 
-print "#\tExperiment Setup"
+print "\n\n#\tExperiment Setup"
 print "#NB_EPOCHS:", NB_EPOCHS
 print "#VGG_WEIGHTS:",VGG_WEIGHTS
 print "#FC_MODEL:",FC_MODEL
