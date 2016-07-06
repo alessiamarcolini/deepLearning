@@ -214,7 +214,6 @@ def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_
     return model, batch_size
 
 def vgg16_predict(weights_path = None, img_width = 224, img_height = 224, fc_model = None,f_type = None, n_labels = None ):
-
     model = Sequential()
     model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
 
@@ -328,8 +327,7 @@ def load_im2(paths):
     return np.array(l)
 
 def parse_mapping(mapping_file=None):
-    map = np.loadtxt(mapping_file)
-    images_array = []
+    map = np.loadtxt(mapping_file, dtype=str)
     labels = []
     images_path = []
 
@@ -368,7 +366,7 @@ parser.add_argument('--weaklbl_validation_map', dest='WEAKLABEL_VALIDATION_MAP',
 parser.add_argument('--hard_training_map', dest='HARD_TRAINING_MAP', type=str,help='Mapping file of training images (with path) and hard label')
 parser.add_argument('--hard_validation_map', dest='HARD_VALIDATION_MAP', type=str,help='Mapping file of validation images (with path) and hard label')
 parser.add_argument('--fc_model', dest='FC_MODEL', type=str, choices=['tom', 'cal', 'am'], default='tom', help='Fully connected model on top (default: %(tom)s)')
-parser.add_argument('--f_type', dest='F_TYPE', type=str, choices=['f0', 'f15'], default='tom', help='Layers to freeze: F0 = Freeze 0 layers, F15 = Freeze 15 layers (default: %(tom)s)')
+parser.add_argument('--f_type', dest='F_TYPE', type=str, choices=['f0', 'f15'], default='f15', help='Layers to freeze: F0 = Freeze 0 layers, F15 = Freeze 15 layers (default: %(tom)s)')
 
 args = parser.parse_args()
 # RANDOM_LABELS = args.random
@@ -406,7 +404,7 @@ if HARD_VALIDATION_MAP is not None:
 
 nb_epochs = NB_EPOCHS
 
-print "#\tExperiment Setup"
+print "\n\n#\tExperiment Setup"
 print "#NB_EPOCHS:", NB_EPOCHS
 print "#VGG_WEIGHTS:",VGG_WEIGHTS
 print "#FC_MODEL:",FC_MODEL
@@ -502,7 +500,7 @@ model.save_weights(hard_weights_file, overwrite=True)
 
 print "#\tPerforming Predict on Training Hard Labels"
 #### PREDICT on FINE TUNING
-model, top_model = vgg16_predict(weights_path=hard_weights_file, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE)
+model, top_model = vgg16_predict(weights_path=hard_weights_file, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE, n_labels= hard_train_labels.shape[1])
 predicted_features_train = model.predict(hard_train)
 np.savetxt(OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_bottleneck_train.txt", predicted_features_train)
 
