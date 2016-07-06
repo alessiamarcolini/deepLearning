@@ -67,13 +67,13 @@ for m in img:
 out = open("weak_map.txt", "w")
 for k in weak_dict_lbl.keys():
     for p in weak_dict_lbl[k]:
-        out.write("\t".join([p,label_dict[k]])+"\n")
+        out.write("\t".join([p,str(label_dict[k])])+"\n")
 out.close()
 
 out = open("hard_map.txt", "w")
 for k in hard_dict_lbl.keys():
     for p in hard_dict_lbl[k]:
-        out.write("\t".join([p,label_dict[k]])+"\n")
+        out.write("\t".join([p,str(label_dict[k])])+"\n")
 out.close()
 
 
