@@ -131,7 +131,7 @@ for dataset in dataset_list:
                 matur = meta[1]
                 form = meta[2]
                 num = meta[3]
-                num = (num.split("."))[0]
+                num = int((num.split("."))[0])
 
                 if num%2==0:
                     CAMERA = "Chiara"
