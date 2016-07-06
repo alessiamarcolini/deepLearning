@@ -270,7 +270,7 @@ def main():
     # path to the model weights files.
 
     ###weights_path = 'weights/vgg16_first_training_raspberry_weights.h5'
-    weights_path = 'vgg16_weights.h5'
+    weights_path = 'weights/vgg16_weights.h5'
 
     # dimensions of our images.
 
