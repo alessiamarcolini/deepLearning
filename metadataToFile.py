@@ -4,7 +4,8 @@ import os
 dataset_path = "datasets_new"
 
 
-dataset_list = (os.listdir(dataset_path)).sort()
+dataset_list = os.listdir(dataset_path)
+dataset_list.sort()
 
 
 metadata_file = open("metadata_so1_so2_so3.csv", "w")
