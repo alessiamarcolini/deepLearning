@@ -136,11 +136,11 @@ print('Model loaded.')
 
 # build a classifier model to put on top of the convolutional model
 model.add(Flatten())
-model.add(Dense(768, activation='sigmoid'))
+model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.0))
-model.add(Dense(768, activation='sigmoid'))
+model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.0))
-model.add(Dense(3, activation='sigmoid'))
+model.add(Dense(3, activation='softmax'))
 
 # note that it is necessary to start with a fully-trained
 # classifier, including the top classifier,
