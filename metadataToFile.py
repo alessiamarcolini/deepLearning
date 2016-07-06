@@ -170,7 +170,8 @@ for dataset in dataset_list:
                 meta = name.split("_")
                 matur = meta[1]
                 form = meta[2]
-                num = int(meta[3])
+                num = meta[3]
+                num = (num.split("."))[0]
 
 
                 if matur == "early":
