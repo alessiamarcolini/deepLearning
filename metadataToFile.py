@@ -141,6 +141,7 @@ for dataset in dataset_list:
                 form = meta[2]
                 num = meta[3]
                 num = int((num.split("."))[0])
+                print("form", FILENAME, form)
 
                 if num%2==0:
                     CAMERA = "Chiara"
