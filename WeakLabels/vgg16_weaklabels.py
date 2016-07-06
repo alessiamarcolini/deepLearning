@@ -82,7 +82,7 @@ def vgg16_train(weights_path = None, img_width = 224, img_height = 224, fc_model
         model.add(Dense(n_labels, activation='sigmoid'))
         loss = 'categorical_crossentropy'
         optimizer = optimizers.Adam(lr=1e-4, epsilon=1e-08)
-        batch_size = 128
+        batch_size = 64
     elif fc_model == 'tom':
         model.add(Dense(512, activation='relu'))
         model.add(Dropout(0.0))
@@ -91,7 +91,7 @@ def vgg16_train(weights_path = None, img_width = 224, img_height = 224, fc_model
         model.add(Dense(n_labels, activation='softmax'))
         loss = 'categorical_crossentropy'
         optimizer = optimizers.Adam(lr=1e-4, epsilon=1e-08)
-        batch_size = 128
+        batch_size = 64
     elif fc_model == 'am':
         model.add(Dense(256, activation='relu'))
         model.add(Dropout(0.5))
@@ -166,7 +166,7 @@ def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_
         last_layer = Dense(n_labels, activation='sigmoid')
         loss = 'categorical_crossentropy'
         optimizer = optimizers.Adam(lr=1e-4, epsilon=1e-08)
-        batch_size = 128
+        batch_size = 64
     elif fc_model == 'tom':
         model.add(Dense(512, activation='relu'))
         model.add(Dropout(0.0))
@@ -175,7 +175,7 @@ def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_
         last_layer = Dense(n_labels, activation='softmax')
         loss = 'categorical_crossentropy'
         optimizer = optimizers.Adam(lr=1e-4, epsilon=1e-08)
-        batch_size = 128
+        batch_size = 64
     elif fc_model == 'am':
         model.add(Dense(256, activation='relu'))
         model.add(Dropout(0.5))
