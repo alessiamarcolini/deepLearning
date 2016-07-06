@@ -11,6 +11,27 @@ from keras.optimizers import SGD
 from os.path import join, getsize
 import sys
 from mcc_multiclass import multimcc, confusion_matrix
+import argparse
+
+class myArgumentParser(argparse.ArgumentParser):
+    def __init__(self, *args, **kwargs):
+        super(myArgumentParser, self).__init__(*args, **kwargs)
+
+    def convert_arg_line_to_args(self, line):
+        for arg in line.split():
+            if not arg.strip():
+                continue
+            if arg[0] == '#':
+                break
+            yield arg
+
+parser = myArgumentParser(description='Run a training experiment using pretrained VGG16, specified on the Raspberry DataSet.',
+        fromfile_prefix_chars='@')
+parser.add_argument('--fc_model', dest='FC_MODEL', type=str, choices=['tom', 'cal'], default='tom', help='Fully connected model on top (default: %(tom)s)')
+parser.add_argument('--fc_weights', dest='FC_WEIGHTS',type=str, default=None, help='Fully Connected on top Weights')
+args = parser.parse_args()
+FC_MODEL = args.FC_MODEL
+FC_WEIGHTS = args.FC_WEIGHTS
 
 
 def load_im2(paths):
@@ -37,7 +58,7 @@ def dataset_to_parameters(dataset):
 
     return predict_mcc, validation_data_dir
 
-def vgg16(weights_path=None, add_fully_connected=True):
+def vgg16(weights_path=None, add_fully_connected=True, fc_model = 'cal'):
     img_width, img_height = 224, 224
 
     model = Sequential()
@@ -77,18 +98,32 @@ def vgg16(weights_path=None, add_fully_connected=True):
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-
     model.add(Flatten())
-    model.add(Dense(768, activation='sigmoid'))
-    model.add(Dropout(0.0))
-    model.add(Dense(768, activation='sigmoid'))
-    model.add(Dropout(0.0))
 
+    if fc_model == 'cal':
+        model.add(Dense(768, activation='sigmoid'))
+        model.add(Dropout(0.0))
+        model.add(Dense(768, activation='sigmoid'))
+        model.add(Dropout(0.0))
+    elif fc_model == 'tom':
+        model.add(Dense(512, activation='relu'))
+        model.add(Dropout(0.0))
+        model.add(Dense(512, activation='relu'))
+        model.add(Dropout(0.0))
+    else:
+        print ("fc_model option invalid. Exiting")
+        sys.exit(1)
 
     top_model = None
     if add_fully_connected:
         top_model = Sequential()
-        top_model.add(Dense(3, input_dim = model.output_shape[1], activation='sigmoid'))
+        if fc_model == 'cal':
+            top_model.add(Dense(3, input_dim = model.output_shape[1], activation='sigmoid'))
+        elif fc_model == 'tom':
+            top_model.add(Dense(3, input_dim = model.output_shape[1], activation='softmax'))
+        else:
+            print ("fc_model option invalid. Exiting")
+            sys.exit(1)
 
     return model, top_model
 
@@ -215,7 +250,8 @@ def main():
     file_lines = []
     dataset = sys.argv[1]
     # path to the model weights files.
-    weights_path = 'weights/vgg16_weights_calmodel.h5'
+    # weights_path = 'weights/vgg16_weights_calmodel.h5'
+    weights_path = FC_WEIGHTS
 
     # dimensions of our images.
 
@@ -225,7 +261,7 @@ def main():
     # (trained on ImageNet, won the ILSVRC competition in 2014)
     # note: when there is a complete match between your model definition
     # and your weight savefile, you can simply call model.load_weights(filename
-    model, top_model = vgg16(weights_path)
+    model, top_model = vgg16(weights_path, fc_model=FC_MODEL)
 
     assert os.path.exists(weights_path), 'Model weights not found (see "weights_path" variable in script).'
     f = h5py.File(weights_path)
