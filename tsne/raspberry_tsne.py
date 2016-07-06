@@ -247,9 +247,9 @@ if __name__ == '__main__':
             labels_all = labels_all.ravel()
             classes_all = classes_all.ravel()
             markers_all = np.copy(labels_all)
-            markers_all[markers_all=='L_so2_t'] = 'Traing'
-            markers_all[markers_all == 'G_so2_t'] = 'Traing'
-            markers_all[markers_all == 'E_so2_t'] = 'Traing'
+            markers_all[markers_all=='L_so2_t'] = 'Train'
+            markers_all[markers_all == 'G_so2_t'] = 'Train'
+            markers_all[markers_all == 'E_so2_t'] = 'Train'
             data_dict['labels'] = labels_all
             data_dict['classes'] = classes_all
             data_dict['markers'] = markers_all
