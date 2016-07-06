@@ -102,9 +102,23 @@ def vgg16_train(weights_path = None, img_width = 224, img_height = 224, fc_model
 
     # set the first 25 layers (up to the last conv block)
     # to non-trainable (weights will not be updated)
-    if f_type == 'f15':
+    if f_type == 'f31':
+        for layer in model.layers[:32]:
+            layer.trainable = False
+    elif f_type == 'f24':
         for layer in model.layers[:25]:
             layer.trainable = False
+    elif f_type == 'f17':
+        for layer in model.layers[:18]:
+            layer.trainable = False
+    elif f_type == 'f10':
+        for layer in model.layers[:11]:
+            layer.trainable = False
+    elif f_type == 'f5':
+        for layer in model.layers[:6]:
+            layer.trainable = False
+    elif f_type == 'f0':
+        pass
 
     # compile the model with a SGD/momentum optimizer
     # and a very slow learning rate.
@@ -201,9 +215,23 @@ def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_
 
     # set the first 25 layers (up to the last conv block)
     # to non-trainable (weights will not be updated)
-    if f_type == 'f15':
+    if f_type == 'f31':
+        for layer in model.layers[:32]:
+            layer.trainable = False
+    elif f_type == 'f24':
         for layer in model.layers[:25]:
             layer.trainable = False
+    elif f_type == 'f17':
+        for layer in model.layers[:18]:
+            layer.trainable = False
+    elif f_type == 'f10':
+        for layer in model.layers[:11]:
+            layer.trainable = False
+    elif f_type == 'f5':
+        for layer in model.layers[:6]:
+            layer.trainable = False
+    elif f_type == 'f0':
+        pass
 
     # compile the model with a SGD/momentum optimizer
     # and a very slow learning rate.
@@ -215,8 +243,8 @@ def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_
 
 def vgg16_predict(weights_path = None, img_width = 224, img_height = 224, fc_model = None,f_type = None, n_labels = None ):
     model = Sequential()
-    model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
 
+    model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
     model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_1'))
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_2'))
@@ -296,9 +324,23 @@ def vgg16_predict(weights_path = None, img_width = 224, img_height = 224, fc_mod
 
     # set the first 25 layers (up to the last conv block)
     # to non-trainable (weights will not be updated)
-    if f_type == 'f15':
+    if f_type == 'f31':
+        for layer in model.layers[:32]:
+            layer.trainable = False
+    elif f_type == 'f24':
         for layer in model.layers[:25]:
             layer.trainable = False
+    elif f_type == 'f17':
+        for layer in model.layers[:18]:
+            layer.trainable = False
+    elif f_type == 'f10':
+        for layer in model.layers[:11]:
+            layer.trainable = False
+    elif f_type == 'f5':
+        for layer in model.layers[:6]:
+            layer.trainable = False
+    elif f_type == 'f0':
+        pass
 
     # compile the model with a SGD/momentum optimizer
     # and a very slow learning rate.
@@ -366,7 +408,7 @@ parser.add_argument('--weaklbl_validation_map', dest='WEAKLABEL_VALIDATION_MAP',
 parser.add_argument('--hard_training_map', dest='HARD_TRAINING_MAP', type=str,help='Mapping file of training images (with path) and hard label')
 parser.add_argument('--hard_validation_map', dest='HARD_VALIDATION_MAP', type=str,help='Mapping file of validation images (with path) and hard label')
 parser.add_argument('--fc_model', dest='FC_MODEL', type=str, choices=['tom', 'cal', 'am'], default='tom', help='Fully connected model on top (default: %(tom)s)')
-parser.add_argument('--f_type', dest='F_TYPE', type=str, choices=['f0', 'f15'], default='f15', help='Layers to freeze: F0 = Freeze 0 layers, F15 = Freeze 15 layers (default: %(tom)s)')
+parser.add_argument('--f_type', dest='F_TYPE', type=str, choices=['f0','f5', 'f10', 'f17' ,'f24','f31'], default='f24', help='Layers to freeze: F0 = Freeze 0 layers, F24 = Freeze 24 layers (default: %(tom)s)')
 
 args = parser.parse_args()
 # RANDOM_LABELS = args.random
