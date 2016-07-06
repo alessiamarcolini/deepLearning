@@ -4,7 +4,8 @@ import os
 dataset_path = "datasets_new"
 
 
-dataset_list = os.listdir(dataset_path)
+dataset_list = (os.listdir(dataset_path)).sort()
+
 
 metadata_file = open("metadata_so1_so2_so3.csv", "w")
 metadata_file.write("\t".join(["FILENAME","DATASET", "E-G-L", "CAMERA", "S-B-G", "VARIETY", "S-QUALITY"]) + "\n")
@@ -29,10 +30,10 @@ for dataset in dataset_list:
         CAMERA = "NA"
         DATASET = "SO1"
         SQUALITY = "NA"
-        l_dir = os.listdir("/".join([dataset_path, dataset]))
+        l_dir = (os.listdir("/".join([dataset_path, dataset]))).sort()
         print(dataset, l_dir)
         for d in l_dir:
-            l_images = os.listdir("/".join([dataset_path, dataset, d]))
+            l_images = (os.listdir("/".join([dataset_path, dataset, d])))
 
             for name in l_images:
                 FILENAME = name
@@ -48,11 +49,11 @@ for dataset in dataset_list:
                     VARIETY = lVARIETY[1]
 
                 if matur == "early":
-                    EGL = l-EGL[0]
+                    EGL = lEGL[0]
                 elif matur == "good":
-                    EGL = l-EGL[1]
+                    EGL = lEGL[1]
                 elif matur == "late":
-                    EGL = l-EGL[2]
+                    EGL = lEGL[2]
 
                 if form == "s":
                     SBG = lSBG[0]
@@ -70,8 +71,8 @@ for dataset in dataset_list:
         CAMERA = "Francisca"
         DATASET = "SO2"
         SQUALITY = "NA"
-        l_dir1 = os.listdir("/".join([dataset_path, dataset,"train"]))
-        l_dir2 = os.listdir("/".join([dataset_path, dataset,"validation"]))
+        l_dir1 = (os.listdir("/".join([dataset_path, dataset,"train"]))).sort()
+        l_dir2 = (os.listdir("/".join([dataset_path, dataset,"validation"]))).sort()
         l_dirs = [l_dir1, l_dir2]
 
         for l_dir in l_dirs:
@@ -80,7 +81,7 @@ for dataset in dataset_list:
                     folder = "train"
                 elif l_dir == l_dir2:
                     folder = "validation"
-                l_images = os.listdir("/".join([dataset_path, dataset, folder, d]))
+                l_images = (os.listdir("/".join([dataset_path, dataset, folder, d]))).sort()
 
 
                 for name in l_images:
@@ -98,11 +99,11 @@ for dataset in dataset_list:
                         VARIETY = lVARIETY[1]
 
                     if matur == "early":
-                        EGL = l-EGL[0]
+                        EGL = lEGL[0]
                     elif matur == "good":
-                        EGL = l-EGL[1]
+                        EGL = lEGL[1]
                     elif matur == "late":
-                        EGL = l-EGL[2]
+                        EGL = lEGL[2]
 
                     if form == "s":
                         SBG = lSBG[0]
@@ -118,11 +119,11 @@ for dataset in dataset_list:
     if dataset == "so3":
         DATASET = "SO3"
         SQUALITY = "NA"
-        l_dir = os.listdir("/".join([dataset_path, dataset]))
+        l_dir = (os.listdir("/".join([dataset_path, dataset]))).sort()
         VARIETY = "NA"
 
         for d in l_dir:
-            l_images = os.listdir("/".join([dataset_path, dataset, d]))
+            l_images = (os.listdir("/".join([dataset_path, dataset, d]))).sort()
 
             for name in l_images:
                 FILENAME = name
@@ -140,11 +141,11 @@ for dataset in dataset_list:
 
 
                 if matur == "early":
-                    EGL = l-EGL[0]
+                    EGL = lEGL[0]
                 elif matur == "good":
-                    EGL = l-EGL[1]
+                    EGL = lEGL[1]
                 elif matur == "late":
-                    EGL = l-EGL[2]
+                    EGL = lEGL[2]
 
                 if form == "s":
                     SBG = lSBG[0]
@@ -163,12 +164,12 @@ for dataset in dataset_list:
         VARIETY = ""
         CAMERA = "Prosumer"
         SBG = lSBG[1]
-        l_dir = os.listdir("/".join([dataset_path, dataset]))
+        l_dir = (os.listdir("/".join([dataset_path, dataset]))).sort()
         print(dataset, l_dir)
 
 
         for d in l_dir:
-            l_images = os.listdir("/".join([dataset_path, dataset, d]))
+            l_images = (os.listdir("/".join([dataset_path, dataset, d]))).sort()
 
             for name in l_images:
                 FILENAME = name
@@ -179,11 +180,11 @@ for dataset in dataset_list:
 
 
                 if matur == "early":
-                    EGL = l-EGL[0]
+                    EGL = lEGL[0]
                 elif matur == "good":
-                    EGL = l-EGL[1]
+                    EGL = lEGL[1]
                 elif matur == "late":
-                    EGL = l-EGL[2]
+                    EGL = lEGL[2]
 
                 line = "\t".join([FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY])
                 metadata_file.write(line + "\n")
