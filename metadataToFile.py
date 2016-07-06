@@ -1,7 +1,7 @@
 import os
 
 
-dataset_path = "datasets_new"
+dataset_path = "datasets_new/"
 
 
 dataset_list = os.listdir(dataset_path)
