@@ -199,4 +199,31 @@ for dataset in dataset_list:
 
                 line = "\t".join([FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY])
                 metadata_file.write(line + "\n")
+
+    if dataset == "sos":
+        DATASET = "SOS"
+        VARIETY = "NA"
+        CAMERA = "NA"
+        SBG = lSBG[3]
+        EGL = "NA"
+
+        l_dir = os.listdir("/".join([dataset_path, dataset]))
+        l_dir.sort()
+
+
+        for d in l_dir:
+            l_images = os.listdir("/".join([dataset_path, dataset, d]))
+            l_images.sort()
+
+            for name in l_images:
+                FILENAME = name
+                SQUALITY = d
+
+                line = "\t".join([FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY])
+                metadata_file.write(line + "\n")
+
+
+
+
+
 metadata_file.close()
