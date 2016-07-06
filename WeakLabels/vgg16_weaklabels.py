@@ -423,7 +423,7 @@ model.fit(weak_train, weak_train_labels, nb_epoch=nb_epochs, batch_size=batch_si
 weak_weights_file = OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_weaklabels_weights.h5"
 model.save_weights(weak_weights_file, overwrite=True)
 
-print "#\tPerforming Predict on Training Weak Labels"
+print "\n#\tPerforming Predict on Training Weak Labels"
 #### PREDICT
 model, top_model = vgg16_predict(weights_path=weak_weights_file, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE,n_labels= weak_train_labels.shape[1])
 predicted_features_train = model.predict(weak_train)
@@ -498,7 +498,7 @@ model.fit(hard_train, hard_train_labels, nb_epoch=nb_epochs, batch_size=batch_si
 hard_weights_file = OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_weights.h5"
 model.save_weights(hard_weights_file, overwrite=True)
 
-print "#\tPerforming Predict on Training Hard Labels"
+print "\n#\tPerforming Predict on Training Hard Labels"
 #### PREDICT on FINE TUNING
 model, top_model = vgg16_predict(weights_path=hard_weights_file, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE, n_labels= hard_train_labels.shape[1])
 predicted_features_train = model.predict(hard_train)
