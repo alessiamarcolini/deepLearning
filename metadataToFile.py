@@ -158,9 +158,9 @@ for dataset in dataset_list:
 
                 if form == "s":
                     SBG = lSBG[0]
-                elif form == "g":
-                    SBG = lSBG[1]
                 elif form == "b":
+                    SBG = lSBG[1]
+                elif form == "g":
                     SBG = lSBG[2]
                 elif form == "gb":
                     SBG = lSBG[3]
