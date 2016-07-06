@@ -7,7 +7,7 @@ dataset_path = "datasets_new"
 dataset_list = os.listdir(dataset_path)
 
 metadata_file = open("metadata_so1_so2_so3.csv", "w")
-metadata_file.write("\t".join(["FILENAME","DATASET", "E-G-L", "CAMERA", "S-B-G", "VARIETY", "S-QUALITY"]))
+metadata_file.write("\t".join(["FILENAME","DATASET", "E-G-L", "CAMERA", "S-B-G", "VARIETY", "S-QUALITY"]) + "\n")
 
 lEGL = ["E", "G", "L"]
 lSBG = ["S", "B", "G", "GB"]
@@ -63,7 +63,7 @@ for dataset in dataset_list:
                 elif form == "gb":
                     SBG = lSBG[3]
                 line = "\t".join([FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY])
-                metadata_file.write(line)
+                metadata_file.write(line + "\n")
 
 
     if dataset == "so2":
@@ -113,7 +113,7 @@ for dataset in dataset_list:
                     if form == "gb":
                         SBG = lSBG[3]
                     line = "\t".join([FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY])
-                    metadata_file.write(line)
+                    metadata_file.write(line + "\n")
 
     if dataset == "so3":
         DATASET = "SO3"
@@ -155,7 +155,7 @@ for dataset in dataset_list:
                 elif form == "gb":
                     SBG = lSBG[3]
                 line = "\t".join([FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY])
-                metadata_file.write(line)
+                metadata_file.write(line + "\n")
 
     if dataset == "so3_p":
         DATASET = "SO3"
@@ -186,5 +186,5 @@ for dataset in dataset_list:
                     EGL = l-EGL[2]
 
                 line = "\t".join([FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY])
-                metadata_file.write(line)
+                metadata_file.write(line + "\n")
 metadata_file.close()
