@@ -113,7 +113,7 @@ for dataset in dataset_list:
     if dataset == "so3":
         DATASET = "SO3"
         SQUALITY = "NA"
-        l_dir = os.listdir("/".join([dataset_path, dataset])
+        l_dir = os.listdir("/".join([dataset_path, dataset]))
         VARIETY = "NA"
 
         for d in l_dir:
