@@ -214,7 +214,6 @@ def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_
     return model, batch_size
 
 def vgg16_predict(weights_path = None, img_width = 224, img_height = 224, fc_model = None,f_type = None, n_labels = None ):
-
     model = Sequential()
     model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
 
