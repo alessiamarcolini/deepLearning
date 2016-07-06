@@ -71,8 +71,8 @@ weights_path = VGG_WEIGHTS
 img_width, img_height = 224, 224
 nb_epochs = NB_EPOCHS
 
-train_data_dir = INDIR+'BerryPhotos/train'
-validation_data_dir = INDIR+'BerryPhotos/validation'
+train_data_dir = INDIR
+validation_data_dir = INDIR
 
 random.seed(0)
 
@@ -228,10 +228,10 @@ validation = np.array(load_im2(validation_images))
 
 # fit the model
 model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=16)
-model.save_weights(OUTDIR + "vgg16_first_training_raspberry_weights_calmodel.h5", overwrite=True)
+model.save_weights(OUTDIR + "vgg16_am1_theano_so2-3.h5", overwrite=True)
 predicted_labels = model.predict(validation)
 
-prediction_summary = open(OUTDIR + "vgg16_first_train_raspberry_prediction_summary_calmodel.txt", "w")
+prediction_summary = open(OUTDIR + "vgg16_so2-3_t_prediction_summary_so2-3_v.txt", "w")
 prediction_summary.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS']) + '\n')
 
 predicted_labels_linear = []
