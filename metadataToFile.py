@@ -36,6 +36,7 @@ for dataset in dataset_list:
         print(dataset, l_dir)
         for d in l_dir:
             l_images = (os.listdir("/".join([dataset_path, dataset, d])))
+            l_images.sort()
 
             for name in l_images:
                 FILENAME = name
@@ -50,11 +51,11 @@ for dataset in dataset_list:
                 elif var == "V":
                     VARIETY = lVARIETY[1]
 
-                if matur == "early":
+                if matur == "e":
                     EGL = lEGL[0]
-                elif matur == "good":
+                elif matur == "g":
                     EGL = lEGL[1]
-                elif matur == "late":
+                elif matur == "l":
                     EGL = lEGL[2]
 
                 if form == "s":
@@ -103,11 +104,11 @@ for dataset in dataset_list:
                     elif var == "V":
                         VARIETY = lVARIETY[1]
 
-                    if matur == "early":
+                    if matur == "e":
                         EGL = lEGL[0]
-                    elif matur == "good":
+                    elif matur == "g":
                         EGL = lEGL[1]
-                    elif matur == "late":
+                    elif matur == "l":
                         EGL = lEGL[2]
 
                     if form == "s":
@@ -147,11 +148,11 @@ for dataset in dataset_list:
                     CAMERA = "Michele"
 
 
-                if matur == "early":
+                if matur == "e":
                     EGL = lEGL[0]
-                elif matur == "good":
+                elif matur == "g":
                     EGL = lEGL[1]
-                elif matur == "late":
+                elif matur == "l":
                     EGL = lEGL[2]
 
                 if form == "s":
@@ -188,11 +189,11 @@ for dataset in dataset_list:
                 form = meta[2]
 
 
-                if matur == "early":
+                if matur == "e":
                     EGL = lEGL[0]
-                elif matur == "good":
+                elif matur == "g":
                     EGL = lEGL[1]
-                elif matur == "late":
+                elif matur == "l":
                     EGL = lEGL[2]
 
                 line = "\t".join([FILENAME, DATASET, EGL, CAMERA, SBG, VARIETY, SQUALITY])
