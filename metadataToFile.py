@@ -29,10 +29,10 @@ for dataset in dataset_list:
         CAMERA = "NA"
         DATASET = "SO1"
         SQUALITY = "NA"
-        l_dir = os.listdir("/".join([dataset_path, dataset])
+        l_dir = os.listdir("/".join([dataset_path, dataset]))
         print(dataset, l_dir)
         for d in l_dir:
-            l_images = os.listdir("/".join([dataset_path, dataset, d])
+            l_images = os.listdir("/".join([dataset_path, dataset, d]))
 
             for name in l_images:
                 FILENAME = name
@@ -76,7 +76,7 @@ for dataset in dataset_list:
 
         for l_dir in l_dirs:
             for d in l_dir:
-                l_images = os.listdir("/".join([dataset_path, dataset, d])
+                l_images = os.listdir("/".join([dataset_path, dataset, d]))
 
 
                 for name in l_images:
@@ -117,7 +117,7 @@ for dataset in dataset_list:
         VARIETY = "NA"
 
         for d in l_dir:
-            l_images = os.listdir("/".join([dataset_path, dataset, d])
+            l_images = os.listdir("/".join([dataset_path, dataset, d]))
 
             for name in l_images:
                 FILENAME = name
@@ -157,12 +157,12 @@ for dataset in dataset_list:
         VARIETY = ""
         CAMERA = "Prosumer"
         SBG = lSBG[1]
-        l_dir = os.listdir("/".join([dataset_path, dataset])
+        l_dir = os.listdir("/".join([dataset_path, dataset]))
         print(dataset, l_dir)
 
 
         for d in l_dir:
-            l_images = os.listdir("/".join([dataset_path, dataset, d])
+            l_images = os.listdir("/".join([dataset_path, dataset, d]))
 
             for name in l_images:
                 FILENAME = name
