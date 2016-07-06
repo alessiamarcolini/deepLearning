@@ -1,0 +1,53 @@
+MCC:0.832987158811	Dense Size:768	Optimizer:adam	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:128	FC Size:Double	Final Classifier:sigmoid
+MCC:0.827999756307	Dense Size:512	Optimizer:adamax	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:96	FC Size:Double	Final Classifier:sigmoid
+MCC:0.819101693446	Dense Size:512	Optimizer:adamax	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:96	FC Size:Double	Final Classifier:sigmoid
+MCC:0.81829264043	Dense Size:256	Optimizer:adamax	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:16	FC Size:Double	Final Classifier:sigmoid
+MCC:0.814556645235	Dense Size:512	Optimizer:sgd	Nesterov:True	Learning Rate:0.0001	Activation:sigmoid	Dropout Rate:0.25	batch size:96	FC Size:Double	Momentum:1.0	Final Classifier:sigmoid
+MCC:0.809378392131	Dense Size:512	Optimizer:adam	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:96	FC Size:Double	Final Classifier:sigmoid
+MCC:0.804804496976	Dense Size:768	Optimizer:adam	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.5	Learning Rate:0.0001	batch size:128	FC Size:Double	Final Classifier:softmax
+MCC:0.801501580623	Dense Size:768	Optimizer:adamax	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.75	Learning Rate:0.0001	batch size:96	FC Size:Double	Final Classifier:sigmoid
+MCC:0.800573981443	Dense Size:768	Optimizer:adamax	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:16	FC Size:Double	Final Classifier:softmax
+MCC:0.798564809301	Dense Size:1024	Optimizer:adam	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:128	FC Size:Double	Final Classifier:sigmoid
+MCC:0.795531326737	Dense Size:1024	Optimizer:adam	Nesterov:True	Learning Rate:0.0001	Activation:sigmoid	Dropout Rate:0.0	Epsilon:1e-08	batch size:96	FC Size:Double	Momentum:0.7	Final Classifier:sigmoid
+MCC:0.777924965312	Dense Size:256	Optimizer:adam	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:32	FC Size:Double	Final Classifier:sigmoid
+MCC:0.773921347869	Dense Size:1024	Optimizer:adam	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:16	FC Size:Double	Final Classifier:sigmoid
+MCC:0.763984683141	Dense Size:768	Optimizer:adamax	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:16	FC Size:Double	Final Classifier:softmax
+MCC:0.762745973732	Dense Size:256	Optimizer:adam	Epsilon:1e-08	Activation:relu	Dropout Rate:0.5	Learning Rate:0.0001	batch size:32	FC Size:Double	Final Classifier:sigmoid
+MCC:0.762712407197	Dense Size:1024	Optimizer:adam	Epsilon:1e-08	Activation:tanh	Dropout Rate:0.5	Learning Rate:0.0001	batch size:64	FC Size:Single	Final Classifier:sigmoid
+MCC:0.76066394547	Dense Size:768	Optimizer:adam	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.5	Learning Rate:0.0001	batch size:16	FC Size:Double	Final Classifier:sigmoid
+MCC:0.756101341557	Dense Size:128	Optimizer:adamax	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:96	FC Size:Double	Final Classifier:softmax
+MCC:0.75418110397	Dense Size:512	Optimizer:adamax	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.75	Learning Rate:0.0001	batch size:128	FC Size:Double	Final Classifier:sigmoid
+MCC:0.737292132031	Dense Size:512	Optimizer:rmsprop	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:96	FC Size:Double	Final Classifier:sigmoid
+MCC:0.729434557965	Dense Size:128	Optimizer:adamax	Epsilon:1e-08	Activation:tanh	Dropout Rate:0.5	Learning Rate:0.0001	batch size:32	FC Size:Single	Final Classifier:softmax
+MCC:0.725797823651	Dense Size:512	Optimizer:adam	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:96	FC Size:Single	Final Classifier:softmax
+MCC:0.713360393403	Dense Size:512	Optimizer:rmsprop	Epsilon:1e-08	Activation:tanh	Dropout Rate:0.0	Learning Rate:0.0001	batch size:96	FC Size:Double	Final Classifier:sigmoid
+MCC:0.709724890745	Dense Size:768	Optimizer:rmsprop	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.75	Learning Rate:0.0001	batch size:64	FC Size:Double	Final Classifier:sigmoid
+MCC:0.709146980652	Dense Size:768	Optimizer:rmsprop	Epsilon:1e-08	Activation:tanh	Dropout Rate:0.5	Learning Rate:0.0001	batch size:64	FC Size:Double	Final Classifier:sigmoid
+MCC:0.696038316872	Dense Size:128	Optimizer:adamax	Epsilon:1e-08	Activation:tanh	Dropout Rate:0.5	Learning Rate:0.0001	batch size:32	FC Size:Double	Final Classifier:softmax
+MCC:0.693400654298	Dense Size:256	Optimizer:adam	Epsilon:1e-08	Activation:tanh	Dropout Rate:0.25	Learning Rate:0.0001	batch size:128	FC Size:Single	Final Classifier:sigmoid
+MCC:0.692385706658	Dense Size:128	Optimizer:rmsprop	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:96	FC Size:Double	Final Classifier:sigmoid
+MCC:0.689045196309	Dense Size:768	Optimizer:adamax	Epsilon:1e-08	Activation:relu	Dropout Rate:0.0	Learning Rate:0.0001	batch size:64	FC Size:Single	Final Classifier:sigmoid
+MCC:0.675695670853	Dense Size:512	Optimizer:adamax	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:128	FC Size:Single	Final Classifier:softmax
+MCC:0.673400071443	Dense Size:64	Optimizer:adam	Epsilon:1e-08	Activation:relu	Dropout Rate:0.0	Learning Rate:0.0001	batch size:128	FC Size:Double	Final Classifier:sigmoid
+MCC:0.671176701573	Dense Size:64	Optimizer:adamax	Epsilon:1e-08	Activation:tanh	Dropout Rate:0.0	Learning Rate:0.0001	batch size:128	FC Size:Double	Final Classifier:softmax
+MCC:0.663868803579	Dense Size:768	Optimizer:adagrad	Epsilon:1e-08	Activation:relu	Dropout Rate:0.5	Learning Rate:0.0001	batch size:96	FC Size:Double	Final Classifier:sigmoid
+MCC:0.662533736799	Dense Size:128	Optimizer:adamax	Epsilon:1e-08	Activation:tanh	Dropout Rate:0.5	Learning Rate:0.0001	batch size:96	FC Size:Single	Final Classifier:softmax
+MCC:0.660021168174	Dense Size:768	Optimizer:adagrad	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.75	Learning Rate:0.0001	batch size:64	FC Size:Single	Final Classifier:softmax
+MCC:0.654821788734	Dense Size:256	Optimizer:adamax	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.75	Learning Rate:0.0001	batch size:128	FC Size:Double	Final Classifier:sigmoid
+MCC:0.650111909556	Dense Size:1024	Optimizer:adam	Epsilon:1e-08	Activation:relu	Dropout Rate:0.0	Learning Rate:0.0001	batch size:64	FC Size:Double	Final Classifier:sigmoid
+MCC:0.639537632186	Dense Size:256	Optimizer:sgd	Nesterov:True	Learning Rate:0.0001	Activation:relu	Dropout Rate:0.25	batch size:32	FC Size:Double	Momentum:0.8	Final Classifier:sigmoid
+MCC:0.62886650319	Dense Size:128	Optimizer:adam	Epsilon:1e-08	Activation:relu	Dropout Rate:0.0	Learning Rate:0.0001	batch size:96	FC Size:Single	Final Classifier:softmax
+MCC:0.602956507197	Dense Size:768	Optimizer:adagrad	Epsilon:1e-08	Activation:tanh	Dropout Rate:0.5	Learning Rate:0.0001	batch size:128	FC Size:Single	Final Classifier:softmax
+MCC:0.601123496533	Dense Size:256	Optimizer:adagrad	Epsilon:1e-08	Activation:relu	Dropout Rate:0.5	Learning Rate:0.0001	batch size:128	FC Size:Double	Final Classifier:softmax
+MCC:0.593859802542	Dense Size:128	Optimizer:adagrad	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.25	Learning Rate:0.0001	batch size:64	FC Size:Double	Final Classifier:softmax
+MCC:0.519458234782	Dense Size:512	Optimizer:sgd	Nesterov:True	Learning Rate:0.0001	Activation:relu	Dropout Rate:0.0	batch size:96	FC Size:Double	Momentum:0.7	Final Classifier:sigmoid
+MCC:0.518403322249	Dense Size:64	Optimizer:adagrad	Epsilon:1e-08	Activation:tanh	Dropout Rate:0.25	Learning Rate:0.0001	batch size:64	FC Size:Single	Final Classifier:sigmoid
+MCC:0.486900591238	Dense Size:1024	Optimizer:sgd	Nesterov:True	Learning Rate:0.0001	Activation:tanh	Dropout Rate:0.0	batch size:32	FC Size:Single	Momentum:0.8	Final Classifier:sigmoid
+MCC:0.363218458448	Dense Size:512	Optimizer:adagrad	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.75	Learning Rate:0.0001	batch size:128	FC Size:Double	Final Classifier:sigmoid
+MCC:0.145821043046	Dense Size:64	Optimizer:rmsprop	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.25	Learning Rate:0.0001	batch size:16	FC Size:Single	Final Classifier:sigmoid
+MCC:0.111236163354	Dense Size:256	Optimizer:sgd	Nesterov:True	Learning Rate:0.0001	Activation:sigmoid	Dropout Rate:0.25	batch size:32	FC Size:Double	Momentum:0.7	Final Classifier:sigmoid
+MCC:0.105369460361	Dense Size:64	Optimizer:rmsprop	Nesterov:True	Learning Rate:0.0001	Activation:tanh	Dropout Rate:0.5	Epsilon:1e-08	batch size:32	FC Size:Single	Momentum:1.0	Final Classifier:softmax
+MCC:0.094840439659	Dense Size:768	Optimizer:adadelta	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.0	Learning Rate:0.0001	batch size:16	FC Size:Double	Final Classifier:sigmoid
+MCC:0.0776933927296	Dense Size:1024	Optimizer:adadelta	Epsilon:1e-08	Activation:relu	Dropout Rate:0.25	Learning Rate:0.0001	batch size:32	FC Size:Single	Final Classifier:softmax
+MCC:0.0668945224923	Dense Size:512	Optimizer:adadelta	Epsilon:1e-08	Activation:sigmoid	Dropout Rate:0.25	Learning Rate:0.0001	batch size:16	FC Size:Single	Final Classifier:sigmoid
+MCC:0.0627332326675	Dense Size:512	Optimizer:adamax	Epsilon:1e-08	Activation:relu	Dropout Rate:0.75	Learning Rate:0.0001	batch size:128	FC Size:Double	Final Classifier:softmax
