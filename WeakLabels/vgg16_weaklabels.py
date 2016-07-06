@@ -82,7 +82,7 @@ def vgg16_train(weights_path = None, img_width = 224, img_height = 224, fc_model
         model.add(Dense(n_labels, activation='sigmoid'))
         loss = 'categorical_crossentropy'
         optimizer = optimizers.Adam(lr=1e-4, epsilon=1e-08)
-        batch_size = 64
+        batch_size = 128
     elif fc_model == 'tom':
         model.add(Dense(512, activation='relu'))
         model.add(Dropout(0.0))
@@ -91,7 +91,7 @@ def vgg16_train(weights_path = None, img_width = 224, img_height = 224, fc_model
         model.add(Dense(n_labels, activation='softmax'))
         loss = 'categorical_crossentropy'
         optimizer = optimizers.Adam(lr=1e-4, epsilon=1e-08)
-        batch_size = 64
+        batch_size = 128
     elif fc_model == 'am':
         model.add(Dense(256, activation='relu'))
         model.add(Dropout(0.5))
@@ -166,7 +166,7 @@ def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_
         last_layer = Dense(n_labels, activation='sigmoid')
         loss = 'categorical_crossentropy'
         optimizer = optimizers.Adam(lr=1e-4, epsilon=1e-08)
-        batch_size = 64
+        batch_size = 128
     elif fc_model == 'tom':
         model.add(Dense(512, activation='relu'))
         model.add(Dropout(0.0))
@@ -175,7 +175,7 @@ def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_
         last_layer = Dense(n_labels, activation='softmax')
         loss = 'categorical_crossentropy'
         optimizer = optimizers.Adam(lr=1e-4, epsilon=1e-08)
-        batch_size = 64
+        batch_size = 128
     elif fc_model == 'am':
         model.add(Dense(256, activation='relu'))
         model.add(Dropout(0.5))
@@ -366,7 +366,7 @@ parser.add_argument('--weaklbl_validation_map', dest='WEAKLABEL_VALIDATION_MAP',
 parser.add_argument('--hard_training_map', dest='HARD_TRAINING_MAP', type=str,help='Mapping file of training images (with path) and hard label')
 parser.add_argument('--hard_validation_map', dest='HARD_VALIDATION_MAP', type=str,help='Mapping file of validation images (with path) and hard label')
 parser.add_argument('--fc_model', dest='FC_MODEL', type=str, choices=['tom', 'cal', 'am'], default='tom', help='Fully connected model on top (default: %(tom)s)')
-parser.add_argument('--f_type', dest='F_TYPE', type=str, choices=['f0', 'f15'], default='tom', help='Layers to freeze: F0 = Freeze 0 layers, F15 = Freeze 15 layers (default: %(tom)s)')
+parser.add_argument('--f_type', dest='F_TYPE', type=str, choices=['f0', 'f15'], default='f15', help='Layers to freeze: F0 = Freeze 0 layers, F15 = Freeze 15 layers (default: %(tom)s)')
 
 args = parser.parse_args()
 # RANDOM_LABELS = args.random
