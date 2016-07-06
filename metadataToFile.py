@@ -70,8 +70,8 @@ for dataset in dataset_list:
         CAMERA = "Francisca"
         DATASET = "SO2"
         SQUALITY = "NA"
-        l_dir1 = os.listdir("/".join(dataset_path, dataset,"train"))
-        l_dir2 = os.listdir("/".join(dataset_path, dataset,"validation"))
+        l_dir1 = os.listdir("/".join([dataset_path, dataset,"train"]))
+        l_dir2 = os.listdir("/".join([dataset_path, dataset,"validation"]))
         l_dirs = [l_dir1, l_dir2]
 
         for l_dir in l_dirs:
