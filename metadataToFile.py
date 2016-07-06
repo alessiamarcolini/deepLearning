@@ -76,7 +76,11 @@ for dataset in dataset_list:
 
         for l_dir in l_dirs:
             for d in l_dir:
-                l_images = os.listdir("/".join([dataset_path, dataset, d]))
+                if l_dir == l_dir1:
+                    folder = "train"
+                elif l_dir == l_dir2:
+                    folder = "validation"
+                l_images = os.listdir("/".join([dataset_path, dataset, folder, d]))
 
 
                 for name in l_images:
