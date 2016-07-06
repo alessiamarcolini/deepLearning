@@ -500,7 +500,7 @@ model.save_weights(hard_weights_file, overwrite=True)
 
 print "#\tPerforming Predict on Training Hard Labels"
 #### PREDICT on FINE TUNING
-model, top_model = vgg16_predict(weights_path=hard_weights_file, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE)
+model, top_model = vgg16_predict(weights_path=hard_weights_file, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE, n_labels= hard_train_labels.shape[1])
 predicted_features_train = model.predict(hard_train)
 np.savetxt(OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_bottleneck_train.txt", predicted_features_train)
 
