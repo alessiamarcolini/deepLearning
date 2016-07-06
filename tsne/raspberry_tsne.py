@@ -120,10 +120,9 @@ def apply_tsne(X, store_result=True, filename='tnse_result.txt',
     if TSNE_model is None:
         RaspberryTSNE = TSNE(n_components=n_components, perplexity=perplexity,
                              init=init, random_state=0)
-        X_tsne = RaspberryTSNE.fit_transform(X)
     else:
         RaspberryTSNE = TSNE_model
-        X_tsne = RaspberryTSNE.transform(X)
+    X_tsne = RaspberryTSNE.fit_transform(X)
     if store_result:
         np.savetxt(filename, X_tsne)
     return RaspberryTSNE, X_tsne
