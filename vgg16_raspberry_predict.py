@@ -215,7 +215,7 @@ def main():
     file_lines = []
     dataset = sys.argv[1]
     # path to the model weights files.
-    weights_path = 'weights/vgg16_am1_theano_so2-3.h5'
+    weights_path = 'weights/vgg16_first_training_raspberry_weights.h5'
 
     # dimensions of our images.
 
@@ -272,7 +272,7 @@ def main():
 
     predicted_labels = top_model.predict(predicted_features)
 
-    prediction_summary = open("results/vgg16_first_train_raspberry_prediction_summary_{}.csv".format(dataset), "w")
+    prediction_summary = open("results/vgg16_first_train_prediction_summary_{}.csv".format(dataset), "w")
 
 
 
