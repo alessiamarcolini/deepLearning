@@ -156,7 +156,7 @@ for dataset in dataset_list:
         SQUALITY = "NA"
         VARIETY = ""
         CAMERA = "Prosumer"
-        SBG = lBG[1]
+        SBG = lSBG[1]
         l_dir = os.listdir(dataset)
         print(dataset, l_dir)
 
