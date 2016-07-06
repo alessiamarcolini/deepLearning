@@ -327,8 +327,7 @@ def load_im2(paths):
     return np.array(l)
 
 def parse_mapping(mapping_file=None):
-    map = np.loadtxt(mapping_file)
-    images_array = []
+    map = np.loadtxt(mapping_file, dtype=str)
     labels = []
     images_path = []
 
