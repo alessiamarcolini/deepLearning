@@ -15,6 +15,7 @@ SOS = "sos"
 SO3P = "so3_p"
 SO3 = "so3"
 SO2 = "so2"
+SO4 = 'so4'
 SOM = "som"
 
 # Mapping of values extracted from file names
@@ -55,6 +56,7 @@ DATASET_METADATA = {
     SO2 : {CAMERA:"Fr", DATASET:SO2, SOMQ:NAN, CAT:NAN, SOSQ:NAN},
     SO3 : {DATASET:SO3, SOMQ:NAN, CAT:NAN, VARIETY:NAN, SOSQ:NAN},
     SO3P: {DATASET:SO3, SOMQ:NAN, VARIETY:NAN, CAMERA: "Pr", CAT:NAN, SOSQ:NAN},
+    SO4 : {DATASET:SO4, SOMQ:NAN, CAMERA:"Mi", CAT:NAN, SOSQ:NAN, },
     SOS : {DATASET:SOS, VARIETY:NAN, CAMERA:NAN, CONF:CONFIGURATIONS['gb'], CLASS:NAN, CAT:NAN, SOMQ:NAN},
     SOM : {DATASET:SOM, CAMERA:NAN, CONF:CONFIGURATIONS['b'], CLASS:NAN, SOSQ:NAN}
 }
@@ -68,7 +70,7 @@ def process_SO_dataset(metadata_file, dataset_folder_name,
     each class, and metadata infos are hard coded in image file names.
 
     The format of the image file is (for each maturation class):
-        dsname_variety_maturation_configuration_number1.jpg
+        dsname_variety_maturation_configuration_number1[_number2].jpg
     """
 
     classes_folders = os.listdir(dataset_folder_path)
@@ -85,10 +87,13 @@ def process_SO_dataset(metadata_file, dataset_folder_name,
             metadata_line[FILENAME] = name
             metadata_line[FILEPATH] = os.path.abspath(os.path.join(dataset_folder_path,
                                                                    class_name, name))
-            try:
+
+            if dataset_folder_name == SO1:
                 _, var, matur, conf, _ = name.split("_")
-            except ValueError:
+            elif dataset_folder_name == SO2:
                 _, var, _, matur, conf, _ = name.split('_')
+            else: ## SO4
+                _, var, matur, conf, *rest = name.split("_")
 
             metadata_line[VARIETY] = VARIETIES[var.lower()]
             metadata_line[CLASS] = MATURATION_CLASSES[matur.lower()]
@@ -203,7 +208,7 @@ def process_SOS_dataset(metadata_file, dataset_folder_name,
             metadata_line[FILENAME] = name
             metadata_line[FILEPATH] = os.path.abspath(os.path.join(dataset_folder_path,
                                                                    class_name, name))
-            metadata_line[CAT] = class_name.upper()
+            metadata_line[SOSQ] = class_name.upper()
 
             line = CSV_SEP.join(metadata_line.values())
             metadata_file.write(line + "\n")
@@ -302,6 +307,9 @@ if __name__ == '__main__':
                 process_SO3_dataset(metadata_file, dataset_folder_name, dataset_folder_path)
             if dataset_folder_name == SO3P:
                 process_SO3P_dataset(metadata_file, dataset_folder_name, dataset_folder_path)
+            if dataset_folder_name == SO4:
+                process_SO_dataset(metadata_file, dataset_folder_name,
+                                   dataset_folder_path)
             if dataset_folder_name == SOS:
                 process_SOS_dataset(metadata_file, dataset_folder_name, dataset_folder_path)
             if dataset_folder_name == SOM:
