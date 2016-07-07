@@ -58,7 +58,7 @@ def vgg16_predict(weights_path=None, img_width=224, img_height=224, fc_model=Non
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
     model.add(Flatten())
 
-    print('Model loaded.')
+    print('#Model loaded.')
 
     loss = None
     optimizer = None
@@ -230,6 +230,7 @@ predicted_features_train = model.predict(validation)
 np.savetxt(OUTDIR + "V_L_So_" + F_TYPE + "_" + FC_MODEL + "_bottleneck_validation.txt", predicted_features_train)
 
 predicted_labels_train = top_model.predict(predicted_features_train)
+print "#Writing Prediction Output"
 prediction_summary_train = open(OUTDIR + "V_L_So_" + F_TYPE + "_" + FC_MODEL + "_validation_summary.txt", "w")
 prediction_summary_train.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS']) + '\n')
 
