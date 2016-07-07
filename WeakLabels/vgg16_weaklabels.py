@@ -463,7 +463,7 @@ print "#\tStarting Training on Weak Labels"
 #### TRAIN
 model, batch_size = vgg16_train(weights_path=VGG_WEIGHTS, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE, n_labels= weak_train_labels.shape[1])
 if PLOT:
-    plot(model, to_file=OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_weaklabels_plot.png")
+    plot(model, to_file=OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_weaklabels_plot.png", show_shapes=True)
 model.fit(weak_train, weak_train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
 weak_weights_file = OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_weaklabels_weights.h5"
 model.save_weights(weak_weights_file, overwrite=True)
@@ -540,7 +540,7 @@ print "#\tStarting Fine Tuning on Hard Labels"
 #### FINE TUNING
 model, batch_size = vgg16_finetuning(weights_path=weak_weights_file, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE, n_labels= hard_train_labels.shape[1])
 if PLOT:
-    plot(model, to_file=OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_plot.png")
+    plot(model, to_file=OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_plot.png", show_shapes=True)
 model.fit(hard_train, hard_train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
 hard_weights_file = OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_weights.h5"
 model.save_weights(hard_weights_file, overwrite=True)
