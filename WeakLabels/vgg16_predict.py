@@ -202,7 +202,7 @@ if not os.path.exists(OUTDIR):
 if VALIDATION_FILE_LIST is not None:
     validation, validation_images = parse_validation_list(validation_file_list=VALIDATION_FILE_LIST)
 else:
-    print >> sys.stderr, "\nWeakLabel Training map is mandatory."
+    print >> sys.stderr, "\nFile with path images to predict is mandatory."
     exit(1)
 
 if VALIDATION_LABELS is not None:
