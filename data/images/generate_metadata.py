@@ -38,7 +38,8 @@ SOSQ = 'SOSQ'
 CAT = "CAT"
 FILEPATH = "FILEPATH"
 
-HEADING_LINE = CSV_SEP.join([FILENAME, DATASET, CLASS, CAMERA, CONF, VARIETY, SOSQ, SOMQ, CAT, FILEPATH])
+HEADING = [FILENAME, DATASET, CLASS, CAMERA, CONF, VARIETY, SOSQ, SOMQ, CAT, FILEPATH]
+HEADING_LINE = CSV_SEP.join(HEADING)
 
 METADATA_LINE = OrderedDict()
 METADATA_LINE[FILENAME] = ''
@@ -99,7 +100,7 @@ def process_SO_dataset(metadata_file, dataset_folder_name,
             metadata_line[CLASS] = MATURATION_CLASSES[matur.lower()]
             metadata_line[CONF] = CONFIGURATIONS[conf.lower()]
 
-            line = CSV_SEP.join(metadata_line.values())
+            line = CSV_SEP.join(metadata_line[key] for key in HEADING)
             metadata_file.write(line + "\n")
     print('{} DONE!'.format(dataset_folder_name))
 
@@ -142,7 +143,7 @@ def process_SO3_dataset(metadata_file, dataset_folder_name,
             metadata_line[CAMERA] = camera
             metadata_line[CONF] = CONFIGURATIONS[conf.lower()]
 
-            line = CSV_SEP.join(metadata_line.values())
+            line = CSV_SEP.join(metadata_line[key] for key in HEADING)
             metadata_file.write(line + "\n")
     print('{} DONE!'.format(dataset_folder_name))
 
@@ -178,7 +179,7 @@ def process_SO3P_dataset(metadata_file, dataset_folder_name,
             metadata_line[CLASS] = MATURATION_CLASSES[mat.lower()]
             metadata_line[CONF] = CONFIGURATIONS[conf.lower()]
 
-            line = CSV_SEP.join(metadata_line.values())
+            line = CSV_SEP.join(metadata_line[key] for key in HEADING)
             metadata_file.write(line + "\n")
     print('{} DONE!'.format(dataset_folder_name))
 
@@ -210,7 +211,7 @@ def process_SOS_dataset(metadata_file, dataset_folder_name,
                                                                    class_name, name))
             metadata_line[SOSQ] = class_name.upper()
 
-            line = CSV_SEP.join(metadata_line.values())
+            line = CSV_SEP.join(metadata_line[key] for key in HEADING)
             metadata_file.write(line + "\n")
     print('{} DONE!'.format(dataset_folder_name))
 
@@ -276,7 +277,7 @@ def process_SOM_dataset(metadata_file, dataset_folder_name, dataset_folder_path)
                     metadata_line[VARIETY] = variety.title()
                     metadata_line[CAT] = som_category.upper()
 
-                    line = CSV_SEP.join(metadata_line.values())
+                    line = CSV_SEP.join(metadata_line[key] for key in HEADING)
                     metadata_file.write(line + "\n")
     print('{} DONE!'.format(dataset_folder_name))
 
