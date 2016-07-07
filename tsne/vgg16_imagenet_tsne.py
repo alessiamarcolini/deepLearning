@@ -18,7 +18,7 @@ from argparse import ArgumentParser
 IMG_WIDTH, IMG_HEIGHT = 224, 224
 
 # VGG16 Model weights filename
-WEIGHTS_PATH = 'vgg16_weights.h5'
+WEIGHTS_PATH = 'vgg16_first_training_raspberry_weights.h5'
 
 IMAGE_PATH = '/data/webvalley/fruit_images/'
 
