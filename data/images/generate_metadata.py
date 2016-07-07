@@ -85,7 +85,8 @@ def process_SO_dataset(metadata_file, dataset_folder_name,
             metadata_line[FILENAME] = name
             metadata_line[FILEPATH] = os.path.abspath(os.path.join(dataset_folder_path,
                                                                    class_name, name))
-            _, var, matur, conf, _ = name.split("_")
+            _, var, matur, conf, *rest = name.split("_")
+
             metadata_line[VARIETY] = VARIETIES[var.lower()]
             metadata_line[CLASS] = MATURATION_CLASSES[matur.lower()]
             metadata_line[CONF] = CONFIGURATIONS[conf.lower()]
