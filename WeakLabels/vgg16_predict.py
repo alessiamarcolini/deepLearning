@@ -237,21 +237,25 @@ predicted_labels_linear = []
 
 for i in range(len(predicted_labels_train)):
     cls_prob = [str(el) for el in predicted_labels_train[i]]
-    real_label = np.argmax(validation_labels[i])
+    if VALIDATION_LABELS is not None:
+        real_label = np.argmax(validation_labels[i])
+    else:
+        real_label = 'NA'
     line = [validation_images[i], str(real_label), ";".join(cls_prob)]
     predicted_labels_linear.append(np.argmax(predicted_labels_train[i]))
     prediction_summary_train.write("\t".join(line) + "\n")
     prediction_summary_train.flush()
 
-train_labels_linear = []
+if VALIDATION_LABELS is not None:
+    train_labels_linear = []
 
-for lbl in validation_labels:
-    train_labels_linear.append(np.argmax(lbl))
+    for lbl in validation_labels:
+        train_labels_linear.append(np.argmax(lbl))
 
-train_labels_linear = np.array(train_labels_linear)
-predicted_labels_linear = np.array(predicted_labels_linear)
+    train_labels_linear = np.array(train_labels_linear)
+    predicted_labels_linear = np.array(predicted_labels_linear)
 
-MCC = multimcc(train_labels_linear, predicted_labels_linear)
-print("#MCC Val:", MCC)
-prediction_summary_train.write("MCC: " + str(round(MCC, 3)))
+    MCC = multimcc(train_labels_linear, predicted_labels_linear)
+    print("#MCC Val:", MCC)
+    prediction_summary_train.write("MCC: " + str(round(MCC, 3)))
 prediction_summary_train.close()
