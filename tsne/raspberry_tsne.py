@@ -220,6 +220,11 @@ if __name__ == '__main__':
         training_set_matrix_filepath = dataset_features_map[model_name][args.training_dataset_name]
         tsne_filepath = compose_tsne_filepath(args.tsne_init, args.tsne_perplexity,
                                               model_name, args.training_dataset_name)
+
+        if os.path.exists(tsne_filepath):
+            print('Skipping: ', tsne_filepath, ' Existing!')
+            continue
+
         RaspberryTSNE = load_and_apply_tsne(training_set_matrix_filepath, tsne_filepath,
                                             args.tsne_init, args.tsne_perplexity)
         for dataset_name in dataset_features_map[model_name]:
@@ -228,6 +233,9 @@ if __name__ == '__main__':
             matrix_filepath = dataset_features_map[model_name][dataset_name]
             tsne_filepath = compose_tsne_filepath(args.tsne_init, args.tsne_perplexity,
                                                   model_name, dataset_name)
+            if os.path.exists(tsne_filepath):
+                print('Skipping: ', tsne_filepath, ' Existing!')
+                continue
             process_data.append((matrix_filepath, tsne_filepath, RaspberryTSNE))
 
     Parallel(n_jobs=-1, backend='threading')(
