@@ -12,11 +12,12 @@ import numpy as np
 import time
 import os
 import h5py
-import argparse
+
 from keras.models import Sequential
 from keras.layers import Convolution2D, ZeroPadding2D, MaxPooling2D
 from keras import backend as K
 
+import argparse
 class MyArgumentParser(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
         super(MyArgumentParser, self).__init__(*args, **kwargs)
@@ -34,9 +35,13 @@ parser = MyArgumentParser(
     description='Visualizzation of a pretrained VGG16.',
     fromfile_prefix_chars='@')
 parser.add_argument('--vgg16_weights', type=str, default='vgg16_weights.h5', help='VGG16 PreTrained weights')
+parser.add_argument('--output_dir', dest='OUTDIR', type=str, default="./experiment_output/", help='Output directory')
 
 args = parser.parse_args()
 VGG_WEIGHTS = args.vgg16_weights
+OUTDIR = args.OUTDIR +"/"
+if not os.path.exists(OUTDIR):
+    os.makedirs(OUTDIR)
 
 # dimensions of the generated pictures for each filter.
 img_width = 128
@@ -122,17 +127,6 @@ for k in range(len(f.attrs['layer_names'])):
     else:
         model.layers[k].set_weights(weights)
 f.close()
-
-# assert os.path.exists(weights_path), 'Model weights not found (see "weights_path" variable in script).'
-# f = h5py.File(weights_path)
-# for k in range(f.attrs['nb_layers']):
-#     if k >= len(model.layers):
-#         # we don't look at the last (fully-connected) layers in the savefile
-#         break
-#     g = f['layer_{}'.format(k)]
-#     weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
-#     model.layers[k].set_weights(weights)
-# f.close()
 print('Model loaded.')
 
 # get the symbolic outputs of each "key" layer (we gave them unique names).
@@ -211,4 +205,4 @@ for i in range(n):
                          (img_height + margin) * j: (img_height + margin) * j + img_height, :] = img
 
 # save the result to disk
-imsave('stitched_filters_%dx%d.png' % (n, n), stitched_filters)
+imsave(OUTDIR+'stitched_filters_%dx%d.png' % (n, n), stitched_filters)
