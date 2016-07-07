@@ -1,0 +1,21 @@
+MCC=0.0;p_E;p_G;p_L
+r_E;0.0;4.0;0.0;
+r_G;0.0;8.0;0.0;
+r_L;0.0;4.0;0.0;
+FILENAME	PREDICTED_LABEL	E	G	L	REAL_LABEL
+datasets/so3_p/early/so3p_e_b_06.jpg;Good;0.0;1.0;0.0;Early
+datasets/so3_p/early/so3p_e_b_16.jpg;Good;0.0;1.0;0.0;Early
+datasets/so3_p/early/so3p_e_b_13.jpg;Good;0.0;1.0;0.0;Early
+datasets/so3_p/early/so3p_e_b_08.jpg;Good;0.0;1.0;0.0;Early
+datasets/so3_p/good/so3p_g_b_10.jpg;Good;0.0;1.0;0.0;Good
+datasets/so3_p/good/so3p_g_b_09.jpg;Good;0.0;1.0;0.0;Good
+datasets/so3_p/good/so3p_g_b_02.jpg;Good;0.0;1.0;0.0;Good
+datasets/so3_p/good/so3p_g_b_04.jpg;Good;0.0;1.0;0.0;Good
+datasets/so3_p/good/so3p_g_b_12.jpg;Good;0.0;1.0;0.0;Good
+datasets/so3_p/good/so3p_g_b_03.jpg;Good;0.0;1.0;0.0;Good
+datasets/so3_p/good/so3p_g_b_01.jpg;Good;0.0;1.0;0.0;Good
+datasets/so3_p/good/so3p_g_b_11.jpg;Good;0.0;1.0;0.0;Good
+datasets/so3_p/late/so3p_l_b_07.jpg;Good;0.0;1.0;0.0;Late
+datasets/so3_p/late/so3p_l_b_05.jpg;Good;0.0;1.0;0.0;Late
+datasets/so3_p/late/so3p_l_b_14.jpg;Good;0.0;1.0;0.0;Late
+datasets/so3_p/late/so3p_l_b_15.jpg;Good;0.0;1.0;0.0;Late
