@@ -169,7 +169,7 @@ class MyArgumentParser(argparse.ArgumentParser):
             yield arg
 
 
-parser = mMyArgumentParser(
+parser = MyArgumentParser(
     description='Run a training experiment using pretrained VGG16, specified on the Raspberry DataSet.',
     fromfile_prefix_chars='@')
 parser.add_argument('--vgg16_weights', type=str, default='vgg16_weights.h5', help='VGG16 PreTrained weights')
