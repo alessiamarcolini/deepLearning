@@ -180,10 +180,10 @@ parser.add_argument('--validation_labels', dest='VALIDATION_LABELS', type=str,
                     help='List of validation labels of the images')
 parser.add_argument('--n_labels', dest='N_LABELS', type=int, default=2, help='Number of labels to predict')
 parser.add_argument('--fc_model', dest='FC_MODEL', type=str, choices=['tom', 'cal', 'am'], default='tom',
-                    help='Fully connected model on top (default: %(tom)s)')
+                    help='Fully connected model on top (default: %(default)s)')
 parser.add_argument('--f_type', dest='F_TYPE', type=str, choices=['f0', 'f5', 'f10', 'f17', 'f24', 'f31'],
                     default='f24',
-                    help='Layers to freeze: F0 = Freeze 0 layers, F24 = Freeze 24 layers (default: %(tom)s)')
+                    help='Layers to freeze: F0 = Freeze 0 layers, F24 = Freeze 24 layers (default: %(default)s)')
 parser.add_argument('--plot', dest='PLOT', action='store_true', help='Produce plots of the model')
 
 args = parser.parse_args()

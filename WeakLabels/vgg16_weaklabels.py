@@ -406,8 +406,8 @@ parser.add_argument('--weaklbl_training_map', dest='WEAKLABEL_TRAINING_MAP', typ
 parser.add_argument('--weaklbl_validation_map', dest='WEAKLABEL_VALIDATION_MAP', type=str,help='Mapping file of validation images (with path) and weak label')
 parser.add_argument('--hard_training_map', dest='HARD_TRAINING_MAP', type=str,help='Mapping file of training images (with path) and hard label')
 parser.add_argument('--hard_validation_map', dest='HARD_VALIDATION_MAP', type=str,help='Mapping file of validation images (with path) and hard label')
-parser.add_argument('--fc_model', dest='FC_MODEL', type=str, choices=['tom', 'cal', 'am'], default='tom', help='Fully connected model on top (default: %(tom)s)')
-parser.add_argument('--f_type', dest='F_TYPE', type=str, choices=['f0','f5', 'f10', 'f17' ,'f24','f31'], default='f24', help='Layers to freeze: F0 = Freeze 0 layers, F24 = Freeze 24 layers (default: %(tom)s)')
+parser.add_argument('--fc_model', dest='FC_MODEL', type=str, choices=['tom', 'cal', 'am'], default='tom', help='Fully connected model on top (default: %(default)s)')
+parser.add_argument('--f_type', dest='F_TYPE', type=str, choices=['f0','f5', 'f10', 'f17' ,'f24','f31'], default='f24', help='Layers to freeze: F0 = Freeze 0 layers, F24 = Freeze 24 layers (default: %(default)s)')
 parser.add_argument('--plot', dest='PLOT',action='store_true', help='Produce plots of the model')
 
 args = parser.parse_args()
