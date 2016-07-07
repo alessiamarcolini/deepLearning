@@ -45,12 +45,14 @@ parser.add_argument('--vgg16_weights', type=str, default='vgg16_weights.h5', hel
 parser.add_argument('--image_file_list', metavar='base', type=str, help='Path to the image to transform.')
 parser.add_argument('--result_prefix', metavar='res_prefix', type=str, help='Prefix for the saved results.')
 parser.add_argument('--output_dir', dest='OUTDIR', type=str, default="./experiment_output/", help='Output directory')
+parser.add_argument('--n_frames', dest='N_FRAMES',type=int, default=5, help='Number of iteration on filters')
 
 args = parser.parse_args()
 VGG_WEIGHTS = args.vgg16_weights
 image_file_list = args.image_file_list
 result_prefix = args.result_prefix
 OUTDIR = args.OUTDIR+"/"
+N_FRAMES = args.N_FRAMES
 if not os.path.exists(OUTDIR):
     os.makedirs(OUTDIR)
 
@@ -231,7 +233,7 @@ for base_image_path in file_list:
     # so as to minimize the loss
     x = preprocess_image(base_image_path)
     img_name = base_image_path[base_image_path.rfind("/")+1:base_image_path.rfind(".")]
-    for i in range(5):
+    for i in range(N_FRAMES):
         print('Start of iteration', i)
         start_time = time.time()
 
