@@ -158,7 +158,7 @@ def parse_validation_list(validation_file_list=None):
 
 class MyArgumentParser(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
-        super(myArgumentParser, self).__init__(*args, **kwargs)
+        super(MyArgumentParser, self).__init__(*args, **kwargs)
 
     def convert_arg_line_to_args(self, line):
         for arg in line.split():
