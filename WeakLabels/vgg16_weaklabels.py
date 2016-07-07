@@ -15,6 +15,7 @@ from mcc_multiclass import multimcc
 import argparse
 import random
 from keras.utils import np_utils
+from keras.utils.visualize_util import plot
 
 
 def vgg16_train(weights_path = None, img_width = 224, img_height = 224, fc_model = None,f_type = None, n_labels = None ):
@@ -399,16 +400,15 @@ parser = myArgumentParser(description='Run a training experiment using pretraine
         fromfile_prefix_chars='@')
 # parser.add_argument('--gpu', type=int, default=0, help='GPU Device (default: %(default)s)')
 parser.add_argument('--nb_epochs', type=int, default=10, help='Number of Epochs during training (default: %(default)s)')
-# parser.add_argument('--random', action='store_true', help='Run with random sample labels')
 parser.add_argument('--vgg16_weights', type=str, default='vgg16_weights.h5',help='VGG16 PreTrained weights')
 parser.add_argument('--output_dir', dest='OUTDIR',type=str, default="./experiment_output/",help='Output directory')
-# parser.add_argument('--input_dir', type=str, default="./",help='Input directory')
 parser.add_argument('--weaklbl_training_map', dest='WEAKLABEL_TRAINING_MAP', type=str,help='Mapping file of training images (with path) and weak label')
 parser.add_argument('--weaklbl_validation_map', dest='WEAKLABEL_VALIDATION_MAP', type=str,help='Mapping file of validation images (with path) and weak label')
 parser.add_argument('--hard_training_map', dest='HARD_TRAINING_MAP', type=str,help='Mapping file of training images (with path) and hard label')
 parser.add_argument('--hard_validation_map', dest='HARD_VALIDATION_MAP', type=str,help='Mapping file of validation images (with path) and hard label')
-parser.add_argument('--fc_model', dest='FC_MODEL', type=str, choices=['tom', 'cal', 'am'], default='tom', help='Fully connected model on top (default: %(tom)s)')
-parser.add_argument('--f_type', dest='F_TYPE', type=str, choices=['f0','f5', 'f10', 'f17' ,'f24','f31'], default='f24', help='Layers to freeze: F0 = Freeze 0 layers, F24 = Freeze 24 layers (default: %(tom)s)')
+parser.add_argument('--fc_model', dest='FC_MODEL', type=str, choices=['tom', 'cal', 'am'], default='tom', help='Fully connected model on top (default: %(default)s)')
+parser.add_argument('--f_type', dest='F_TYPE', type=str, choices=['f0','f5', 'f10', 'f17' ,'f24','f31'], default='f24', help='Layers to freeze: F0 = Freeze 0 layers, F24 = Freeze 24 layers (default: %(default)s)')
+parser.add_argument('--plot', dest='PLOT',action='store_true', help='Produce plots of the model')
 
 args = parser.parse_args()
 # RANDOM_LABELS = args.random
@@ -420,6 +420,7 @@ WEAK_TRAINING_MAP = args.WEAKLABEL_TRAINING_MAP
 WEAK_VALIDATION_MAP = args.WEAKLABEL_VALIDATION_MAP
 HARD_TRAINING_MAP = args.HARD_TRAINING_MAP
 HARD_VALIDATION_MAP = args.HARD_VALIDATION_MAP
+PLOT = args.PLOT
 OUTDIR = args.OUTDIR +"/"
 
 if not os.path.exists(OUTDIR):
@@ -443,7 +444,6 @@ else:
 if HARD_VALIDATION_MAP is not None:
     hard_validation, hard_validation_labels, hard_validation_images = parse_mapping(mapping_file = HARD_VALIDATION_MAP)
 
-
 nb_epochs = NB_EPOCHS
 
 print "\n\n#\tExperiment Setup"
@@ -455,12 +455,15 @@ print "#WEAK_TRAINING_MAP:",WEAK_TRAINING_MAP
 print "#WEAK_VALIDATION_MAP:",WEAK_VALIDATION_MAP
 print "#HARD_TRAINING_MAP:",HARD_TRAINING_MAP
 print "#HARD_VALIDATION_MAP:",HARD_VALIDATION_MAP
+print "#PLOT:",PLOT
 print "#OUTDIR:",OUTDIR
 
 print "\n\n\n"
 print "#\tStarting Training on Weak Labels"
 #### TRAIN
 model, batch_size = vgg16_train(weights_path=VGG_WEIGHTS, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE, n_labels= weak_train_labels.shape[1])
+if PLOT:
+    plot(model, to_file=OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_weaklabels_plot.png", show_shapes=True)
 model.fit(weak_train, weak_train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
 weak_weights_file = OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_weaklabels_weights.h5"
 model.save_weights(weak_weights_file, overwrite=True)
@@ -536,6 +539,8 @@ print "\n\n\n"
 print "#\tStarting Fine Tuning on Hard Labels"
 #### FINE TUNING
 model, batch_size = vgg16_finetuning(weights_path=weak_weights_file, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE, n_labels= hard_train_labels.shape[1])
+if PLOT:
+    plot(model, to_file=OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_plot.png", show_shapes=True)
 model.fit(hard_train, hard_train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
 hard_weights_file = OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_weights.h5"
 model.save_weights(hard_weights_file, overwrite=True)
