@@ -260,11 +260,11 @@ def main():
     validation_images, validation_labels = create_validationImg_validationLabel_list(predict_mcc, validation_data_dir)
     validation = np.array(load_im2(validation_images))
 
-    np.savetxt("tsne/validation_labels/am1_validation_labels_{}.txt".format(dataset), validation_labels)
+    np.savetxt("tsne/validation_labels/am1_theano_validation_labels_{}.txt".format(dataset), validation_labels)
 
     #predicted_labels = model.predict(validation)
     predicted_features = model.predict(validation)
-    np.savetxt("tsne/predicted_features/am1_predicted_features_{}.txt".format(dataset), predicted_features)
+    np.savetxt("tsne/predicted_features/am1_theano_predicted_features_{}.txt".format(dataset), predicted_features)
 
     top_model.compile(loss='binary_crossentropy',
                   optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
@@ -272,7 +272,7 @@ def main():
 
     predicted_labels = top_model.predict(predicted_features)
 
-    prediction_summary = open("results/vgg16_first_train_prediction_summary_{}.csv".format(dataset), "w")
+    prediction_summary = open("results/vgg16_am1_theano_prediction_summary_{}.csv".format(dataset), "w")
 
 
 
