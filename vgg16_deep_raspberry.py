@@ -230,6 +230,7 @@ for base_image_path in file_list:
     # run scipy-based optimization (L-BFGS) over the pixels of the generated image
     # so as to minimize the loss
     x = preprocess_image(base_image_path)
+    img_name = base_image_path[base_image_path.rfind("/")+1:base_image_path.rfind(".")]
     for i in range(5):
         print('Start of iteration', i)
         start_time = time.time()
@@ -246,7 +247,7 @@ for base_image_path in file_list:
         x = x.reshape((3, img_width, img_height))
         x -= random_jitter
         img = deprocess_image(x)
-        fname = result_prefix + '_at_iteration_%d.png' % i
+        fname = result_prefix+"_" +img_name +'_iteration_%d.png' % i
         imsave(OUTDIR+fname, img)
         end_time = time.time()
         print('Image saved as', fname)
