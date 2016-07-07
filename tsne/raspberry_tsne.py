@@ -28,19 +28,19 @@ def collect_data_files(target_folder=PREDICTED_FEATURES_FOLDER,
         The folder to process to collect all the
         matrix files. These files will be named
         according to the DL model and the corresponding
-        dataset to be used. Each collected file is assumed
+        dataset_folder_name to be used. Each collected file is assumed
         to be a textual file saved by `numpy.savetxt`
         function.
 
     split_pattern : str (default: '_predicted_features_'
         The string pattern to be used to split gathered
         filenames in order to collect model names and
-        corresponding dataset.
+        corresponding dataset_folder_name.
 
     Returns
     -------
     dict
-        A dictionary mapping dataset and models to files.
+        A dictionary mapping dataset_folder_name and models to files.
         The output dictionary has `dataset_names` as keys and
         an additional dictionary as value, whose keys
         will be the names of the models associated to
