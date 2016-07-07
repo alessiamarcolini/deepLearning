@@ -70,6 +70,8 @@ def process_SO_dataset(metadata_file, dataset_folder_name,
     The format of the image file is (for each maturation class):
         dsname_variety_maturation_configuration_number1.jpg
     """
+    
+    print('Start Processing : ', dataset_folder_name)
 
     classes_folders = os.listdir(dataset_folder_path)
     classes_folders.sort()
@@ -85,7 +87,7 @@ def process_SO_dataset(metadata_file, dataset_folder_name,
             metadata_line[FILENAME] = name
             metadata_line[FILEPATH] = os.path.abspath(os.path.join(dataset_folder_path,
                                                                    class_name, name))
-            _, var, matur, conf = name.split("_")
+            _, var, matur, conf, num = name.split("_")
             metadata_line[VARIETY] = VARIETIES[var.lower()]
             metadata_line[CLASS] = MATURATION_CLASSES[matur.lower()]
             metadata_line[CONF] = CONFIGURATIONS[conf.lower()]
@@ -106,6 +108,8 @@ def process_SO3_dataset(metadata_file, dataset_folder_name,
     The format of the image file is (for each maturation class):
         dsname_maturation_configuration_number1_number2.jpg
     """
+
+    print('Start Processing : ', dataset_folder_name)
 
     classes_folders = os.listdir(dataset_folder_path)
     classes_folders.sort()
@@ -149,6 +153,8 @@ def process_SO3P_dataset(metadata_file, dataset_folder_name,
         dsname_maturation_configuration_number1_number2.jpg
     """
 
+    print('Start Processing: ', dataset_folder_name)
+
     classes_folders = os.listdir(dataset_folder_path)
     classes_folders.sort()
     # print(dataset_folder_name, classes_folders)
@@ -183,6 +189,8 @@ def process_SOS_dataset(metadata_file, dataset_folder_name,
     name of files (only in folders names, i.e. TYPE)
     """
 
+    print('Start Processing : ', dataset_folder_name)
+
     classes_folders = os.listdir(dataset_folder_path)
     classes_folders.sort()
     # print(dataset_folder_name, classes_folders)
@@ -216,6 +224,8 @@ def process_SOM_dataset(metadata_file, dataset_folder_name, dataset_folder_path)
     For **this** particular dataset, no information is hardcoded in the
     name of files (only in folders names, i.e. TYPE)
     """
+
+    print('Start Processing: ', dataset_folder_name)
 
     som_metadata_filepath = os.path.join(dataset_folder_path, SOM_METADATA_FILENAME)
 
