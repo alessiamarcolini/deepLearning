@@ -51,6 +51,8 @@ VGG_WEIGHTS = args.vgg16_weights
 image_file_list = args.image_file_list
 result_prefix = args.result_prefix
 OUTDIR = args.OUTDIR+"/"
+if not os.path.exists(OUTDIR):
+    os.makedirs(OUTDIR)
 
 # dimensions of the generated picture.
 img_width = 600

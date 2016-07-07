@@ -40,6 +40,8 @@ parser.add_argument('--output_dir', dest='OUTDIR', type=str, default="./experime
 args = parser.parse_args()
 VGG_WEIGHTS = args.vgg16_weights
 OUTDIR = args.OUTDIR +"/"
+if not os.path.exists(OUTDIR):
+    os.makedirs(OUTDIR)
 
 # dimensions of the generated pictures for each filter.
 img_width = 128
