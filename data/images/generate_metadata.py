@@ -283,7 +283,7 @@ def process_SOM_dataset(metadata_file, dataset_folder_name, dataset_folder_path)
 
 if __name__ == '__main__':
 
-    with open("metadata_so1_so2_so3_sos_som.csv", "w") as metadata_file:
+    with open("metadata_so1_so2_so3_so4_sos_som.csv", "w") as metadata_file:
         # Write Headings (first line)
         metadata_file.write(HEADING_LINE + "\n")
 
