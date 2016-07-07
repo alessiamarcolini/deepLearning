@@ -215,7 +215,7 @@ def main():
     file_lines = []
     dataset = sys.argv[1]
     # path to the model weights files.
-    weights_path = 'weights/vgg16_first_training_raspberry_weights.h5'
+    weights_path = 'weights/vgg16_am1_theano_so2.h5'
 
     # dimensions of our images.
 
