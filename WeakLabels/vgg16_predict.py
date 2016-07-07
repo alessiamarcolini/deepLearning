@@ -58,7 +58,7 @@ def vgg16_predict(weights_path=None, img_width=224, img_height=224, fc_model=Non
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
     model.add(Flatten())
 
-    print('#Model loaded.')
+    print '#Model loaded.'
 
     loss = None
     optimizer = None
@@ -257,6 +257,6 @@ if VALIDATION_LABELS is not None:
     predicted_labels_linear = np.array(predicted_labels_linear)
 
     MCC = multimcc(train_labels_linear, predicted_labels_linear)
-    print("#MCC Val:", MCC)
+    print "#MCC Val:", MCC
     prediction_summary_train.write("MCC: " + str(round(MCC, 3)))
 prediction_summary_train.close()
