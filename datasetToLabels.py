@@ -24,7 +24,7 @@ for dataset in dataset_list:
             l = 2
 
         for name in l_images:
-            abs_path = "/".join([dataset_path, dataset, d, name)
-            out.write("\t".join([abs_path, l]))
+            abs_path = "/".join([dataset_path, dataset, d, name])
+            out.write("\t".join([abs_path, str(l)]) + "\n")
 
 out.close()
