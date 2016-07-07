@@ -88,7 +88,7 @@ def process_SO_dataset(metadata_file, dataset_folder_name,
             try:
                 _, var, matur, conf, _ = name.split("_")
             except ValueError:
-                _, var, matur, _, conf, _ = name.split('-')
+                _, var, _, matur, conf, _ = name.split('-')
 
             metadata_line[VARIETY] = VARIETIES[var.lower()]
             metadata_line[CLASS] = MATURATION_CLASSES[matur.lower()]
@@ -125,7 +125,8 @@ def process_SO3_dataset(metadata_file, dataset_folder_name,
             metadata_line[FILENAME] = name
             metadata_line[FILEPATH] = os.path.abspath(os.path.join(dataset_folder_path,
                                                                    class_name, name))
-            _, mat, conf, num, _ = name.split("_")
+            fname, _ = os.path.splitext(name)
+            _, mat, conf, num, *rest = fname.split("_")
             num = int(num)
             if num % 2 == 0:
                 camera = "Ch"
