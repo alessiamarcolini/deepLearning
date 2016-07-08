@@ -18,6 +18,117 @@ from keras.utils import np_utils
 from keras.utils.visualize_util import plot
 
 
+def vgg16_train(weights_path = None, img_width = 224, img_height = 224, fc_model = None,f_type = None, n_labels = None ):
+
+    model = Sequential()
+    model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
+
+    model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_2'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(128, 3, 3, activation='relu', name='conv2_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(128, 3, 3, activation='relu', name='conv2_2'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_2'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_3'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_2'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_3'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_2'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+    model.add(Flatten())
+
+
+    assert os.path.exists(weights_path), 'Model weights not found (see "weights_path" variable in script).'
+    f = h5py.File(weights_path)
+    for k in range(f.attrs['nb_layers']):
+        if k >= len(model.layers):
+            # we don't look at the last (fully-connected) layers in the savefile
+            break
+        g = f['layer_{}'.format(k)]
+        weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
+        model.layers[k].set_weights(weights)
+    f.close()
+    print('Model loaded.')
+
+
+    loss = None
+    optimizer = None
+    if fc_model == 'cal':
+        model.add(Dense(768, activation='sigmoid'))
+        model.add(Dropout(0.0))
+        model.add(Dense(768, activation='sigmoid'))
+        model.add(Dropout(0.0))
+        model.add(Dense(n_labels, activation='sigmoid'))
+        loss = 'categorical_crossentropy'
+        optimizer = optimizers.Adam(lr=1e-4, epsilon=1e-08)
+        batch_size = 128
+    elif fc_model == 'tom':
+        model.add(Dense(512, activation='relu'))
+        model.add(Dropout(0.0))
+        model.add(Dense(512, activation='relu'))
+        model.add(Dropout(0.0))
+        model.add(Dense(n_labels, activation='softmax'))
+        loss = 'categorical_crossentropy'
+        optimizer = optimizers.Adam(lr=1e-4, epsilon=1e-08)
+        batch_size = 128
+    elif fc_model == 'am':
+        model.add(Dense(256, activation='relu'))
+        model.add(Dropout(0.5))
+        model.add(Dense(n_labels, activation='sigmoid'))
+        loss = 'binary_crossentropy'
+        optimizer = optimizers.SGD(lr=1e-4, momentum=0.9)
+        batch_size = 16
+
+    # set the first 25 layers (up to the last conv block)
+    # to non-trainable (weights will not be updated)
+    if f_type == 'f31':
+        for layer in model.layers[:32]:
+            layer.trainable = False
+    elif f_type == 'f24':
+        for layer in model.layers[:25]:
+            layer.trainable = False
+    elif f_type == 'f17':
+        for layer in model.layers[:18]:
+            layer.trainable = False
+    elif f_type == 'f10':
+        for layer in model.layers[:11]:
+            layer.trainable = False
+    elif f_type == 'f5':
+        for layer in model.layers[:6]:
+            layer.trainable = False
+    elif f_type == 'f0':
+        pass
+
+    # compile the model with a SGD/momentum optimizer
+    # and a very slow learning rate.
+    model.compile(loss=loss,
+                  optimizer=optimizer,
+                  metrics=['accuracy'])
+
+    return model, batch_size
+
 def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_model = None,f_type = None, n_labels = None ):
 
     model = Sequential()
@@ -258,6 +369,7 @@ def load_im2(paths):
         l.append(im2)
     return np.array(l)
 
+
 def parse_mapping(mapping_file=None):
     map = np.loadtxt(mapping_file, dtype=str)
     labels = []
@@ -291,6 +403,8 @@ parser = myArgumentParser(description='Run a training experiment using pretraine
 parser.add_argument('--nb_epochs', type=int, default=10, help='Number of Epochs during training (default: %(default)s)')
 parser.add_argument('--vgg16_weights', type=str, default='vgg16_weights.h5',help='VGG16 PreTrained weights')
 parser.add_argument('--output_dir', dest='OUTDIR',type=str, default="./experiment_output/",help='Output directory')
+parser.add_argument('--weaklbl_training_map', dest='WEAKLABEL_TRAINING_MAP', type=str,help='Mapping file of training images (with path) and weak label')
+parser.add_argument('--weaklbl_validation_map', dest='WEAKLABEL_VALIDATION_MAP', type=str,help='Mapping file of validation images (with path) and weak label')
 parser.add_argument('--hard_training_map', dest='HARD_TRAINING_MAP', type=str,help='Mapping file of training images (with path) and hard label')
 parser.add_argument('--hard_validation_map', dest='HARD_VALIDATION_MAP', type=str,help='Mapping file of validation images (with path) and hard label')
 parser.add_argument('--fc_model', dest='FC_MODEL', type=str, choices=['tom', 'cal', 'am'], default='tom', help='Fully connected model on top (default: %(default)s)')
@@ -303,6 +417,8 @@ NB_EPOCHS = args.nb_epochs
 VGG_WEIGHTS = args.vgg16_weights
 FC_MODEL = args.FC_MODEL
 F_TYPE = args.F_TYPE
+WEAK_TRAINING_MAP = args.WEAKLABEL_TRAINING_MAP
+WEAK_VALIDATION_MAP = args.WEAKLABEL_VALIDATION_MAP
 HARD_TRAINING_MAP = args.HARD_TRAINING_MAP
 HARD_VALIDATION_MAP = args.HARD_VALIDATION_MAP
 PLOT = args.PLOT
@@ -311,6 +427,14 @@ OUTDIR = args.OUTDIR +"/"
 if not os.path.exists(OUTDIR):
     os.makedirs(OUTDIR)
 
+if WEAK_TRAINING_MAP is not None:
+    weak_train, weak_train_labels, weak_train_images = parse_mapping(mapping_file = WEAK_TRAINING_MAP)
+else:
+    print >> sys.stderr, "\nWeakLabel Training map is mandatory."
+    exit(1)
+
+if WEAK_VALIDATION_MAP is not None:
+    weak_validation, weak_validation_labels, weak_validation_images = parse_mapping(mapping_file = WEAK_VALIDATION_MAP)
 
 if HARD_TRAINING_MAP is not None:
     hard_train, hard_train_labels, hard_train_images = parse_mapping(mapping_file = HARD_TRAINING_MAP)
@@ -328,15 +452,111 @@ print "#NB_EPOCHS:", NB_EPOCHS
 print "#VGG_WEIGHTS:",VGG_WEIGHTS
 print "#FC_MODEL:",FC_MODEL
 print "#F_TYPE:",F_TYPE
+print "#WEAK_TRAINING_MAP:",WEAK_TRAINING_MAP
+print "#WEAK_VALIDATION_MAP:",WEAK_VALIDATION_MAP
 print "#HARD_TRAINING_MAP:",HARD_TRAINING_MAP
 print "#HARD_VALIDATION_MAP:",HARD_VALIDATION_MAP
 print "#PLOT:",PLOT
 print "#OUTDIR:",OUTDIR
 
 print "\n\n\n"
+print "#\tStarting Training on Weak Labels"
+#### TRAIN
+model, batch_size = vgg16_train(weights_path=VGG_WEIGHTS, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE, n_labels= weak_train_labels.shape[1])
+if PLOT:
+    plot(model, to_file=OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_weaklabels_plot.png", show_shapes=True)
+
+
+train_datagen = ImageDataGenerator(
+        rescale=1./255,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True)
+
+train_generator = train_datagen.flow(weak_train,weak_train_labels,batch_size=batch_size)  # since we use binary_crossentropy loss, we need binary labels
+
+
+# model.fit(weak_train, weak_train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
+model.fit_generator(
+        train_generator,
+        samples_per_epoch=len(weak_train),
+        nb_epoch=100)
+weak_weights_file = OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_weaklabels_weights.h5"
+model.save_weights(weak_weights_file, overwrite=True)
+
+print "\n#\tPerforming Predict on Training Weak Labels"
+#### PREDICT
+model, top_model = vgg16_predict(weights_path=weak_weights_file, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE,n_labels= weak_train_labels.shape[1])
+predicted_features_train = model.predict(weak_train)
+np.savetxt(OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_weaklabels_bottleneck_train.txt", predicted_features_train)
+
+predicted_labels_train = top_model.predict(predicted_features_train)
+prediction_summary_train = open(OUTDIR + "V_L_So_" + F_TYPE + "_" + FC_MODEL + "_weaklabels_training_summary.txt", "w")
+prediction_summary_train.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS']) + '\n')
+
+predicted_labels_linear = []
+
+for i in range(len(predicted_labels_train)):
+    cls_prob = [str(el) for el in predicted_labels_train[i]]
+    real_label = np.argmax(weak_train_labels[i])
+    line = [weak_train_images[i], str(real_label), ";".join(cls_prob)]
+    predicted_labels_linear.append(np.argmax(predicted_labels_train[i]))
+    prediction_summary_train.write("\t".join(line) + "\n")
+    prediction_summary_train.flush()
+
+train_labels_linear = []
+
+for lbl in weak_train_labels:
+    train_labels_linear.append(np.argmax(lbl))
+
+train_labels_linear = np.array(train_labels_linear)
+predicted_labels_linear = np.array(predicted_labels_linear)
+
+MCC = multimcc(train_labels_linear, predicted_labels_linear)
+print("#MCC Val:", MCC)
+prediction_summary_train.write("MCC: " + str(round(MCC, 3)))
+prediction_summary_train.close()
+
+
+if WEAK_VALIDATION_MAP is not None:
+    print "\n"
+    print "#\tPerforming Predict on Validation Weak Labels"
+
+
+    predicted_features_validation = model.predict(weak_validation)
+    np.savetxt(OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_weaklabels_bottleneck_validation.txt", predicted_features_validation)
+
+    predicted_labels_validation = top_model.predict(predicted_features_validation)
+    prediction_summary_validation = open(OUTDIR + "V_L_So_" + F_TYPE + "_" + FC_MODEL + "_weaklabels_validation_summary.txt", "w")
+    prediction_summary_validation.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS']) + '\n')
+
+    predicted_labels_linear = []
+
+    for i in range(len(predicted_labels_validation)):
+        cls_prob = [str(el) for el in predicted_labels_validation[i]]
+        real_label = np.argmax(weak_validation_labels[i])
+        line = [weak_validation_images[i], str(real_label), ";".join(cls_prob)]
+        predicted_labels_linear.append(np.argmax(predicted_labels_validation[i]))
+        prediction_summary_validation.write("\t".join(line) + "\n")
+        prediction_summary_validation.flush()
+
+    validation_labels_linear = []
+
+    for lbl in weak_validation_labels:
+        validation_labels_linear.append(np.argmax(lbl))
+
+    validation_labels_linear = np.array(validation_labels_linear)
+    predicted_labels_linear = np.array(predicted_labels_linear)
+
+    MCC = multimcc(validation_labels_linear, predicted_labels_linear)
+    print("#MCC Val:", MCC)
+    prediction_summary_validation.write("MCC: " + str(round(MCC, 3)))
+    prediction_summary_validation.close()
+
+print "\n\n\n"
 print "#\tStarting Fine Tuning on Hard Labels"
 #### FINE TUNING
-model, batch_size = vgg16_finetuning(weights_path=VGG_WEIGHTS, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE, n_labels= hard_train_labels.shape[1])
+model, batch_size = vgg16_finetuning(weights_path=weak_weights_file, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE, n_labels= hard_train_labels.shape[1])
 if PLOT:
     plot(model, to_file=OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_plot.png", show_shapes=True)
 model.fit(hard_train, hard_train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
