@@ -44,8 +44,8 @@ else:
 
 for i in range(len(paths)):
     if VALIDATION:
-        out_list.write(paths[i])
-        out_lbl.write(str(lbl[i]))
+        out_list.write(paths[i]+"\n")
+        out_lbl.write(str(lbl[i])+"\n")
     else:
         out.write("\t".join([paths[i],str(lbl[i])])+"\n")
 
