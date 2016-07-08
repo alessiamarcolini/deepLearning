@@ -33,7 +33,7 @@ paths = []
 lbl = []
 
 for i in range(len(labels)):
-    paths.extend(os.listdir(FOLDER+labels[i]+"/"))
+    paths.extend([FOLDER+labels[i]+"/"+elem for elem in os.listdir(FOLDER+labels[i]+"/")])
     lbl.extend([i for k in range(len(os.listdir(FOLDER+labels[i]+"/")))])
 
 if VALIDATION:
