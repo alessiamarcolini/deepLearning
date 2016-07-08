@@ -63,8 +63,14 @@ COLOURS = {RASPBERRY: '#ff6666',
            APRICOT: '#f0b015',
            GOOSEBERRY: '#15f024'}
 
-CLASSES_OF_INTEREST = [RASPBERRY]
+CLASSES_OF_INTEREST = [RASPBERRY, PLUM, APRICOT, CHERRY]
 
+# Dictionary Comprehension
+CLASS_MAP = {
+    key: [1 if idx == CLASSES_OF_INTEREST.index(key) else 0
+                for idx in range(len(CLASSES_OF_INTEREST))]
+    for key in CLASSES_OF_INTEREST
+    }
 
 def VGG_16(weights_path=None, add_fully_connected=False):
     """
@@ -177,6 +183,7 @@ def collect_images(path=IMAGE_PATH):
     classes = []
     colors = []
     sample_names = []
+    img_counter = 0
     for root, dirs, files in os.walk(path):
         _, class_name = os.path.split(root)
         if class_name in CLASSES_OF_INTEREST:
@@ -292,6 +299,14 @@ if __name__ == '__main__':
         print('no image')
         exit()
     print('Step 1: Done!', end='\n\n')
+
+    # Generate Oracle
+    print('Generating Oracle!', end='\n\n')
+    class_oracle = list()
+    for class_label in classes:
+        class_oracle.append(CLASS_MAP[class_label])
+
+    print('Class Oracle: \n', class_oracle)
     
     # First of all, instantiate t-SNE model and check if the matrix file already exists
     # (with the SAME configuration parameters)
@@ -325,6 +340,12 @@ if __name__ == '__main__':
     print("\t Output Images Matrix Shape: ", output_images_fruits.shape)
 
     print('Step 2: Done!', end='\n\n')
+
+    images_fruit_oracle_filename = compose_output_filename(classes, filename_prefix='validation_labels')
+    images_fruit_oracle_filepath = os.path.join(os.path.abspath(os.path.curdir),
+                                                images_fruit_oracle_filename)
+    class_oracle_np = np.array(class_oracle)
+    np.savetxt(images_fruit_oracle_filepath, class_oracle_np)
 
     if args.with_tsne:
         # Step 3: t-SNE
