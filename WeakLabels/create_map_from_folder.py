@@ -27,7 +27,7 @@ FOLDER = os.path.abspath(args.folder+"/")+"/"
 VALIDATION = args.validation
 PREFIX = args.prefix
 
-labels = os.listdir(FOLDER)
+labels = ['early', 'good', 'late']
 
 paths = []
 lbl = []
