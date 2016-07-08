@@ -139,8 +139,8 @@ def normalize(x):
 
 
 kept_filters = []
-for filter_index in range(0, 200):
-    # we only scan through the first 200 filters,
+for filter_index in range(0, 512):
+    # we only scan through the first 512 filters,
     # but there are actually 512 of them
     print('Processing filter %d' % filter_index)
     start_time = time.time()
