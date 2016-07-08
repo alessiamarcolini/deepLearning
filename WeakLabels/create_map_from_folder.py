@@ -23,7 +23,7 @@ parser.add_argument('--validation', action='store_true', help='Create validation
 parser.add_argument('--prefix', type=str, help='Prefix for the output file(s)')
 args = parser.parse_args()
 
-FOLDER = args.folder+"/"
+FOLDER = os.path.abspath(args.folder+"/")+"/"
 VALIDATION = args.validation
 PREFIX = args.prefix
 
