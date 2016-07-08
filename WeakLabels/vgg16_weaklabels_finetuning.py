@@ -15,9 +15,10 @@ from mcc_multiclass import multimcc
 import argparse
 import random
 from keras.utils import np_utils
+from keras.utils.visualize_util import plot
 
 
-def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_model = None,f_type = None ):
+def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_model = None,f_type = None, n_labels = None ):
 
     model = Sequential()
     model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
@@ -60,7 +61,6 @@ def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_
 
     loss = None
     optimizer = None
-    n_labels = np.max(train_labels)+1
     last_layer = None
     if fc_model == 'cal':
         model.add(Dense(768, activation='sigmoid'))
@@ -105,9 +105,23 @@ def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_
 
     # set the first 25 layers (up to the last conv block)
     # to non-trainable (weights will not be updated)
-    if f_type == 'f15':
+    if f_type == 'f31':
+        for layer in model.layers[:32]:
+            layer.trainable = False
+    elif f_type == 'f24':
         for layer in model.layers[:25]:
             layer.trainable = False
+    elif f_type == 'f17':
+        for layer in model.layers[:18]:
+            layer.trainable = False
+    elif f_type == 'f10':
+        for layer in model.layers[:11]:
+            layer.trainable = False
+    elif f_type == 'f5':
+        for layer in model.layers[:6]:
+            layer.trainable = False
+    elif f_type == 'f0':
+        pass
 
     # compile the model with a SGD/momentum optimizer
     # and a very slow learning rate.
@@ -117,11 +131,10 @@ def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_
 
     return model, batch_size
 
-def vgg16_predict(weights_path = None, img_width = 224, img_height = 224, fc_model = None,f_type = None ):
-
+def vgg16_predict(weights_path = None, img_width = 224, img_height = 224, fc_model = None,f_type = None, n_labels = None ):
     model = Sequential()
-    model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
 
+    model.add(ZeroPadding2D((1, 1), input_shape=(3, img_width, img_height)))
     model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_1'))
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_2'))
@@ -163,7 +176,6 @@ def vgg16_predict(weights_path = None, img_width = 224, img_height = 224, fc_mod
 
     loss = None
     optimizer = None
-    n_labels = np.max(train_labels)+1
     top_model = Sequential()
     if fc_model == 'cal':
         model.add(Dense(768, activation='sigmoid'))
@@ -199,13 +211,26 @@ def vgg16_predict(weights_path = None, img_width = 224, img_height = 224, fc_mod
        else:
            model.layers[k].set_weights(weights)
     f.close()
-    print('Model loaded.')
 
     # set the first 25 layers (up to the last conv block)
     # to non-trainable (weights will not be updated)
-    if f_type == 'f15':
+    if f_type == 'f31':
+        for layer in model.layers[:32]:
+            layer.trainable = False
+    elif f_type == 'f24':
         for layer in model.layers[:25]:
             layer.trainable = False
+    elif f_type == 'f17':
+        for layer in model.layers[:18]:
+            layer.trainable = False
+    elif f_type == 'f10':
+        for layer in model.layers[:11]:
+            layer.trainable = False
+    elif f_type == 'f5':
+        for layer in model.layers[:6]:
+            layer.trainable = False
+    elif f_type == 'f0':
+        pass
 
     # compile the model with a SGD/momentum optimizer
     # and a very slow learning rate.
@@ -234,8 +259,7 @@ def load_im2(paths):
     return np.array(l)
 
 def parse_mapping(mapping_file=None):
-    map = np.loadtxt(mapping_file)
-    images_array = []
+    map = np.loadtxt(mapping_file, dtype=str)
     labels = []
     images_path = []
 
@@ -263,111 +287,124 @@ class myArgumentParser(argparse.ArgumentParser):
 
 parser = myArgumentParser(description='Run a training experiment using pretrained VGG16, specified on the Raspberry DataSet.',
         fromfile_prefix_chars='@')
-parser.add_argument('--gpu', type=int, default=0, help='GPU Device (default: %(default)s)')
+# parser.add_argument('--gpu', type=int, default=0, help='GPU Device (default: %(default)s)')
 parser.add_argument('--nb_epochs', type=int, default=10, help='Number of Epochs during training (default: %(default)s)')
-# parser.add_argument('--random', action='store_true', help='Run with random sample labels')
-parser.add_argument('--vgg16_weaklabels_weights', type=str, default='vgg16_weights_weaklabels.h5',help='VGG16 PreTrained weights with weak labels')
+parser.add_argument('--vgg16_weights', type=str, default='vgg16_weights.h5',help='VGG16 PreTrained weights')
 parser.add_argument('--output_dir', dest='OUTDIR',type=str, default="./experiment_output/",help='Output directory')
-# parser.add_argument('--input_dir', type=str, default="./",help='Input directory')
-parser.add_argument('--training_map', dest='TRAINING_MAP', type=str,help='Mapping file of training images (with path) and label')
-parser.add_argument('--validation_map', dest='VALIDATION_MAP', type=str,help='Mapping file of validation images (with path) and label')
-parser.add_argument('--fc_model', dest='FC_MODEL', type=str, choices=['tom', 'cal', 'am'], default='tom', help='Fully connected model on top (default: %(tom)s)')
-parser.add_argument('--f_type', dest='F_TYPE', type=str, choices=['f0', 'f15'], default='tom', help='Layers to freeze: F0 = Freeze 0 layers, F15 = Freeze 15 layers (default: %(tom)s)')
+parser.add_argument('--hard_training_map', dest='HARD_TRAINING_MAP', type=str,help='Mapping file of training images (with path) and hard label')
+parser.add_argument('--hard_validation_map', dest='HARD_VALIDATION_MAP', type=str,help='Mapping file of validation images (with path) and hard label')
+parser.add_argument('--fc_model', dest='FC_MODEL', type=str, choices=['tom', 'cal', 'am'], default='tom', help='Fully connected model on top (default: %(default)s)')
+parser.add_argument('--f_type', dest='F_TYPE', type=str, choices=['f0','f5', 'f10', 'f17' ,'f24','f31'], default='f24', help='Layers to freeze: F0 = Freeze 0 layers, F24 = Freeze 24 layers (default: %(default)s)')
+parser.add_argument('--plot', dest='PLOT',action='store_true', help='Produce plots of the model')
 
 args = parser.parse_args()
-GPU = args.gpu
 # RANDOM_LABELS = args.random
 NB_EPOCHS = args.nb_epochs
-VGG_WEIGHTS = args.vgg16_weaklabels_weights
+VGG_WEIGHTS = args.vgg16_weights
 FC_MODEL = args.FC_MODEL
 F_TYPE = args.F_TYPE
-TRAINING_MAP = args.TRAINING_MAP
-VALIDATION_MAP = args.VALIDATION_MAP
+HARD_TRAINING_MAP = args.HARD_TRAINING_MAP
+HARD_VALIDATION_MAP = args.HARD_VALIDATION_MAP
+PLOT = args.PLOT
 OUTDIR = args.OUTDIR +"/"
 
 if not os.path.exists(OUTDIR):
     os.makedirs(OUTDIR)
 
-if TRAINING_MAP is not None:
-    train, train_labels, train_images = parse_mapping(mapping_file = TRAINING_MAP)
+
+if HARD_TRAINING_MAP is not None:
+    hard_train, hard_train_labels, hard_train_images = parse_mapping(mapping_file = HARD_TRAINING_MAP)
 else:
-    print >> sys.stderr, "\nTraining map is mandatory."
+    print >> sys.stderr, "\nHardLabel Training map is mandatory."
     exit(1)
 
-if VALIDATION_MAP is not None:
-    validation, validation_labels, validation_images = parse_mapping(mapping_file = VALIDATION_MAP)
+if HARD_VALIDATION_MAP is not None:
+    hard_validation, hard_validation_labels, hard_validation_images = parse_mapping(mapping_file = HARD_VALIDATION_MAP)
 
 nb_epochs = NB_EPOCHS
 
-model, batch_size = vgg16_train(weights_path=VGG_WEIGHTS, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE)
-# fit the model
-model.fit(train, train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
-weights_file = OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_finetuning_weights.h5"
-model.save_weights(weights_file, overwrite=True)
+print "\n\n#\tExperiment Setup"
+print "#NB_EPOCHS:", NB_EPOCHS
+print "#VGG_WEIGHTS:",VGG_WEIGHTS
+print "#FC_MODEL:",FC_MODEL
+print "#F_TYPE:",F_TYPE
+print "#HARD_TRAINING_MAP:",HARD_TRAINING_MAP
+print "#HARD_VALIDATION_MAP:",HARD_VALIDATION_MAP
+print "#PLOT:",PLOT
+print "#OUTDIR:",OUTDIR
 
+print "\n\n\n"
+print "#\tStarting Fine Tuning on Hard Labels"
+#### FINE TUNING
+model, batch_size = vgg16_finetuning(weights_path=VGG_WEIGHTS, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE, n_labels= hard_train_labels.shape[1])
+if PLOT:
+    plot(model, to_file=OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_plot.png", show_shapes=True)
+model.fit(hard_train, hard_train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
+hard_weights_file = OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_weights.h5"
+model.save_weights(hard_weights_file, overwrite=True)
 
-
-
-#### PREDICT
-
-model, top_model = vgg16_predict(weights_path=weights_file, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE)
-predicted_features_train = model.predict(train)
-np.savetxt(OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_finetuning_bottleneck_train.txt", predicted_features_train)
+print "\n#\tPerforming Predict on Training Hard Labels"
+#### PREDICT on FINE TUNING
+model, top_model = vgg16_predict(weights_path=hard_weights_file, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE, n_labels= hard_train_labels.shape[1])
+predicted_features_train = model.predict(hard_train)
+np.savetxt(OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_bottleneck_train.txt", predicted_features_train)
 
 predicted_labels_train = top_model.predict(predicted_features_train)
-prediction_summary_train = open(OUTDIR + "V_L_So_" + F_TYPE + "_" + FC_MODEL + "_finetuning_training_summary.txt", "w")
+prediction_summary_train = open(OUTDIR + "V_L_So_" + F_TYPE + "_" + FC_MODEL + "_hardlabels_training_summary.txt", "w")
 prediction_summary_train.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS']) + '\n')
 
 predicted_labels_linear = []
 
 for i in range(len(predicted_labels_train)):
     cls_prob = [str(el) for el in predicted_labels_train[i]]
-    real_label = np.argmax(train_labels[i])
-    line = [train_images[i], str(real_label), ";".join(cls_prob)]
+    real_label = np.argmax(hard_train_labels[i])
+    line = [hard_train_images[i], str(real_label), ";".join(cls_prob)]
     predicted_labels_linear.append(np.argmax(predicted_labels_train[i]))
     prediction_summary_train.write("\t".join(line) + "\n")
     prediction_summary_train.flush()
 
 train_labels_linear = []
 
-for lbl in train_labels:
+for lbl in hard_train_labels:
     train_labels_linear.append(np.argmax(lbl))
 
 train_labels_linear = np.array(train_labels_linear)
 predicted_labels_linear = np.array(predicted_labels_linear)
 
 MCC = multimcc(train_labels_linear, predicted_labels_linear)
-print("MCC Val:", MCC)
+print("#MCC Val:", MCC)
 prediction_summary_train.write("MCC: " + str(round(MCC, 3)))
 prediction_summary_train.close()
 
-if VALIDATION_MAP is not None:
-    predicted_features_validation = model.predict(validation)
-    np.savetxt(OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_bottleneck_validation.txt", predicted_features_validation)
+if HARD_VALIDATION_MAP is not None:
+    print "\n"
+    print "#\tPerforming Predict on Validation Hard Labels"
+    predicted_features_validation = model.predict(hard_validation)
+    np.savetxt(OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_bottleneck_validation.txt", predicted_features_validation)
 
     predicted_labels_validation = top_model.predict(predicted_features_validation)
-    prediction_summary_validation = open(OUTDIR + "V_L_So_" + F_TYPE + "_" + FC_MODEL + "_validation_summary.txt", "w")
+    prediction_summary_validation = open(OUTDIR + "V_L_So_" + F_TYPE + "_" + FC_MODEL + "_hardlabels_validation_summary.txt", "w")
     prediction_summary_validation.write("\t".join(['FILENAME', 'REAL_LABEL', 'PREDICTED_LABELS']) + '\n')
 
     predicted_labels_linear = []
 
     for i in range(len(predicted_labels_validation)):
         cls_prob = [str(el) for el in predicted_labels_validation[i]]
-        real_label = np.argmax(validation_labels[i])
-        line = [validation_images[i], str(real_label), ";".join(cls_prob)]
+        real_label = np.argmax(hard_validation_labels[i])
+        line = [hard_validation_images[i], str(real_label), ";".join(cls_prob)]
         predicted_labels_linear.append(np.argmax(predicted_labels_validation[i]))
         prediction_summary_validation.write("\t".join(line) + "\n")
         prediction_summary_validation.flush()
 
     validation_labels_linear = []
 
-    for lbl in train_labels:
+    for lbl in hard_validation_labels:
         validation_labels_linear.append(np.argmax(lbl))
 
     validation_labels_linear = np.array(validation_labels_linear)
     predicted_labels_linear = np.array(predicted_labels_linear)
 
     MCC = multimcc(validation_labels_linear, predicted_labels_linear)
-    print("MCC Val:", MCC)
+    print("#MCC Val:", MCC)
     prediction_summary_validation.write("MCC: " + str(round(MCC, 3)))
     prediction_summary_validation.close()
