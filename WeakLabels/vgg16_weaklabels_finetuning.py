@@ -25,7 +25,7 @@ hera_model = HeraModel(
         {
             # location of the local hera server, out of the box it's the following
             'domain': 'localhost',
-            'port': 50000
+            'port': 4000
         }
     )
 
