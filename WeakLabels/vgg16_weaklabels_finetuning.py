@@ -16,6 +16,18 @@ import argparse
 import random
 from keras.utils import np_utils
 from keras.utils.visualize_util import plot
+from heraspy.model import HeraModel
+
+hera_model = HeraModel(
+        {
+            'id': 'Fine-Tuning of VGG16' # any ID you want to use to identify your model
+        },
+        {
+            # location of the local hera server, out of the box it's the following
+            'domain': 'localhost',
+            'port': 4000
+        }
+    )
 
 
 def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_model = None,f_type = None, n_labels = None ):
@@ -339,7 +351,7 @@ print "#\tStarting Fine Tuning on Hard Labels"
 model, batch_size = vgg16_finetuning(weights_path=VGG_WEIGHTS, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE, n_labels= hard_train_labels.shape[1])
 if PLOT:
     plot(model, to_file=OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_plot.png", show_shapes=True)
-model.fit(hard_train, hard_train_labels, nb_epoch=nb_epochs, batch_size=batch_size)
+model.fit(hard_train, hard_train_labels, nb_epoch=nb_epochs, batch_size=batch_size, callbacks=[hera_model.callback])
 hard_weights_file = OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_weights.h5"
 model.save_weights(hard_weights_file, overwrite=True)
 
