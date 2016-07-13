@@ -82,8 +82,8 @@ def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_
         last_layer = Dense(n_labels, activation='sigmoid')
         loss = 'categorical_crossentropy'
         optimizer = optimizers.Adam(lr=1e-4, epsilon=1e-08)
-        #batch_size = 128
-        batch_size = 16
+        batch_size = 128
+        #batch_size = 16
     elif fc_model == 'tom':
         model.add(Dense(512, activation='relu'))
         model.add(Dropout(0.0))
