@@ -18,19 +18,6 @@ from keras.utils import np_utils
 from keras.utils.visualize_util import plot
 from heraspy.model import HeraModel
 from keras import callbacks
-remote = callbacks.RemoteMonitor(root='http://192.169.40.153:9000')
-
-hera_model = HeraModel(
-        {
-            'id': 'Fine-Tuning of VGG16' # any ID you want to use to identify your model
-        },
-        {
-            # location of the local hera server, out of the box it's the following
-            'domain': '192.168.40.153',
-            'port': 4000
-        }
-    )
-
 
 def vgg16_finetuning(weights_path = None, img_width = 224, img_height = 224, fc_model = None,f_type = None, n_labels = None ):
 
@@ -326,6 +313,18 @@ OUTDIR = args.OUTDIR +"/"
 if not os.path.exists(OUTDIR):
     os.makedirs(OUTDIR)
 
+remote = callbacks.RemoteMonitor(root='http://192.168.40.153:9000')
+
+hera_model = HeraModel(
+        {
+            'id': 'Fine-Tuning of VGG16' # any ID you want to use to identify your model
+        },
+        {
+            # location of the local hera server, out of the box it's the following
+            'domain': '192.168.40.153',
+            'port': 4000
+        }
+    )
 
 if HARD_TRAINING_MAP is not None:
     hard_train, hard_train_labels, hard_train_images = parse_mapping(mapping_file = HARD_TRAINING_MAP)
