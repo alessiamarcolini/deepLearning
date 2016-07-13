@@ -313,7 +313,7 @@ OUTDIR = args.OUTDIR +"/"
 if not os.path.exists(OUTDIR):
     os.makedirs(OUTDIR)
 
-remote = callbacks.RemoteMonitor(root='http://192.168.40.153:9000')
+remote = callbacks.RemoteMonitor(root='http://localhost:9000')
 
 hera_model = HeraModel(
         {
