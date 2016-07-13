@@ -17,6 +17,8 @@ import random
 from keras.utils import np_utils
 from keras.utils.visualize_util import plot
 from heraspy.model import HeraModel
+from keras import callbacks
+remote = callbacks.RemoteMonitor(root='http://192.169.40.153:9000')
 
 hera_model = HeraModel(
         {
@@ -352,7 +354,7 @@ print "#\tStarting Fine Tuning on Hard Labels"
 model, batch_size = vgg16_finetuning(weights_path=VGG_WEIGHTS, img_width=224, img_height=224, fc_model=FC_MODEL, f_type=F_TYPE, n_labels= hard_train_labels.shape[1])
 if PLOT:
     plot(model, to_file=OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_plot.png", show_shapes=True)
-model.fit(hard_train, hard_train_labels, nb_epoch=nb_epochs, batch_size=batch_size, callbacks=[hera_model.callback])
+model.fit(hard_train, hard_train_labels, nb_epoch=nb_epochs, batch_size=batch_size, callbacks=[hera_model.callback, remote])
 hard_weights_file = OUTDIR + "V_L_So_"+F_TYPE+"_"+FC_MODEL+"_hardlabels_weights.h5"
 model.save_weights(hard_weights_file, overwrite=True)
 
